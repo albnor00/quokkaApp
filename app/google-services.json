@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1019079188678",
+    "firebase_url": "https://quokka-d86f5-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "quokka-d86f5",
+    "storage_bucket": "quokka-d86f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019079188678:android:65fe30bf1f26ddbf74b7c7",
+        "android_client_info": {
+          "package_name": "com.example.quokka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBc_IQ5GjiqOKSkrAT5O0IjIBE2usGQY0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
