@@ -1,4 +1,4 @@
-package com.example.quokka;
+package com.example.quokka.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +12,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.quokka.MainActivity;
+import com.example.quokka.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
+
+    TextInputLayout inputLayoutpassword, inputLayoutemail;
     Button buttonLogin;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -42,13 +47,16 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login2);
+        setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonLogin = findViewById(R.id.btn_login);
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.registerNow);
+        inputLayoutemail = findViewById(R.id.layoutEmail);
+        inputLayoutpassword = findViewById(R.id.layoutPassword);
+
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,5 +110,28 @@ public class Login extends AppCompatActivity {
 
             }
         });
+        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus && editTextEmail.getText().toString().isEmpty()) {
+                    inputLayoutemail.setHintEnabled(true);
+                } else {
+                    inputLayoutemail.setHintEnabled(false);
+                }
+            }
+        });
+
+        editTextPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus && editTextPassword.getText().toString().isEmpty()) {
+                    inputLayoutpassword.setHintEnabled(true);
+                } else {
+                    inputLayoutpassword.setHintEnabled(false);
+                }
+            }
+        });
+
     }
+
 }

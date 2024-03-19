@@ -18,4 +18,19 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">click to register</string>
     <string name="log_out">log out</string>
+    <string name="username">Username</string>
+    <string name="passwordrepeat">passwordRepeat</string>
+    <string name="repeat_password">repeat password</string>
+    <string name="Password">Password</string>
+    <string name="repeat_password2">Repeat password</string>
+    <string name="user_detail">User detail</string>
+    <string name="logout">Logout</string>
+    <string name="settings">settings</string>
+    <string name="user_details">user details</string>
+    <string name="widgets">widgets</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="group">Group</string>
+    <string name="Settings" />
+    <string name="text_group">Create or Join a Group</string>
 </resources>
