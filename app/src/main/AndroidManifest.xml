@@ -35,6 +35,9 @@
         <activity android:name=".group.group_join" />
         <activity android:name=".group.group_admin_page" />
         <activity android:name=".group.group_member_page" />
+        <activity android:name=".group.group_viewMembers" />
+        <activity android:name=".group.group_viewMembers_answers" />
+        <activity android:name=".tasks.balance_wheel" />
     </application>
 
 </manifest>

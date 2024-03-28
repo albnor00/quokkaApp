@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/balanceWheel_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/baseline_arrow_back_ios_new_24"
+        android:padding="8dp"/>
+
+
+    <Button
+
+        android:id="@+id/balanceWheel_btn1"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Economy"
+        />
+
+    <Button
+        android:id="@+id/balanceWheel_btn2"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Work, career"
+        />
+
+    <Button
+        android:id="@+id/balanceWheel_btn3"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Physical wellbeing"
+        />
+
+    <Button
+        android:id="@+id/balanceWheel_btn4"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close Relations"
+        />
+    <Button
+        android:id="@+id/balanceWheel_btn5"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Relations"
+        />
+    <Button
+        android:id="@+id/balanceWheel_btn6"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Personal Development"
+        />
+    <Button
+        android:id="@+id/balanceWheel_btn7"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Physical Environment"
+        />
+    <Button
+        android:id="@+id/balanceWheel_btn8"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rest, Relaxation"
+        />
+
+
+
+
+</LinearLayout>
+

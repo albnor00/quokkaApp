@@ -19,16 +19,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class group_admin_page extends AppCompatActivity {
     ImageView back;
-    Button deletebutton;
+    Button deletebutton, viewMemebers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_view);
+        setContentView(R.layout.activity_group_admin);
 
         // Initialize back ImageView
-        back = findViewById(R.id.img_back);
+        viewMemebers = findViewById(R.id.btn_view_members);
+        back = findViewById(R.id.admin_back);
         deletebutton = findViewById(R.id.btn_delete_group);
+
+
+        viewMemebers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), group_viewMembers.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
 
         deletebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +89,7 @@ public class group_admin_page extends AppCompatActivity {
                                         // Update all user documents to set role and groupID to null
                                         updateUsers(groupId);
                                         // Navigate to group creation page
-                                        startActivity(new Intent(getApplicationContext(), group_create.class));
+                                        startActivity(new Intent(getApplicationContext(), group_main.class));
                                         finish();
                                     }
                                 })

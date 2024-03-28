@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.tasks.balance_wheel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,14 +22,26 @@ public class group_member_page extends AppCompatActivity {
     ImageView back;
     Button Leavebutton;
 
+    Button balanceWheel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_view);
+        setContentView(R.layout.activity_group_members);
 
         // Initialize back ImageView
-        back = findViewById(R.id.img_back);
+        back = findViewById(R.id.member_back);
         Leavebutton = findViewById(R.id.btn_leave_group);
+        balanceWheel = findViewById(R.id.btn_wheel);
+
+        balanceWheel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), balance_wheel.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         Leavebutton.setOnClickListener(new View.OnClickListener() {
             @Override
