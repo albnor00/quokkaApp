@@ -32,6 +32,9 @@
         </activity>
         <activity android:name=".group.group_main" />
         <activity android:name=".group.group_create" />
+        <activity android:name=".group.group_join" />
+        <activity android:name=".group.group_admin_page" />
+        <activity android:name=".group.group_member_page" />
     </application>
 
 </manifest>

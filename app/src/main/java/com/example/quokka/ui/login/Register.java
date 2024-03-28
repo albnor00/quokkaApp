@@ -134,6 +134,8 @@ public class Register extends AppCompatActivity {
                                         Map<String, Object> userData = new HashMap<>();
                                         userData.put("email", userEmail);
                                         userData.put("username", username);
+                                        userData.put("groupID", null);
+                                        userData.put("role", null);
 
                                         // Add the user document to Firestore
                                         db.collection("users").document(userId)

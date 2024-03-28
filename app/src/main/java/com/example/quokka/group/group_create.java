@@ -36,7 +36,6 @@ import java.util.Map;
 public class group_create extends AppCompatActivity {
     EditText editText_groupName, editText_dec;
     Button button;
-
     ImageView back;
     String groupName, groupDescription;
 
@@ -59,7 +58,10 @@ public class group_create extends AppCompatActivity {
                 // Check if group name and description are not empty
                 if (!groupName.isEmpty()) {
                     // Create the group in Firestore
-                    createGroupInFirestore(groupName, groupDescription);
+                    createGroupInFirestore(groupName);
+                    Intent intent = new Intent(getApplicationContext(), group_admin_page.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     // Show a message if group name or description is empty
                     Toast.makeText(group_create.this, "Please enter group name and description", Toast.LENGTH_SHORT).show();
@@ -78,22 +80,18 @@ public class group_create extends AppCompatActivity {
     }
 
 
-
-
-    private void createGroupInFirestore(String groupName, String groupDescription) {
+    private void createGroupInFirestore(String groupName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        String userId = auth.getCurrentUser().getUid(); // Get the current user's ID
+        final String userId = auth.getCurrentUser().getUid(); // Get the current user's ID
 
         // Create a new group document with a unique ID
-        DocumentReference groupRef = db.collection("groups").document();
-        String groupId = groupRef.getId();
+        final DocumentReference groupRef = db.collection("groups").document();
 
         // Add the group details to the group document
-        Map<String, Object> groupData = new HashMap<>();
+        final Map<String, Object> groupData = new HashMap<>();
         groupData.put("group_name", groupName);
-        groupData.put("group_description", groupDescription);
         groupData.put("creator_id", userId);
 
         // Set the group document with the group data
@@ -101,30 +99,11 @@ public class group_create extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // Add the group to the creator's list of groups with role "Coach"
-                        Map<String, Object> userGroupData = new HashMap<>();
-                        userGroupData.put("role", "Coach");
+                        // Show a success message
+                        Toast.makeText(group_create.this, "Group created successfully", Toast.LENGTH_SHORT).show();
 
-                        // Set the user's role in the group under the "members" subcollection
-                        groupRef.collection("members").document(userId)
-                                .set(userGroupData)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        // Show a success message
-                                        Toast.makeText(group_create.this, "Group created successfully", Toast.LENGTH_SHORT).show();
-
-                                        // Finish the activity
-                                        finish();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        // Show a failure message
-                                        Toast.makeText(group_create.this, "Failed to add group creator as a member", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                        // Finish the activity
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -134,12 +113,31 @@ public class group_create extends AppCompatActivity {
                         Toast.makeText(group_create.this, "Failed to create group", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        // Update the user's document with the group ID
+        final String groupId = groupRef.getId();
+        final Map<String, Object> userData = new HashMap<>();
+        userData.put("groupID", groupId);
+        userData.put("role", "Coach/(Admin)");
+
+        db.collection("users")
+                .document(userId)
+                .update(userData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Show a success message
+                        Toast.makeText(group_create.this, "Group ID added to user document", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Show a failure message
+                        Toast.makeText(group_create.this, "Failed to add group ID to user document", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
-
-
-
-
 }
 
 

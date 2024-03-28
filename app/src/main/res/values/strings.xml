@@ -33,4 +33,6 @@
     <string name="group">Group</string>
     <string name="Settings" />
     <string name="text_group">Create or Join a Group</string>
+    <string name="search_title" />
+    <string name="create_or_join_a_group">Create or Join a Group</string>
 </resources>

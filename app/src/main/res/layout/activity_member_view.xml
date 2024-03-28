@@ -28,23 +28,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Enter the name of coaching group"
+            android:text="Member main page"
             android:layout_marginTop="100dp"
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
-            android:layout_width="372dp"
+        <Button
+            android:id="@+id/btn_leave_group"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:queryHint="Search for items..." />
-
-        <ListView
-            android:id="@+id/list_view"
-            android:layout_width="372dp"
-            android:layout_marginStart="16dp"
-            android:layout_height="wrap_content" />
+            android:layout_marginTop="16dp"
+            android:text="Leave Group" />
 
     </LinearLayout>
 
