@@ -38,6 +38,7 @@
         <activity android:name=".group.group_viewMembers" />
         <activity android:name=".group.group_viewMembers_answers" />
         <activity android:name=".tasks.balance_wheel" />
+        <activity android:name=".goalTask.goalTask_mainpage" />
     </application>
 
 </manifest>

@@ -149,12 +149,13 @@
             app:cardCornerRadius="12dp">
 
             <LinearLayout
-                android:id="@+id/widget"
+                android:id="@+id/tasks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clickable="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -167,7 +168,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/widgets"
+                    android:text="@string/tasks"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>
