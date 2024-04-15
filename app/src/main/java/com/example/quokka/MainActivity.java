@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.quokka.goalTask.goalTask_mainpage;
+import com.example.quokka.goal_progress_tracking.goal_page.Goal_MainActivity;
 import com.example.quokka.group.group_admin_page;
 import com.example.quokka.group.group_main;
 import com.example.quokka.group.group_member_page;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         taskIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), goalTask_mainpage.class);
+                Intent intent = new Intent(getApplicationContext(), Goal_MainActivity.class);
                 startActivity(intent);
                 finish();
             }
