@@ -37,4 +37,9 @@
     <string name="create_or_join_a_group">Create or Join a Group</string>
     <string name="balance_wheel">Balance Wheel</string>
     <string name="tasks">Tasks</string>
+    <string name="task_name">Task Name</string>
+    <string name="new_task" />
+    <string name="save" />
+    <string name="circle_with_check">Circle with Check</string>
+    <string name="back_button">back button</string>
 </resources>

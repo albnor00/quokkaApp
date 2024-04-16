@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
         logout = findViewById(R.id.logout);
-        textView = findViewById(R.id.user_Details);
+        //textView = findViewById(R.id.user_Details);
         groupIcon = findViewById(R.id.icon_group);
         taskIcon = findViewById(R.id.tasks);
         user = auth.getCurrentUser();
@@ -51,19 +51,21 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             if (documentSnapshot.exists()) {
                                 String username = documentSnapshot.getString("username");
-                                textView.setText("User: " + username);
+                                //textView.setText("User: " + username);
                             } else {
-                                textView.setText("Unknown");
+                                //textView.setText("Unknown");
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(Exception e) {
-                            textView.setText("Unknown");
+                            //textView.setText("Unknown");
                         }
                     });
         }
+
+
 
         groupIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 checkUserRole();
             }
         });
+
+
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override

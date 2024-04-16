@@ -2,16 +2,19 @@ package com.example.quokka.goal_progress_tracking.goal_page;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.quokka.MainActivity;
 import com.example.quokka.R;
 
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ public class Goal_MainActivity extends AppCompatActivity {
 
     private List<Goal> goals = new ArrayList<>();
     private GoalAdapter goalAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +36,8 @@ public class Goal_MainActivity extends AppCompatActivity {
         goalAdapter = new GoalAdapter(this, goals);
         recyclerView.setAdapter(goalAdapter);
 
-        goals.add(new Goal("Goal 1", "Description for Goal 1"));
-        goals.add(new Goal("Goal 2", "Description for Goal 2"));
-
+        goals.add(new Goal("Improving my physical health", "I want to be healthier"));
+        goals.add(new Goal("Improving my economical situation", "I need to improve the way I handle my savings"));
 
 
         Button addButton = findViewById(R.id.add_button);
@@ -42,6 +45,17 @@ public class Goal_MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAddGoalDialog();
+            }
+        });
+
+
+        ImageView back_btn = findViewById(R.id.img_back);
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

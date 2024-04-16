@@ -52,4 +52,5 @@ dependencies {
     platform("com.google.firebase:firebase-bom:32.7.2")
     implementation("com.google.firebase:firebase-firestore:23.0.3")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
