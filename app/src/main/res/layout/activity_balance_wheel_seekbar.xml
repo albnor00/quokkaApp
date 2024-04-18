@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    >
 
     <TextView
         android:id="@+id/instructionsTextView"
@@ -13,6 +14,8 @@
         android:layout_marginBottom="16dp"/>
 
     <SeekBar
+        android:progressTint="@color/purple"
+        android:thumbTint="@color/purple"
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,6 +27,20 @@
         android:layout_height="wrap_content"
         android:text="0"
         android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:id="@+id/addComment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Add a comment (optional)" />
+
+    <CheckBox
+
+        android:id="@+id/noAnswerCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prefer not to answer" />
+
 
 </LinearLayout>
 

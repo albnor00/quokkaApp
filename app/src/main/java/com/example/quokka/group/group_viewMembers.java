@@ -1,7 +1,11 @@
 package com.example.quokka.group;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,8 +36,8 @@ public class group_viewMembers extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_members);
 
+        setContentView(R.layout.activity_view_members);
         memberListContainer = findViewById(R.id.memberListContainer);
         back = findViewById(R.id.membersList_back);
 
@@ -102,16 +106,20 @@ public class group_viewMembers extends AppCompatActivity {
 
     private void displayMembers(List<DocumentSnapshot> users) {
         for (DocumentSnapshot user : users) {
-            String role = user.getString("role"); // Assuming role is stored as a field in Firestore
-            String name = user.getString("username"); // Assuming name is stored as a field in Firestore
+            String role = user.getString("role"); // role is stored as a field in Firestore
+            String name = user.getString("username"); //  name is stored as a field in Firestore
             String userID = user.getId();
 
             // Create a TextView to display member info
             if (!role.equals("Coach/(Admin)")) {
                 TextView textView = new TextView(this);
                 textView.setText(name);
-                textView.setTextSize(20);
-                textView.setPadding(16, 8, 16, 8);
+                textView.setTextSize(30);
+                textView.setClickable(true);
+                textView.setGravity(Gravity.CENTER);
+                textView.setTextColor(Color.BLACK); // Change text color
+                textView.setTypeface(Typeface.DEFAULT_BOLD); // Make text bold
+                textView.setPadding(16, 16, 16, 16);
 
                 // Add click listener to the TextView to view member's answers
                 textView.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +128,9 @@ public class group_viewMembers extends AppCompatActivity {
                         // Call method to handle click event and pass the user ID and group ID
                         if (groupID != null && !groupID.isEmpty()) {
                             handleMemberClick(userID, groupID);
+                            ObjectAnimator colorAnimator = ObjectAnimator.ofArgb(textView, "textColor", Color.BLACK, Color.LTGRAY);
+                            colorAnimator.setDuration(1000); // Duration of the animation in milliseconds
+                            colorAnimator.start();
                         } else {
                             // Handle case where groupID is not available
                             Toast.makeText(group_viewMembers.this, "Group ID is not available", Toast.LENGTH_SHORT).show();

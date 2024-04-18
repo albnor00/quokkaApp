@@ -5,4 +5,10 @@
     <item name="text_group" type="id" />
     <item name="search_view" type="id" />
     <item name="list_view" type="id" />
+    <item name="radioButtons" type="id" />
+    <item name="wheel_radio" type="id" />
+    <item name="imageView" type="id" />
+    <item name="imageView2" type="id" />
+    <item name="textView" type="id" />
+    <item name="textView2" type="id" />
 </resources>

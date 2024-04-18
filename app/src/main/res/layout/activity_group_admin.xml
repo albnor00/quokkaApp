@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/login_background">
 
     <ImageView
         android:id="@+id/admin_back"
@@ -16,31 +17,30 @@
     <Button
         android:id="@+id/btn_view_members"
         android:layout_marginTop="100dp"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:text="View members"
         />
 
-    <Button
-        android:layout_marginTop="40dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Invite members"
-        />
+
 
     <Button
+        android:id="@+id/pending"
         android:layout_marginTop="40dp"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="Pending"
+        android:text="Pending member"
         />
 
     <Button
         android:id="@+id/btn_delete_group"
         android:layout_marginTop="40dp"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="Delete"
+        android:text="Delete group"
         />
 
 

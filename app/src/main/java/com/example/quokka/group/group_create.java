@@ -127,14 +127,13 @@ public class group_create extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // Show a success message
-                        Toast.makeText(group_create.this, "Group ID added to user document", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Show a failure message
-                        Toast.makeText(group_create.this, "Failed to add group ID to user document", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(group_create.this, "Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

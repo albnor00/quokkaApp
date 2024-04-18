@@ -1,81 +1,183 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="#ececec">
 
+
+
+    <!-- ImageView for back button -->
     <ImageView
         android:id="@+id/balanceWheel_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
         android:src="@drawable/baseline_arrow_back_ios_new_24"
-        android:padding="8dp"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:textAlignment="center"
+        android:layout_alignTop="@id/balanceWheel"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:textColor="@color/white"/>
 
 
-    <Button
 
-        android:id="@+id/balanceWheel_btn1"
-        android:layout_marginTop="15dp"
+    <com.example.quokka.tasks.RadioButtons
+        android:id="@+id/radio"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Economy"
-        />
-
-    <Button
-        android:id="@+id/balanceWheel_btn2"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Work, career"
-        />
-
-    <Button
-        android:id="@+id/balanceWheel_btn3"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Physical wellbeing"
-        />
-
-    <Button
-        android:id="@+id/balanceWheel_btn4"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Close Relations"
-        />
-    <Button
-        android:id="@+id/balanceWheel_btn5"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Relations"
-        />
-    <Button
-        android:id="@+id/balanceWheel_btn6"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Personal Development"
-        />
-    <Button
-        android:id="@+id/balanceWheel_btn7"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Physical Environment"
-        />
-    <Button
-        android:id="@+id/balanceWheel_btn8"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Rest, Relaxation"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Balance wheel"
         />
 
 
 
+    <RelativeLayout
+        android:id="@+id/balanceWheel"
+        android:layout_width="410dp"
+        android:layout_height="410dp"
 
-</LinearLayout>
+        android:layout_gravity="center">
+
+
+
+        <!-- TextView for Balance Wheel title -->
+        <TextView
+            android:id="@+id/txt9"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="Tooltip"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn1"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_above="@id/txt9"
+            android:layout_alignLeft="@id/txt9"
+            android:layout_marginLeft="-49dp"
+            android:layout_marginBottom="37dp"
+            android:gravity="center"
+            android:text="Economy"
+            android:textColor="#fff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn2"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignTop="@id/balanceWheel_btn1"
+            android:layout_marginLeft="17dp"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/balanceWheel_btn1"
+            android:gravity="center"
+            android:text="Career"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn8"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignTop="@id/txt9"
+            android:layout_marginTop="-48dp"
+            android:layout_marginRight="40dp"
+            android:layout_toLeftOf="@id/txt9"
+            android:gravity="center"
+            android:text="Rest"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn7"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_below="@id/balanceWheel_btn8"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="31dp"
+            android:layout_toLeftOf="@id/txt9"
+            android:gravity="center"
+            android:text="Environment"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn6"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_below="@id/txt9"
+            android:layout_alignLeft="@id/txt9"
+            android:layout_marginLeft="-47dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="Development"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn5"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignTop="@id/balanceWheel_btn6"
+            android:layout_marginLeft="11dp"
+            android:layout_marginTop="-1dp"
+            android:layout_toRightOf="@id/balanceWheel_btn6"
+            android:gravity="center"
+            android:text="Relations"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn3"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignTop="@id/txt9"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="-49dp"
+            android:layout_toRightOf="@id/txt9"
+            android:gravity="center"
+            android:text="Wellbeing"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/balanceWheel_btn4"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_below="@id/balanceWheel_btn3"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="12dp"
+            android:layout_toRightOf="@id/txt9"
+            android:gravity="center"
+            android:text="Close Relations"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+
+        <!-- Add more TextViews if needed -->
+
+    </RelativeLayout>
+
+</FrameLayout>
+
 

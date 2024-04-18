@@ -130,7 +130,7 @@ public class group_admin_page extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         // Show success message if needed
-                                        Toast.makeText(group_admin_page.this, "User updated successfully", Toast.LENGTH_SHORT).show();
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
