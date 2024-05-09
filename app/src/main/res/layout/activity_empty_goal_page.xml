@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_arrow_back_ios_new_24" />
+
+    <TextView
+        android:layout_width="361dp"
+        android:layout_height="161dp"
+        android:layout_below="@id/img_back"
+        android:id="@+id/informative_text"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:text="You don't seem to have a goal currently set up."
+        android:textSize="30dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:layout_width="361dp"
+        android:layout_height="161dp"
+        android:id="@+id/question_text"
+        android:layout_below="@id/informative_text"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:text="Want to get started?"
+        android:textSize="30dp"
+        android:layout_centerHorizontal="true"
+        />
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:id="@+id/getting_started_button"
+        android:layout_below="@id/question_text"
+        android:layout_marginTop="210dp"
+        android:gravity="center"
+        android:text="Get started"
+        android:textSize="30dp"
+        android:layout_centerHorizontal="true"
+        />
+
+</RelativeLayout>

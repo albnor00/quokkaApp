@@ -38,11 +38,17 @@
         <activity android:name=".group.group_viewMembers" />
         <activity android:name=".group.group_viewMembers_answers" />
         <activity android:name=".tasks.balance_wheel" />
-        <activity android:name=".goalTask.goalTask_mainpage" />
         <activity android:name=".goal_progress_tracking.goal_page.Goal_MainActivity" />
         <activity android:name=".goal_progress_tracking.goal_page.GoalDetailsActivity" />
         <activity android:name=".goal_progress_tracking.task_templates.TaskDetailActivity" />
         <activity android:name=".goal_progress_tracking.task_templates.NewTaskActivity"/>
+        <activity android:name=".goal_progress_tracking.goal_page_v2.Goal_empty_page"/>
+        <activity android:name=".goal_progress_tracking.goal_page_v2.Goal_non_empty_page"/>
+        <activity android:name=".goal_progress_tracking.goal_setup.Question1"/>
+        <activity android:name=".goal_progress_tracking.goal_setup.Question2"/>
+        <activity android:name=".goal_progress_tracking.goal_setup.Question3"/>
+        <activity android:name=".goal_progress_tracking.goal_setup.Question4"/>
+        <activity android:name=".goal_progress_tracking.goal_setup.Question5"/>
     </application>
 
 </manifest>
