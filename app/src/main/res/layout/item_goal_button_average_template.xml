@@ -34,14 +34,15 @@
             android:textSize="20sp" />
 
         <!-- Text View -->
-        <TextView
-            android:id="@+id/textView2"
+        <EditText
+            android:id="@+id/editTextGoal"
             android:layout_width="150dp"
             android:layout_height="38dp"
             android:layout_marginStart="65dp"
             android:gravity="center"
-            android:text="0 or more"
-            android:textSize="20sp" />
+            android:inputType="number"
+            android:hint="Enter a goal value"
+            android:textSize="15sp" />
 
     </LinearLayout>
 

@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.quokka.goal_progress_tracking.average_task_template.average_task_page;
+import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_setup.Question1;
@@ -46,7 +48,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    LinearLayout logout, groupIcon, taskIcon;
+    LinearLayout logout, groupIcon, taskIcon, homeIcon;
     FirebaseUser user;
 
     @Override
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         logout = findViewById(R.id.logout);
         groupIcon = findViewById(R.id.icon_group);
         taskIcon = findViewById(R.id.tasks);
+        homeIcon = findViewById(R.id.layoutHome);
         user = auth.getCurrentUser();
 
 
@@ -86,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             checkUserGoalStatus();
+            }
+        });
+
+        homeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), average_task_page.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -133,33 +145,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Failed to check user role.", Toast.LENGTH_SHORT).show();
                 });
     }
-
-
-    /*
-    private void checkUserGoalStatus(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String userId = user.getUid();
-
-        // Reference to the user's document
-        DocumentReference userDocRef = db.collection("users").document(userId);
-
-        // Check if the 'Goal' subcollection exists under the user's document
-        userDocRef.collection("Goal").get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty()) {
-                            redirectToNonEmptyGoalPage();
-                        } else {
-                            redirectToEmptyGoalPage();
-                        }
-                    } else {
-                        // Error occurred while fetching subcollection
-                        Log.e("GoalStatus", "Error checking 'Goal' subcollection", task.getException());
-                    }
-                });
-    }
-
-     */
 
     private void checkUserGoalStatus() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

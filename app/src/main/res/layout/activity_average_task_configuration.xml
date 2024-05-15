@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,58 +34,88 @@
         android:layout_marginEnd="16dp"
         android:src="@drawable/baseline_check_24" />
 
-    <include layout='@layout/item_task_name'
+    <include layout="@layout/item_task_name"
         android:id="@+id/edit_name"
         android:layout_width="400dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
         android:layout_below="@id/img_back" />
 
-    <include layout='@layout/item_goal_button_average_template'
+    <include layout="@layout/item_goal_button_average_template"
         android:id="@+id/edit_goal"
         android:layout_width="400dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edit_name"
-        />
-
-    <include layout='@layout/item_timeperiod_button_average_template'
-        android:id="@+id/edit_timeperiod"
-        android:layout_width="400dp"
         android:layout_marginTop="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/edit_name" />
+
+    <TextView
+        android:id="@+id/textViewOrMore"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_goal"
-        />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:text="''or more''"
+        android:textSize="18sp" />
 
-    <include layout='@layout/item_startdate_button_average_template'
+    <Switch
+        android:id="@+id/switchGoalMoreOrLess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_goal"
+        android:layout_marginTop="10dp"
+        android:layout_toStartOf="@+id/textViewOrLess"
+        android:layout_toEndOf="@+id/textViewOrMore"
+        android:textOff=""
+        android:textOn=""
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/textViewOrLess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_goal"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="245dp"
+        android:text="''or less''"
+        android:textSize="18sp" />
+
+    <include layout="@layout/item_timeperiod_button_average_template"
+        android:id="@+id/edit_timeperiod"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/switchGoalMoreOrLess" />
+
+    <include layout="@layout/item_startdate_button_average_template"
         android:id="@+id/edit_startdate"
         android:layout_width="400dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_timeperiod"
-        />
+        android:layout_below="@id/edit_timeperiod" />
 
-    <include layout='@layout/item_reminder_button'
+    <include layout="@layout/item_reminder_button"
         android:id="@+id/edit_reminder"
         android:layout_width="400dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_startdate"
-        />
+        android:layout_below="@id/edit_startdate" />
 
 </RelativeLayout>

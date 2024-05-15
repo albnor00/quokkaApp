@@ -11,15 +11,21 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.goal_progress_tracking.Task_classes.TaskAdapter;
+import com.example.quokka.goal_progress_tracking.Task_classes.Task;
+import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_setup.Question1;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -27,8 +33,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,33 +46,67 @@ public class Goal_non_empty_page extends AppCompatActivity {
     private ImageButton previousDayButton;
     private ImageButton nextDayButton;
     private ImageView backButton;
+    private ImageView addTaskButton;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
-    private int currentDayOfMonth;
+    private TextView goalTitleTextView;
+    private TaskAdapter taskAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_non_empty_goal_page);
-        View includedLayout = findViewById(R.id.task_progress_overview);
-        TextView goalTitleTextView = includedLayout.findViewById(R.id.textView);
 
-        // Initialize views
+        // Find the included layout (CardView)
+        View overview_box = findViewById(R.id.task_progress_overview);
+
+        // Find the TextView inside the included layout
+        goalTitleTextView = overview_box.findViewById(R.id.textView);
+
+        // Initialize other views
         currentDateTextView = findViewById(R.id.text_current_date);
         previousDayButton = findViewById(R.id.btn_previous_day);
         nextDayButton = findViewById(R.id.btn_next_day);
         backButton = findViewById(R.id.img_back);
+        addTaskButton = findViewById(R.id.add_task_btn);
 
         // Initialize calendar
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("d MMMM", Locale.getDefault());
+
+        // Get task details from intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            String taskName = intent.getStringExtra("taskName");
+            String goal = intent.getStringExtra("goal");
+            String timePeriod = intent.getStringExtra("timePeriod");
+            String startDate = intent.getStringExtra("startDate");
+
+            // Create a new task with the received details
+            Task newTask = new Task(taskName, goal, timePeriod, startDate);
+
+            // Add the new task to the taskList
+            List<Task> taskList = new ArrayList<>();
+            taskList.add(newTask);
+
+            // Initialize RecyclerView
+            RecyclerView recyclerView = findViewById(R.id.recycler_view_tasks);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            taskAdapter = new TaskAdapter(taskList); // taskList is an ArrayList<Task>
+            recyclerView.setAdapter(taskAdapter);
+
+            // Notify the adapter of the data change
+            taskAdapter.notifyDataSetChanged();
+        }
+
 
         // Display User Goal Information
         fetchAndDisplayUserData();
 
         // Set initial date text
         updateDateText();
+
 
         // Set click listeners for arrow buttons
         previousDayButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +133,7 @@ public class Goal_non_empty_page extends AppCompatActivity {
             }
         });
 
+        // Set click listener for back button
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,11 +142,21 @@ public class Goal_non_empty_page extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Set click listener for "add task" button
+        addTaskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), create_new_average_task.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     // Method to update the displayed date
     private void updateDateText() {
-        currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         String dateText = dateFormat.format(calendar.getTime());
         currentDateTextView.setText(dateText);
     }
@@ -139,45 +193,31 @@ public class Goal_non_empty_page extends AppCompatActivity {
 
     // Method to fetch and display user's goal data
     private void fetchAndDisplayUserData() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
-
         if (auth.getCurrentUser() != null) {
             String userId = auth.getCurrentUser().getUid();
-            Query query = db.collection("users").document(userId).collection("Goal");
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            // Perform the query
-            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Extract data from each document in the subcollection
-                            String goalTitle = document.getString("Q1_user_aspect");
-
-                            // Update TextViews with retrieved data
-                            updateTextViews(goalTitle);
+            // Retrieve previously selected aspect from Firestore
+            db.collection("users").document(userId).collection("Goal")
+                    .document("Q1_user_aspect")
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String userAspect = documentSnapshot.getString("aspectName");
+                            if (userAspect != null) {
+                                updateTextViews(userAspect);
+                            }
                         }
-                    } else {
-                        // Handle errors
-                        Toast.makeText(Goal_non_empty_page.this, "Failed to fetch goal data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        } else {
-            // User is not authenticated or session expired
-            Toast.makeText(Goal_non_empty_page.this, "User not authenticated. Please log in again.", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(Goal_non_empty_page.this, "Failed to fetch previous aspect: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         }
     }
 
     // Method to update TextViews with fetched data
     private void updateTextViews(String goalTitle) {
-        // Find the included layout (CardView)
-        View includedLayout = findViewById(R.id.task_progress_overview);
-
-        // Find the TextView inside the included layout
-        TextView goalTitleTextView = includedLayout.findViewById(R.id.textView);
-
         // Update the TextView with the retrieved goal title
         goalTitleTextView.setText(goalTitle);
     }
