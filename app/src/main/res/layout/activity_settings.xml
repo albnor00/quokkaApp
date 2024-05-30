@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/login_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <!-- Account Settings Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/username_change"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_background_1"
+            android:drawablePadding="20dp"
+            android:paddingStart="20dp"
+            android:text="Update username"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            style="@android:style/Widget.Button"
+            android:textAlignment="center"
+
+            app:layout_constraintBottom_toTopOf="@id/email_change" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/email_change"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_background_1"
+            android:text="Update email"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            style="@android:style/Widget.Button"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/accountSettings" />
+
+        <!-- Button 2 -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/password_change"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_background_1"
+            android:text="Update password"
+            android:textSize="18sp"
+            style="@android:style/Widget.Button"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/email_change" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/delete_account"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_background_1"
+            android:text="Delete account"
+            android:textSize="18sp"
+            style="@android:style/Widget.Button"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/password_change" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/accountSettings_back"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_background_2"
+            android:text="Back to Main page"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            style="@android:style/Widget.Button"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/email_change" />
+    </LinearLayout>
+
+
+    <!-- Guideline to act as a bottom constraint -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
