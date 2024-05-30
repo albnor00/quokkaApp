@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -26,7 +27,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -48,8 +48,12 @@ public class balance_wheel extends AppCompatActivity {
     TextView btn_Rest;
     RadioButtons radioButtons;
 
-    // HashMap to store button IDs and corresponding SeekBar values
+    Button submit;
+
+    // HashMaps to store button values, checkbox states, and comments
     HashMap<Integer, Integer> buttonValuesMap = new HashMap<>();
+    HashMap<Integer, Boolean> checkBoxValuesMap = new HashMap<>();
+    HashMap<Integer, String> commentValuesMap = new HashMap<>();
 
     // SharedPreferences file name
     private static final String PREFS_NAME = "BalanceWheelPrefs";
@@ -83,15 +87,39 @@ public class balance_wheel extends AppCompatActivity {
         btn_Development = findViewById(R.id.balanceWheel_btn6);
         btn_Environment = findViewById(R.id.balanceWheel_btn7);
         btn_Rest = findViewById(R.id.balanceWheel_btn8);
+        submit = findViewById(R.id.submit);
+
         back.bringToFront();
-
-
 
         // Restore values from SharedPreferences
         restoreValuesFromSharedPreferences();
 
         // Set onClickListener for back button
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), group_member_page.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
+        // Set onClickListener for submit button
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), group_member_page.class);
+                startActivity(intent);
+
+
+                // Upload button values, checkbox states, and comments to Firestore
+                uploadDataToFirestore();
+                // Finish activity after submitting
+                finish();
+            }
+        });
+
+        // Set onClickListener for radio buttons
         radioButtons.setOnSliceClickListener(new RadioButtons.OnSliceClickListener() {
             @Override
             public void onSlickClick(int slicePosition) {
@@ -124,16 +152,6 @@ public class balance_wheel extends AppCompatActivity {
                 }
             }
         });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), group_member_page.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
     }
 
     private void showSeekBarDialog(final int buttonId) {
@@ -173,12 +191,12 @@ public class balance_wheel extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { //uncheck box if the seekbar is touched
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Uncheck checkbox if the seekbar is touched
                 CheckBox noAnswerCheckBox = seekBarDialog.findViewById(R.id.noAnswerCheckBox);
                 if (noAnswerCheckBox != null) {
                     noAnswerCheckBox.setChecked(false);
                 }
-
             }
 
             @Override
@@ -187,18 +205,17 @@ public class balance_wheel extends AppCompatActivity {
                 buttonValuesMap.put(buttonId, seekBar.getProgress());
                 // Save the value to SharedPreferences
                 saveValueToSharedPreferences(buttonId, seekBar.getProgress());
-                // Upload button values to Firestore
-                getGroupIdFromFirestore();
-
             }
         });
+
         seekBarDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 // Upload comment if not empty when the dialog is dismissed
                 String comment = addComment.getText().toString();
                 if (!comment.isEmpty()) {
-                    uploadCommentToFirestore(buttonId, comment);
+                    // Store the comment in the commentValuesMap
+                    commentValuesMap.put(buttonId, comment);
                 }
             }
         });
@@ -214,192 +231,117 @@ public class balance_wheel extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    // If checkbox is checked, set value to 0 and store in SharedPreferences
-                    seekBar.setProgress(0); // Set SeekBar progress to 0
-                    valueTextView.setText("1"); // Update TextView
-                    buttonValuesMap.put(buttonId, 0); // Store 0 in the HashMap
-                    saveValueToSharedPreferences(buttonId, 0); // Store 0 in SharedPreferences
-                    // Upload button values to Firestore
-                    getGroupIdFromFirestore();
+                    // If checkbox is checked, store the state in the HashMap
+                    checkBoxValuesMap.put(buttonId, true);
+                    // Set SeekBar progress to 0
+                    seekBar.setProgress(0);
+                    // Update TextView
+                    valueTextView.setText("1");
+                    // Store 0 in the SharedPreferences
+                    saveValueToSharedPreferences(buttonId, 0);
+                } else {
+                    // If checkbox is unchecked, remove the state from the HashMap
+                    checkBoxValuesMap.remove(buttonId);
                 }
-                // If the checkbox is unchecked
             }
         });
-
-
     }
 
-    private void uploadCommentToFirestore(int buttonId, String comment) {
-        // Get the field name based on the buttonId
-        String field = getButtonName(buttonId);
-        String userId = mAuth.getCurrentUser().getUid();
-
-        // Construct the document reference path
-        DocumentReference commentDocRef = FirebaseFirestore.getInstance()
-                .collection("userresponses")
-                .document(userId)
-                .collection("comments")
-                .document(field);
-
-        // Create a map with the comment data
-        Map<String, Object> data = new HashMap<>();
-        data.put("comment", comment);
-        data.put("timestamp", FieldValue.serverTimestamp());
-
-        // Set the comment data in Firestore
-        commentDocRef.set(data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Comment added successfully
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Failed to add comment
-                    }
-                });
-    }
-
-
-
-    private void handleGroupId(String groupId) {
-        // Now that you have the group ID, you can proceed with your logic
-        // For example, you can save the group ID in SharedPreferences for later use
-        saveGroupIdToSharedPreferences(groupId);
-
-        // You can also perform any other actions based on the retrieved group ID
-        // For example, you may want to display the group ID in a TextView
-        //textViewGroupId.setText(groupId);
-
-        // Or you can call another method to perform additional tasks
-        //performAdditionalTasks(groupId);
-    }
-
-    private void saveGroupIdToSharedPreferences(String groupId) {
-        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-        editor.putString("groupID", groupId);
-        editor.apply();
-    }
-
-    private void getGroupIdFromFirestore() {
+    private void uploadDataToFirestore() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            db.collection("users")
+
+            // Create a map to store button values
+            Map<String, Object> buttonValues = new HashMap<>();
+            for (Map.Entry<Integer, Integer> entry : buttonValuesMap.entrySet()) {
+                int buttonId = entry.getKey();
+                int value = entry.getValue();
+                String buttonName = getButtonName(buttonId);
+                buttonValues.put(buttonName, value);
+            }
+
+            // Create a map to store submission data
+            Map<String, Object> submissionData = new HashMap<>();
+            submissionData.put("values", buttonValues);
+            submissionData.put("timestamp", FieldValue.serverTimestamp());
+
+            // Add the submission data to Firestore
+            db.collection("userresponses")
                     .document(userId)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    .collection("submissions")
+                    .add(submissionData)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            if (documentSnapshot.exists()) {
-                                // Check if groupID field exists and is not null
-                                if (documentSnapshot.contains("groupID")) {
-                                    String groupId = documentSnapshot.getString("groupID");
-                                    if (groupId != null) {
-                                        // Successfully retrieved group ID, now you can use it
-                                        // Call a method to handle further actions with the group ID
-                                        handleGroupId(groupId);
-                                        // Upload button values to Firestore here
-                                        uploadButtonValuesToFirestore(userId, groupId);
-                                    } else {
-                                        // Group ID is null
-                                        // Handle this scenario accordingly
-                                    }
-                                } else {
-                                    // 'groupID' field not found in document
-                                    // Handle this scenario accordingly
-                                }
-                            } else {
-                                // User document does not exist
-                                // Handle this scenario accordingly
-                            }
+                        public void onSuccess(DocumentReference documentReference) {
+                            // Handle success
+                            // Call method to upload comments after uploading main data
+                            uploadCommentsToFirestore(userId, documentReference.getId());
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            // Error occurred while retrieving group ID
-                            // Handle the failure scenario
+                            // Handle failure
                         }
                     });
         }
     }
 
-    // Method to save button value to SharedPreferences
+    private void uploadCommentsToFirestore(String userId, String submissionId) {
+        // Create a map to store comments
+        Map<String, Object> commentsData = new HashMap<>();
+        for (Map.Entry<Integer, String> entry : commentValuesMap.entrySet()) {
+            int buttonId = entry.getKey();
+            String comment = entry.getValue();
+            String buttonName = getButtonName(buttonId);
+            commentsData.put(buttonName, comment);
+        }
+
+        // Add the comments data to Firestore
+        db.collection("userresponses")
+                .document(userId)
+                .collection("submissions")
+                .document(submissionId)
+                .set(commentsData, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Handle success
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle failure
+                    }
+                });
+    }
+
+
     private void saveValueToSharedPreferences(int buttonId, int value) {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
         editor.putInt(String.valueOf(buttonId), value + 1);
         editor.apply();
     }
 
-    // Method to retrieve button value from SharedPreferences
     private int getSavedValue(int buttonId) {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return prefs.getInt(String.valueOf(buttonId), -1); // -1 indicates no value found
     }
 
-    // Method to upload button values to Firestore
-    private void uploadButtonValuesToFirestore(String userId, String groupId) {
-        String documentId = userId;
-        // Create a map with button names and values
-        Map<String, Object> data = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : buttonValuesMap.entrySet()) {
-            int buttonId = entry.getKey();
-            int value = entry.getValue();
-            String buttonName = getButtonName(buttonId); // Get the name of the button
-            data.put(buttonName, value); // Store button name as key and value as value
+    private void restoreValuesFromSharedPreferences() {
+        int[] buttonIds = {R.id.balanceWheel_btn1, R.id.balanceWheel_btn2, R.id.balanceWheel_btn3, R.id.balanceWheel_btn4,
+                R.id.balanceWheel_btn5, R.id.balanceWheel_btn6, R.id.balanceWheel_btn7, R.id.balanceWheel_btn8};
+
+        for (int buttonId : buttonIds) {
+            int savedValue = getSavedValue(buttonId);
+            if (savedValue != -1) {
+                buttonValuesMap.put(buttonId, savedValue);
+            }
         }
-
-        // Retrieve username and add it to the data map
-        db.collection("users")
-                .document(userId)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            // Retrieve username from users collection
-                            String username = documentSnapshot.getString("username");
-
-                            // Add username and groupID to the data map
-                            data.put("username", username);
-                            data.put("groupID", groupId);
-
-                            // Upload button values to Firestore
-                            db.collection("userresponses").document(documentId)
-                                    .set(data, SetOptions.merge())
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            // Handle success
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Handle failure
-                                        }
-                                    });
-                        } else {
-                            // User document does not exist
-                            // Handle this scenario accordingly
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Error occurred while retrieving username
-                        // Handle the failure scenario
-                    }
-                });
     }
 
-
-
-    // Method to get the name of the button based on its ID
     private String getButtonName(int buttonId) {
         if (buttonId == R.id.balanceWheel_btn1) {
             return "Economy";
@@ -419,23 +361,6 @@ public class balance_wheel extends AppCompatActivity {
             return "Rest";
         } else {
             return "Unknown";
-        }
-    }
-
-
-
-    // Method to restore button values from SharedPreferences
-    private void restoreValuesFromSharedPreferences() {
-        // Here you need to implement the logic to restore button values from SharedPreferences
-        // Iterate over each button and restore its value
-        // For each button ID, call getSavedValue() method and set its value accordingly
-        int[] buttonIds = {R.id.balanceWheel_btn1, R.id.balanceWheel_btn2, R.id.balanceWheel_btn3, R.id.balanceWheel_btn4, R.id.balanceWheel_btn5, R.id.balanceWheel_btn6, R.id.balanceWheel_btn7, R.id.balanceWheel_btn8};
-
-        for (int buttonId : buttonIds) {
-            int savedValue = getSavedValue(buttonId);
-            if (savedValue != -1) {
-                buttonValuesMap.put(buttonId, savedValue);
-            }
         }
     }
 }

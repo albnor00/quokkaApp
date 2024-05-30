@@ -42,9 +42,21 @@
         <activity android:name=".group.group_member_page" />
         <activity android:name=".group.group_viewMembers" />
         <activity android:name=".group.group_viewMembers_answers" />
+        <activity android:name=".group.group_viewMembers_dateList" />
         <activity android:name=".tasks.balance_wheel" />
         <activity android:name=".profile.ProfileActivity" />
         <activity android:name=".profile.SettingsActivity" />
+        <activity android:name=".template.templateMain" />
+        <activity android:name=".template.average" />
+        <activity android:name=".template.habit" />
+        <activity android:name=".template.target" />
+        <activity android:name=".template.habitTrackerWeek" />
+        <activity android:name=".template.habitTrackerDay" />
+        <activity android:name=".template.habitTrackerMonth" />
+        <activity android:name=".template.habitTrackerYear" />
+
+
+
 
     </application>
 

@@ -13,6 +13,7 @@ import com.example.quokka.group.group_admin_page;
 import com.example.quokka.group.group_main;
 import com.example.quokka.group.group_member_page;
 import com.example.quokka.profile.ProfileActivity;
+import com.example.quokka.template.templateMain;
 import com.example.quokka.ui.login.Login;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    LinearLayout logout, groupIcon;
+    LinearLayout logout, groupIcon,widget;
 
     LinearLayout profile;
     FirebaseUser user;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
         logout = findViewById(R.id.logout);
+        widget = findViewById(R.id.widget);
 
         groupIcon = findViewById(R.id.icon_group);
         profile = findViewById(R.id.profile);
@@ -71,6 +73,17 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        widget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), templateMain.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
     }
 
     private void checkUserRole() {

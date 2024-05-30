@@ -3,4 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purple">#8B00FD</color>
+    <color name="line_color">#FF000000</color>
+    <color name="stroke_color">#FF0000</color>
+    <color name="fill_color">#00FF00</color>
+
 </resources>
