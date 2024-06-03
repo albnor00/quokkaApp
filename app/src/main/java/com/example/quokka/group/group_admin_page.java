@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
@@ -27,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class group_admin_page extends AppCompatActivity {
     ImageView back;
-    Button deletebutton, viewMemebers;
+    AppCompatButton deletebutton, viewMemebers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

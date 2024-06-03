@@ -36,13 +36,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.WriteBatch;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class group_create extends AppCompatActivity {
     EditText editText_groupName, editText_dec;
-    Button button;
+    AppCompatButton button;
     ImageView back;
     String groupName, groupDescription;
 
@@ -52,7 +54,7 @@ public class group_create extends AppCompatActivity {
         setContentView(R.layout.activity_create_group);
 
         editText_groupName = findViewById(R.id.edit_text_group_name);
-        button = findViewById(R.id.btn_create_group);
+        button = findViewById(R.id.create_group);
         back = findViewById(R.id.image_back);
 
         button.setOnClickListener(new View.OnClickListener() {

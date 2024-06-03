@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background"
     tools:context=".MainActivity"
     >
 
@@ -44,22 +43,32 @@
 
 
             <!-- Button to create a new group -->
-            <Button
-                android:id="@+id/btn_create_group"
-                android:layout_width="250dp"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/create_group"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create Group"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center"/>
+                android:layout_below="@id/coach_name"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/btn_background_1"
+                android:onClick="Creategroup"
+                android:text="Create Group" />
 
             <!-- Button to join an existing group -->
-            <Button
-                android:id="@+id/btn_join_group"
-                android:layout_width="250dp"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/join_group"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Join Group"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center"/>
+                android:layout_below="@id/create_group"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/btn_background_1"
+                android:onClick="JoinGroup"
+                android:text="Join Group" />
 
             <!-- Button to view existing groups -->
         </LinearLayout>

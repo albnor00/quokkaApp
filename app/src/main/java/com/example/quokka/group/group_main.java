@@ -1,6 +1,7 @@
 package com.example.quokka.group;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,17 +24,15 @@ import com.google.firebase.auth.FirebaseUser;
 public class group_main extends AppCompatActivity {
 
     ImageView back_btn;
-    Button create_group;
-    Button join_group;
-
+    AppCompatButton create_group,join_group;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_main); // Set the layout XML file
         // Initialize any views or components here
         back_btn = findViewById(R.id.img_back);
-        create_group = findViewById(R.id.btn_create_group);
-        join_group = findViewById(R.id.btn_join_group);
+        create_group = findViewById(R.id.create_group);
+        join_group = findViewById(R.id.join_group);
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
