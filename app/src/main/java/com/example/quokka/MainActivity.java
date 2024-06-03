@@ -1,6 +1,7 @@
 package com.example.quokka;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import com.example.quokka.group.group_admin_page;
 import com.example.quokka.group.group_main;
 import com.example.quokka.group.group_member_page;
 import com.example.quokka.profile.ProfileActivity;
+import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.template.templateMain;
 import com.example.quokka.ui.login.Login;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,9 +26,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    LinearLayout logout, groupIcon,widget;
+    CardView logout, group,tasks,profile;
 
-    LinearLayout profile;
+    LinearLayout icon_logout,icon_group,icon_tasks,icon_profile;
+
     FirebaseUser user;
 
     @Override
@@ -34,11 +37,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
-        logout = findViewById(R.id.logout);
-        widget = findViewById(R.id.widget);
 
-        groupIcon = findViewById(R.id.icon_group);
+        icon_group = findViewById(R.id.icon_group);
+        icon_logout = findViewById(R.id.icon_logout);
+        icon_tasks = findViewById(R.id.icon_tasks);
+        icon_profile = findViewById(R.id.icon_profile);
+
+
+        logout = findViewById(R.id.logout);
+        tasks = findViewById(R.id.tasks);
+        group = findViewById(R.id.group);
         profile = findViewById(R.id.profile);
+
         user = auth.getCurrentUser();
 
         if (user == null) {
@@ -56,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        groupIcon.setOnClickListener(new View.OnClickListener() {
+        group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Check user role only when group icon is clicked
@@ -74,14 +84,55 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        widget.setOnClickListener(new View.OnClickListener() {
+        tasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), templateMain.class);
+                Intent intent = new Intent(getApplicationContext(), tasksMain.class);
                 startActivity(intent);
                 finish();
             }
         });
+
+
+// Listener for icons so you can press both card and icon
+
+        icon_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+        icon_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        icon_tasks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), tasksMain.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        icon_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             checkUserRole();
+            }
+        });
+
+
 
 
     }

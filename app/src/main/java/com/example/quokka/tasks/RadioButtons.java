@@ -40,7 +40,7 @@ public class RadioButtons extends View {
     private float innerRadiusRatio = 0.3F;
 
     //color for your slice
-    private int[] colors = new int[]{Color.rgb(139,0,253)};
+    private int[] colors = new int[]{Color.rgb(100, 0, 183)};
 
     private int mCenterX;
     private int mCenterY;

@@ -44,6 +44,7 @@
         <activity android:name=".group.group_viewMembers_answers" />
         <activity android:name=".group.group_viewMembers_dateList" />
         <activity android:name=".tasks.balance_wheel" />
+        <activity android:name=".tasks.tasksMain" />
         <activity android:name=".profile.ProfileActivity" />
         <activity android:name=".profile.SettingsActivity" />
         <activity android:name=".template.templateMain" />

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
@@ -22,11 +23,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class group_member_page extends AppCompatActivity {
     ImageView back;
-    Button Leavebutton;
+    AppCompatButton Leavebutton;
     TextView groupName;
 
     TextView coachName;
-    Button balanceWheel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +36,9 @@ public class group_member_page extends AppCompatActivity {
         // Initialize views
         back = findViewById(R.id.member_back);
         Leavebutton = findViewById(R.id.btn_leave_group);
-        balanceWheel = findViewById(R.id.btn_wheel);
+        //balanceWheel = findViewById(R.id.btn_wheel);
         groupName = findViewById(R.id.group_name);
         coachName = findViewById(R.id.coach_name);
-
-        // Set OnClickListener for balanceWheel button
-        balanceWheel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), balance_wheel.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         // Set OnClickListener for Leavebutton button
         Leavebutton.setOnClickListener(new View.OnClickListener() {

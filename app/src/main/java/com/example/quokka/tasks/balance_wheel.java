@@ -98,7 +98,7 @@ public class balance_wheel extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), group_member_page.class);
+                Intent intent = new Intent(getApplicationContext(), tasksMain.class);
                 startActivity(intent);
                 finish();
             }
@@ -108,7 +108,7 @@ public class balance_wheel extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), group_member_page.class);
+                Intent intent = new Intent(getApplicationContext(), tasksMain.class);
                 startActivity(intent);
 
 
@@ -126,35 +126,36 @@ public class balance_wheel extends AppCompatActivity {
                 // Handle click events for each slice position
                 switch (slicePosition) {
                     case 0:
-                        showSeekBarDialog(btn_Career.getId());
+                        showSeekBarDialog(btn_Career.getId(), "Why do you think your career is good or bad?");
+
                         break;
                     case 1:
-                        showSeekBarDialog(btn_Wellbeing.getId());
+                        showSeekBarDialog(btn_Wellbeing.getId(), "Why do you think your wellbeing is good or bad?");
                         break;
                     case 2:
-                        showSeekBarDialog(btn_CloseRelations.getId());
+                        showSeekBarDialog(btn_CloseRelations.getId(), "Why do you think your close relationships is good or bad?");
                         break;
                     case 3:
-                        showSeekBarDialog(btn_Relations.getId());
+                        showSeekBarDialog(btn_Relations.getId(), "Why do you think your relations is good or bad?");
                         break;
                     case 4:
-                        showSeekBarDialog(btn_Development.getId());
+                        showSeekBarDialog(btn_Development.getId(), "Why do you think your development is good or bad?");
                         break;
                     case 5:
-                        showSeekBarDialog(btn_Environment.getId());
+                        showSeekBarDialog(btn_Environment.getId(), "Why do you think your environment is good or bad?");
                         break;
                     case 6:
-                        showSeekBarDialog(btn_Rest.getId());
+                        showSeekBarDialog(btn_Rest.getId(), "Why do you think your rest is good or bad?");
                         break;
                     case 7:
-                        showSeekBarDialog(btn_Economy.getId());
+                        showSeekBarDialog(btn_Economy.getId(), "Why do you think your economy is good or bad?");
                         break;
                 }
             }
         });
     }
 
-    private void showSeekBarDialog(final int buttonId) {
+    private void showSeekBarDialog(final int buttonId,String hint) {
         // Initialize dialog
         seekBarDialog = new Dialog(balance_wheel.this);
         seekBarDialog.setContentView(R.layout.activity_balance_wheel_seekbar);
@@ -168,9 +169,15 @@ public class balance_wheel extends AppCompatActivity {
         seekBarDialog.getWindow().setAttributes(layoutParams);
         EditText addComment = seekBarDialog.findViewById(R.id.addComment);
 
+        addComment.setHint(hint);
+
+
+
         // Find views inside the dialog
         SeekBar seekBar = seekBarDialog.findViewById(R.id.seekBar);
         final TextView valueTextView = seekBarDialog.findViewById(R.id.valueTextView);
+
+
 
         // Get the saved value from SharedPreferences
         int savedValue = getSavedValue(buttonId);
