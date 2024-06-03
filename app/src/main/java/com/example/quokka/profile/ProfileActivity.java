@@ -3,6 +3,7 @@ package com.example.quokka.profile;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,9 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.tasks.balance_wheel;
+import com.example.quokka.tasks.tasksMain;
+import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -57,7 +63,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         imageView2 = findViewById(R.id.imageView2);
         selectImageButton = findViewById(R.id.select_picture);
-        back = findViewById(R.id.profile_back);
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         storage = FirebaseStorage.getInstance();
@@ -81,15 +86,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  back to MainActivity
-                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
 
 
@@ -114,6 +110,28 @@ public class ProfileActivity extends AppCompatActivity {
         });
         // Load image if already uploaded
         loadImageFromFirebaseStorage();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home_bottom) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else if (item.getItemId() == R.id.profile_bottom) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                } else if (item.getItemId() == R.id.tasks_bottom) {
+                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
+                } else if (item.getItemId() == R.id.group_bottom) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    MainActivity.checkUserRole(user,ProfileActivity.this);
+                } else if (item.getItemId() == R.id.logout_bottom) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+                return true; // Return true to indicate that the item selection has been handled
+            }
+        });
     }
 
 

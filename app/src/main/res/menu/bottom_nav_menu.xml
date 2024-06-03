@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Home"
+        android:icon="@drawable/home"/>
+    <item
+        android:id="@+id/profile_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Profile"
+        android:icon="@drawable/account"/>
+    <item
+        android:id="@+id/tasks_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Tasks"
+        android:icon="@drawable/baseline_widgets_24"/>
+    <item
+        android:id="@+id/group_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Group"
+        android:icon="@drawable/baseline_group_24"/>
+    <item
+        android:id="@+id/logout_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Logout"
+        android:icon="@drawable/baseline_exit_to_app_24"/>
+</menu>

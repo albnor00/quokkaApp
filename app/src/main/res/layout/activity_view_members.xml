@@ -1,44 +1,55 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
-        android:id="@+id/memberListContainer"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- Your dynamically added TextViews and ImageViews will go here -->
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_marginTop="20dp"
+            android:id="@+id/memberListContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/membersList_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_arrow_back_ios_new_24"
-                android:layout_gravity="start"
-                android:layout_marginStart="20dp" />
+            <!-- Your dynamically added TextViews and ImageViews will go here -->
 
-            <TextView
-                android:layout_marginRight="30dp"
-                android:id="@+id/view_members_text"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                android:text="Members list"
-                android:gravity="center"
-                android:contentDescription="Button to view members" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/membersList_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/baseline_arrow_back_ios_new_24"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="20dp" />
+
+                <TextView
+                    android:layout_marginRight="30dp"
+                    android:id="@+id/view_members_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    android:text="Members list"
+                    android:gravity="center"
+                    android:contentDescription="Button to view members" />
+            </LinearLayout>
+
+            <!-- Add content descriptions to other buttons as needed -->
         </LinearLayout>
+    </ScrollView>
 
-        <!-- Add content descriptions to other buttons as needed -->
-
-    </LinearLayout>
-
-</ScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu"/>
+</RelativeLayout>

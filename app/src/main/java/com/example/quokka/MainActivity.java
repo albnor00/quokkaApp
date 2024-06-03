@@ -3,6 +3,7 @@ package com.example.quokka;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Check user role only when group icon is clicked
-                checkUserRole();
+                checkUserRole(user,MainActivity.this);
             }
         });
 
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         icon_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             checkUserRole();
+             checkUserRole(user,MainActivity.this);
             }
         });
 
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void checkUserRole() {
+    public static void checkUserRole(FirebaseUser user, Context context) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = user.getUid();
 
@@ -147,9 +148,8 @@ public class MainActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        Intent intent = new Intent(getApplicationContext(), group_admin_page.class);
-                        startActivity(intent);
-                        finish();
+                        Intent intent = new Intent(context, group_admin_page.class);
+                        context.startActivity(intent);
                     } else {
                         // Check if the user is a member
                         db.collection("users")
@@ -158,26 +158,25 @@ public class MainActivity extends AppCompatActivity {
                                 .addOnSuccessListener(documentSnapshot -> {
                                     String role = documentSnapshot.getString("role");
                                     if (role != null && role.equals("Coachee/(Member)")) {
-                                        Intent intent = new Intent(getApplicationContext(), group_member_page.class);
-                                        startActivity(intent);
-                                        finish();
+                                        Intent intent = new Intent(context, group_member_page.class);
+                                        context.startActivity(intent);
                                     } else {
                                         // If the user is neither admin nor member
-                                        Intent intent = new Intent(getApplicationContext(), group_main.class);
-                                        startActivity(intent);
-                                        finish();
+                                        Intent intent = new Intent(context, group_main.class);
+                                        context.startActivity(intent);
                                     }
                                 })
                                 .addOnFailureListener(e -> {
                                     // Handle failure
-                                    Toast.makeText(MainActivity.this, "Failed to check user role.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Failed to check user role.", Toast.LENGTH_SHORT).show();
                                 });
                     }
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure
-                    Toast.makeText(MainActivity.this, "Failed to check user role.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Failed to check user role.", Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
 
