@@ -1,7 +1,6 @@
-package com.example.quokka.goal_progress_tracking.average_task_template;
+package com.example.quokka.goal_progress_tracking.target_task_template;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,12 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.choose_task_template;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,12 +35,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-public class create_new_average_task extends AppCompatActivity {
-
-    private EditText editTextGoal;
-    private TextView textViewTimePeriod;
-    private Switch switchGoalMoreOrLess;
-    private TextView DateTextView;
+public class create_new_target_task extends AppCompatActivity {
+    private EditText editStartTextGoal;
+    private EditText editEndTextGoal;
+    private TextView endDateTextView;
+    private TextView startDateTextView;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     private String taskId;
@@ -50,20 +47,21 @@ public class create_new_average_task extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_average_task_configuration);
+        setContentView(R.layout.activity_target_task_configuration);
 
         // Initialize views
         ImageView back_btn = findViewById(R.id.img_back);
         ImageView finish_btn = findViewById(R.id.img_check_mark);
         EditText name_card = findViewById(R.id.edit_task_name);
         EditText description_card = findViewById(R.id.edit_task_description);
-        CardView time_period = findViewById(R.id.edit_timeperiod);
-        CardView start_date = findViewById(R.id.edit_startdate);
+        CardView start_date = findViewById(R.id.edit_start_date);
+        CardView end_date = findViewById(R.id.edit_end_date);
 
-        editTextGoal = findViewById(R.id.editTextGoal);
-        switchGoalMoreOrLess = findViewById(R.id.switchGoalMoreOrLess);
-        textViewTimePeriod = findViewById(R.id.textView2);
-        DateTextView = findViewById(R.id.textView3);
+        editStartTextGoal = findViewById(R.id.editStartTextGoal);
+        editEndTextGoal = findViewById(R.id.editEndTextGoal);
+
+        startDateTextView = findViewById(R.id.startDateTextView);
+        endDateTextView = findViewById(R.id.endDateTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -71,7 +69,7 @@ public class create_new_average_task extends AppCompatActivity {
 
         // Set today's date in DateTextView
         String todayDate = dateFormat.format(calendar.getTime());
-        DateTextView.setText(todayDate);
+        startDateTextView.setText(todayDate);
 
         // Handle back button click
         back_btn.setOnClickListener(new View.OnClickListener() {
@@ -89,41 +87,43 @@ public class create_new_average_task extends AppCompatActivity {
             public void onClick(View v) {
                 String taskName = name_card.getText().toString();
                 String taskDescription = description_card.getText().toString();
-                String goal = editTextGoal.getText().toString();
-                String timePeriod = textViewTimePeriod.getText().toString();
-                String startDate = DateTextView.getText().toString();
-                boolean isGoalMoreOrLess = switchGoalMoreOrLess.isChecked();
+                String startGoal = editStartTextGoal.getText().toString();
+                String endGoal = editEndTextGoal.getText().toString();
+                String startDate = startDateTextView.getText().toString();
+                String endDate = endDateTextView.getText().toString();
 
                 // Save task details to Firestore
-                saveTaskToFirestore(taskName, goal, timePeriod, startDate, isGoalMoreOrLess, taskDescription);
+                saveTaskToFirestore(taskName, taskDescription, startGoal, endGoal, startDate, endDate);
 
                 // Pass task details back to Goal_non_empty_page
-                Intent intent = new Intent(create_new_average_task.this, Goal_non_empty_page.class);
+                Intent intent = new Intent(create_new_target_task.this, Goal_non_empty_page.class);
                 intent.putExtra("taskName", taskName);
-                intent.putExtra("goal", goal);
-                intent.putExtra("timePeriod", timePeriod);
-                intent.putExtra("startDate", startDate);
-                intent.putExtra("taskId", taskId);
                 intent.putExtra("taskDescription", taskDescription);
+                intent.putExtra("startGoal", startGoal);
+                intent.putExtra("endGoal", endGoal);
+                intent.putExtra("startDate", startDate);
+                intent.putExtra("endDate", endDate);
+                intent.putExtra("taskId", taskId);
                 startActivity(intent);
                 finish();
             }
         });
 
         // Handle card click to show numerical keyboard
-        CardView goalCard = findViewById(R.id.edit_goal);
-        goalCard.setOnClickListener(new View.OnClickListener() {
+        CardView startGoalCard = findViewById(R.id.edit_start_goal);
+        startGoalCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNumericKeyboard();
+                showNumericKeyboardStartGoal();
             }
         });
 
-        // Handle time period options dialog
-        time_period.setOnClickListener(new View.OnClickListener() {
+        // Handle card click to show numerical keyboard
+        CardView endGoalCard = findViewById(R.id.edit_end_goal);
+        endGoalCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePeriodOptionsDialog();
+                showNumericKeyboardEndGoal();
             }
         });
 
@@ -131,46 +131,41 @@ public class create_new_average_task extends AppCompatActivity {
         start_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog();
+                showDatePickerDialogStartDate();
             }
         });
 
-        // Setup Switch listener
-        switchGoalMoreOrLess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // Handle date picker dialog
+        end_date.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Handle switch state change
+            public void onClick(View v) {
+                showDatePickerDialogEndDate();
             }
         });
+
+
+
+
     }
 
-    // Method to show numerical keyboard for editTextGoal
-    private void showNumericKeyboard() {
-        editTextGoal.requestFocus();
+    private void showNumericKeyboardStartGoal() {
+        editStartTextGoal.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) {
-            imm.showSoftInput(editTextGoal, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(editStartTextGoal, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
-    // Method to show time period options dialog
-    private void showTimePeriodOptionsDialog() {
-        final CharSequence[] options = {"Per Day", "Per Week", "Per Month", "Per Year"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Time Period");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String selectedOption = options[which].toString();
-                textViewTimePeriod.setText(selectedOption); // Update the TextView with the selected option
-            }
-        });
-        builder.show();
+    private void showNumericKeyboardEndGoal() {
+        editEndTextGoal.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(editEndTextGoal, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     // Method to show date picker dialog
-    private void showDatePickerDialog() {
+    private void showDatePickerDialogStartDate() {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 new DatePickerDialog.OnDateSetListener() {
@@ -185,7 +180,7 @@ public class create_new_average_task extends AppCompatActivity {
                         String formattedDate = dateFormat.format(calendar.getTime());
 
                         // Update DateTextView with the formatted date
-                        DateTextView.setText(formattedDate);
+                        startDateTextView.setText(formattedDate);
                     }
                 },
                 calendar.get(Calendar.YEAR), // Initial year
@@ -197,7 +192,35 @@ public class create_new_average_task extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void saveTaskToFirestore(String taskName, String goal, String timePeriod, String startDate, boolean isGoalMoreOrLess, String taskDescription) {
+    // Method to show date picker dialog
+    private void showDatePickerDialogEndDate() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        // Set selected date to calendar
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        // Format the selected date
+                        String formattedDate = dateFormat.format(calendar.getTime());
+
+                        // Update DateTextView with the formatted date
+                        endDateTextView.setText(formattedDate);
+                    }
+                },
+                calendar.get(Calendar.YEAR), // Initial year
+                calendar.get(Calendar.MONTH), // Initial month
+                calendar.get(Calendar.DAY_OF_MONTH) // Initial day
+        );
+
+        // Show the date picker dialog
+        datePickerDialog.show();
+    }
+
+    private void saveTaskToFirestore(String taskName, String taskDescription, String startGoal, String endGoal, String startDate, String endDate) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
@@ -209,11 +232,12 @@ public class create_new_average_task extends AppCompatActivity {
         Map<String, Object> task = new HashMap<>();
         task.put("taskId", taskId);
         task.put("name", taskName);
-        task.put("goal", goal);
-        task.put("timePeriod", timePeriod);
-        task.put("startDate", startDate);
-        task.put("goalMoreOrLess", isGoalMoreOrLess);
         task.put("taskDescription", taskDescription);
+        task.put("startGoal", startGoal);
+        task.put("endGoal", endGoal);
+        task.put("startDate", startDate);
+        task.put("endDate", endDate);
+
 
         // Access the 'averageTasks' subcollection under the user's 'Goal' collection
         CollectionReference averageTasksRef = db.collection("users").document(userId)
@@ -227,7 +251,7 @@ public class create_new_average_task extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         // Task successfully saved
                         Log.d("Firestore", "Task successfully saved with ID: " + taskId);
-                        Toast.makeText(create_new_average_task.this, "Task saved successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(create_new_target_task.this, "Task saved successfully!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -235,10 +259,11 @@ public class create_new_average_task extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         // Error saving task
                         Log.e("Firestore", "Error saving task", e);
-                        Toast.makeText(create_new_average_task.this, "Failed to save task. Please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(create_new_target_task.this, "Failed to save task. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-}
 
+
+}

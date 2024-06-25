@@ -23,62 +23,160 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp" />
 
+    <TextView
+        android:id="@+id/text_task_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_task_name_at_top"
+        android:text="Task description"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/text_task_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_task_description"
+        android:text="Task Goal"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:id="@+id/img_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_menu_24" />
+
+    <!-- Average Section -->
+    <TextView
+        android:id="@+id/text_average_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:text="Average"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text_average_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_average_label"
+        android:layout_centerHorizontal="true"
+        android:text="Over the last 7 days"
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/text_average_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:layout_above="@id/bar_chart"
-        android:text="Average"
+        android:layout_below="@id/text_average_description"
+        android:layout_marginTop="2dp"
+        android:text="0"
         android:textSize="24sp" />
 
+    <!-- Success Rate Section -->
+    <TextView
+        android:id="@+id/text_success_rate_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="300dp"
+        android:text="Success rate"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/text_success_rate_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_success_rate_label"
+        android:layout_alignEnd="@id/text_success_rate_label"
+        android:layout_marginTop="2dp"
+        android:text="Over the last 7 days"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/text_success_rate_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_success_rate_description"
+        android:layout_alignEnd="@id/text_success_rate_label"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="2dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+    <!-- Streak Section -->
+    <TextView
+        android:id="@+id/text_streak_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="300dp"
+        android:text="Current Streak"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/text_streak_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_streak_label"
+        android:layout_alignStart="@id/text_streak_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="20dp"
+        android:text="Days in a row"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/text_streak_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_streak_description"
+        android:layout_alignStart="@id/text_streak_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="40dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+    <!-- Spinner below Bar Chart -->
+    <Spinner
+        android:id="@+id/spinner_time_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_streak_value"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true" />
+
+
+    <!-- Bar Chart -->
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar_chart"
         android:layout_width="match_parent"
+        android:layout_below="@id/spinner_time_period"
         android:layout_height="300dp"
-        android:layout_above="@id/ll_add_log"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="123dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp" />
 
+    <!-- Legend Layout -->
     <LinearLayout
-        android:id="@+id/ll_add_log"
+        android:id="@+id/legendLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:padding="16dp"
-        android:layout_above="@id/spinner_filter">
-
-        <EditText
-            android:id="@+id/edit_text_log_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Enter Log Value"
-            android:inputType="numberDecimal"
-            android:layout_weight="1"
-            android:padding="8dp" />
-
-        <Button
-            android:id="@+id/button_add_log"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Log"
-            android:onClick="addLog"
-            android:padding="8dp" />
-
-    </LinearLayout>
-
-    <!-- Spinner for Filter -->
-    <Spinner
-        android:id="@+id/spinner_filter"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp" />
+        android:gravity="center"
+        android:layout_below="@id/bar_chart"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp" />
 
 </RelativeLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="time_period_array">
+        <item>7 days</item>
+        <item>14 days</item>
+        <item>30 days</item>
+    </string-array>
+</resources>

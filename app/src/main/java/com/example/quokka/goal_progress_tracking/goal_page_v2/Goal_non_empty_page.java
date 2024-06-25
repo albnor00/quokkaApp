@@ -2,10 +2,13 @@ package com.example.quokka.goal_progress_tracking.goal_page_v2;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import com.example.quokka.MainActivity;
 import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.Task_classes.TaskAdapter;
 import com.example.quokka.goal_progress_tracking.Task_classes.Task;
+import com.example.quokka.goal_progress_tracking.average_task_template.average_task_page;
 import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_setup.Question1;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,7 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Goal_non_empty_page extends AppCompatActivity {
+public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapter.OnTaskClickListener{
     private TextView currentDateTextView;
     private ImageButton previousDayButton;
     private ImageButton nextDayButton;
@@ -51,6 +55,17 @@ public class Goal_non_empty_page extends AppCompatActivity {
     private SimpleDateFormat dateFormat;
     private TextView goalTitleTextView;
     private TaskAdapter taskAdapter;
+    private List<Task> taskList;
+
+    //Intent variables
+    private String taskName;
+    private String taskDescription;
+    private String goal;
+    private String timePeriod;
+    private String startDate;
+    private int taskPosition;
+    private String taskId;
+
 
 
     @Override
@@ -64,6 +79,8 @@ public class Goal_non_empty_page extends AppCompatActivity {
         // Find the TextView inside the included layout
         goalTitleTextView = overview_box.findViewById(R.id.textView);
 
+
+
         // Initialize other views
         currentDateTextView = findViewById(R.id.text_current_date);
         previousDayButton = findViewById(R.id.btn_previous_day);
@@ -75,31 +92,35 @@ public class Goal_non_empty_page extends AppCompatActivity {
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("d MMMM", Locale.getDefault());
 
+        // Initialize task list and adapter
+        taskList = new ArrayList<>();
+        taskAdapter = new TaskAdapter(taskList);
+
+        // Initialize RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_tasks);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(taskAdapter);
+
+        // Set click listener for tasks
+        taskAdapter.setOnTaskClickListener(this);
+
+        // Load tasks from Firestore
+        loadTasksFromFirestore();
+
+        // Notify the adapter of the data change
+        taskAdapter.notifyDataSetChanged();
+
         // Get task details from intent
         Intent intent = getIntent();
         if (intent != null) {
-            String taskName = intent.getStringExtra("taskName");
-            String goal = intent.getStringExtra("goal");
-            String timePeriod = intent.getStringExtra("timePeriod");
-            String startDate = intent.getStringExtra("startDate");
-
-            // Create a new task with the received details
-            Task newTask = new Task(taskName, goal, timePeriod, startDate);
-
-            // Add the new task to the taskList
-            List<Task> taskList = new ArrayList<>();
-            taskList.add(newTask);
-
-            // Initialize RecyclerView
-            RecyclerView recyclerView = findViewById(R.id.recycler_view_tasks);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            taskAdapter = new TaskAdapter(taskList); // taskList is an ArrayList<Task>
-            recyclerView.setAdapter(taskAdapter);
-
-            // Notify the adapter of the data change
-            taskAdapter.notifyDataSetChanged();
+            taskId = intent.getStringExtra("taskId");
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            goal = intent.getStringExtra("goal");
+            timePeriod = intent.getStringExtra("timePeriod");
+            startDate = intent.getStringExtra("startDate");
+            taskPosition = intent.getIntExtra("taskPosition", -1);
         }
-
 
         // Display User Goal Information
         fetchAndDisplayUserData();
@@ -147,7 +168,7 @@ public class Goal_non_empty_page extends AppCompatActivity {
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), create_new_average_task.class);
+                Intent intent = new Intent(getApplicationContext(), choose_task_template.class);
                 startActivity(intent);
                 finish();
             }
@@ -159,6 +180,67 @@ public class Goal_non_empty_page extends AppCompatActivity {
         int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         String dateText = dateFormat.format(calendar.getTime());
         currentDateTextView.setText(dateText);
+    }
+
+
+    // Click listener implementation
+    @Override
+    public void onTaskClick(int position) {
+        // Get the task at the clicked position
+        Task clickedTask = taskList.get(position);
+
+        // Create an intent to start the average_task_page activity
+        Intent intent = new Intent(getApplicationContext(), average_task_page.class);
+
+        // Pass necessary data to the average_task_page activity
+        intent.putExtra("taskId", clickedTask.getTaskId()); // Pass taskId
+        intent.putExtra("taskPosition", position);
+        intent.putExtra("taskName", clickedTask.getName());
+        intent.putExtra("taskDescription", clickedTask.getDescription());
+        intent.putExtra("goal", clickedTask.getGoal());
+        intent.putExtra("timePeriod", clickedTask.getTimePeriod());
+        intent.putExtra("startDate", clickedTask.getStartDate());
+
+        // Start the activity
+        startActivity(intent);
+    }
+
+
+    // Method to load tasks from Firestore
+    private void loadTasksFromFirestore() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            String userId = auth.getCurrentUser().getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            // Query tasks from Firestore
+            db.collection("users").document(userId)
+                    .collection("Goal").document("averageTasks").collection("tasks")
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String taskName = documentSnapshot.getString("name");
+                            String taskDescription = documentSnapshot.getString("taskDescription");
+                            String goal = documentSnapshot.getString("goal");
+                            String timePeriod = documentSnapshot.getString("timePeriod");
+                            String startDate = documentSnapshot.getString("startDate");
+                            String taskId = documentSnapshot.getString("taskId"); // Retrieve the taskId
+
+                            // Create a Task object from Firestore data
+                            Task task = new Task(taskName, taskDescription, goal, timePeriod, startDate, taskId); // Ensure Task class has taskId field
+
+                            // Add the task to the list
+                            taskList.add(task);
+                        }
+
+                        // Notify the adapter of the data change
+                        taskAdapter.notifyDataSetChanged();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle failure
+                        Toast.makeText(this, "Failed to load tasks from Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     // Method to show date picker dialog

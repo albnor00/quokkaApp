@@ -54,8 +54,8 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/edit_name" />
 
-    <include layout="@layout/item_goal_button_average_template"
-        android:id="@+id/edit_goal"
+    <include layout="@layout/item_start_value"
+        android:id="@+id/edit_start_goal"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
@@ -64,59 +64,35 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/edit_description" />
 
-    <TextView
-        android:id="@+id/textViewOrMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_goal"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:text="''or more''"
-        android:textSize="18sp" />
-
-    <Switch
-        android:id="@+id/switchGoalMoreOrLess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_goal"
-        android:layout_marginTop="10dp"
-        android:layout_toStartOf="@+id/textViewOrLess"
-        android:layout_toEndOf="@+id/textViewOrMore"
-        android:textOff=""
-        android:textOn=""
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-    <TextView
-        android:id="@+id/textViewOrLess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_goal"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="245dp"
-        android:text="''or less''"
-        android:textSize="18sp" />
-
-    <include layout="@layout/item_timeperiod_button_average_template"
-        android:id="@+id/edit_timeperiod"
+    <include layout="@layout/item_end_value"
+        android:id="@+id/edit_end_goal"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/switchGoalMoreOrLess" />
+        android:layout_below="@id/edit_start_goal" />
 
-    <include layout="@layout/item_startdate_button_average_template"
-        android:id="@+id/edit_startdate"
+    <include layout="@layout/item_start_date"
+        android:id="@+id/edit_start_date"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_timeperiod" />
+        android:layout_below="@id/edit_end_goal" />
+
+    <include layout="@layout/item_end_date"
+        android:id="@+id/edit_end_date"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/edit_start_date" />
 
     <include layout="@layout/item_reminder_button"
         android:id="@+id/edit_reminder"
@@ -126,6 +102,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_startdate" />
+        android:layout_below="@id/edit_end_date" />
 
 </RelativeLayout>
