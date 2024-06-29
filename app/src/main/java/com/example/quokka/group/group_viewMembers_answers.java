@@ -209,7 +209,7 @@ public class group_viewMembers_answers extends AppCompatActivity {
         textView.setText(text);
         textView.setTextSize(16);
         textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(Color.BLACK); // Change text color
+        textView.setTextColor(Color.rgb(128, 212, 60)); // Change text color
         textView.setTypeface(Typeface.DEFAULT_BOLD); // Make text bold
         textView.setPadding(16, 30, 16, 30);
 
@@ -249,9 +249,12 @@ public class group_viewMembers_answers extends AppCompatActivity {
                             // Create a popup view
                             View popupView = getLayoutInflater().inflate(R.layout.activity_view_comment_popup, null);
 
+
                             // Find the TextView in the popup layout
                             TextView popupMessageTextView = popupView.findViewById(R.id.popup_message);
                             TextView popupMessageTextViewHeader = popupView.findViewById(R.id.header_popup);
+
+
 
                             // Set header text
                             popupMessageTextViewHeader.setText("Additional comments on " + field.toLowerCase());
