@@ -215,7 +215,7 @@ public class average_task_settings_page extends AppCompatActivity {
         String userId = auth.getCurrentUser().getUid();
 
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -314,7 +314,7 @@ public class average_task_settings_page extends AppCompatActivity {
 
         // Update the task document in Firestore
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId)
                 .update(updatedTask)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -367,7 +367,7 @@ public class average_task_settings_page extends AppCompatActivity {
 
         // Update the task document in Firestore
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -1,4 +1,4 @@
-package com.example.quokka.goal_progress_tracking.average_task_template;
+package com.example.quokka.goal_progress_tracking.target_task_template;
 
 import static android.content.ContentValues.TAG;
 
@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -21,14 +20,11 @@ import com.example.quokka.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Date;
-
-public class edit_existing_average_log extends AppCompatActivity {
-
+public class edit_existing_target_log extends AppCompatActivity {
     private EditText numericInput;
     private EditText notesInput;
     private ImageView deleteLog;
-    private average_log log;
+    private target_log log;
     private int position;
     private String logId;
 
@@ -43,7 +39,7 @@ public class edit_existing_average_log extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_existing_average_log);
+        setContentView(R.layout.activity_edit_existing_target_log);
 
         // Initialize views
         ImageView backButton = findViewById(R.id.img_back);
@@ -135,13 +131,13 @@ public class edit_existing_average_log extends AppCompatActivity {
         Log.d(TAG, "Fetching log details for logId: " + logId + ", taskId: " + taskId);
 
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("average_tasks")
+                .collection("Goal").document("targetTasks").collection("target_tasks")
                 .document(taskId).collection("loggedLogs")
                 .document(logId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        log = documentSnapshot.toObject(average_log.class);
+                        log = documentSnapshot.toObject(target_log.class);
                         if (log != null) {
                             Log.d(TAG, "Log details fetched successfully: " + log.toString());
                             numericInput.setText(String.valueOf(log.getLog()));
@@ -162,7 +158,7 @@ public class edit_existing_average_log extends AppCompatActivity {
         String notes = notesInput.getText().toString().trim();
 
         // Create a new log object with the updated value and note
-        average_log updatedLog = new average_log(logId, numericValue, notes, log.getDate());
+        target_log updatedLog = new target_log(logId, numericValue, notes, log.getDate());
 
         // Update log in Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -170,7 +166,7 @@ public class edit_existing_average_log extends AppCompatActivity {
         String userId = auth.getCurrentUser().getUid();
 
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("average_tasks")
+                .collection("Goal").document("targetTasks").collection("target_tasks")
                 .document(taskId).collection("loggedLogs")
                 .document(logId)
                 .set(updatedLog)
@@ -195,7 +191,7 @@ public class edit_existing_average_log extends AppCompatActivity {
         String userId = auth.getCurrentUser().getUid();
 
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("average_tasks")
+                .collection("Goal").document("targetTasks").collection("target_tasks")
                 .document(taskId).collection("loggedLogs")
                 .document(logId)
                 .delete()

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_arrow_back_ios_new_24" />
+
+    <TextView
+        android:id="@+id/text_task_name_at_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Name"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/text_task_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_task_name_at_top"
+        android:text="Task description"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/text_task_startGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_task_description"
+        android:text="Task Start Goal"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/text_task_endGoal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_task_startGoal"
+        android:text="Task End Goal"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <ImageView
+        android:id="@+id/img_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_menu_24" />
+
+    <!-- Average Section -->
+    <TextView
+        android:id="@+id/text_average_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:text="Average:"
+        android:textSize="24sp" />
+
+
+
+    <TextView
+        android:id="@+id/text_average_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/text_average_label"
+        android:layout_marginTop="2dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+    <!-- Success Rate Section -->
+    <TextView
+        android:id="@+id/text_max_value_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="300dp"
+        android:text="Max value:"
+        android:textSize="15sp" />
+
+
+    <TextView
+        android:id="@+id/text_max_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_max_value_label"
+        android:layout_alignEnd="@id/text_max_value_label"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="2dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+    <!-- Streak Section -->
+    <TextView
+        android:id="@+id/text_min_value_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="300dp"
+        android:text="Min value:"
+        android:textSize="15sp" />
+
+
+    <TextView
+        android:id="@+id/text_min_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_min_value_label"
+        android:layout_alignStart="@id/text_min_value_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="20dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+
+    <!-- Bar Chart -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_chart"
+        android:layout_width="match_parent"
+        android:layout_below="@id/text_max_value"
+        android:layout_height="300dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp" />
+
+    <!-- Legend Layout -->
+    <LinearLayout
+        android:id="@+id/legendLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_below="@id/line_chart"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp" />
+
+</RelativeLayout>

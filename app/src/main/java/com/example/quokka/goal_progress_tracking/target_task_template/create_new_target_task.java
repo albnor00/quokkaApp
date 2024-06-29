@@ -28,14 +28,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 public class create_new_target_task extends AppCompatActivity {
+    private EditText name_card;
+    private EditText description_card;
     private EditText editStartTextGoal;
     private EditText editEndTextGoal;
     private TextView endDateTextView;
@@ -52,8 +56,8 @@ public class create_new_target_task extends AppCompatActivity {
         // Initialize views
         ImageView back_btn = findViewById(R.id.img_back);
         ImageView finish_btn = findViewById(R.id.img_check_mark);
-        EditText name_card = findViewById(R.id.edit_task_name);
-        EditText description_card = findViewById(R.id.edit_task_description);
+        name_card = findViewById(R.id.edit_task_name);
+        description_card = findViewById(R.id.edit_task_description);
         CardView start_date = findViewById(R.id.edit_start_date);
         CardView end_date = findViewById(R.id.edit_end_date);
 
@@ -71,6 +75,14 @@ public class create_new_target_task extends AppCompatActivity {
         String todayDate = dateFormat.format(calendar.getTime());
         startDateTextView.setText(todayDate);
 
+        // Calculate and set the end date (7 days from start date)
+        calendar.add(Calendar.DAY_OF_YEAR, 7);
+        String endDate = dateFormat.format(calendar.getTime());
+        endDateTextView.setText(endDate);
+
+        // Reset calendar to current date for further use
+        calendar = Calendar.getInstance();
+
         // Handle back button click
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,27 +97,31 @@ public class create_new_target_task extends AppCompatActivity {
         finish_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String taskName = name_card.getText().toString();
-                String taskDescription = description_card.getText().toString();
-                String startGoal = editStartTextGoal.getText().toString();
-                String endGoal = editEndTextGoal.getText().toString();
-                String startDate = startDateTextView.getText().toString();
-                String endDate = endDateTextView.getText().toString();
+                if(isInputValid()) {
+                    String taskName = name_card.getText().toString();
+                    String taskDescription = description_card.getText().toString();
+                    String startGoal = editStartTextGoal.getText().toString();
+                    String endGoal = editEndTextGoal.getText().toString();
+                    String startDate = startDateTextView.getText().toString();
+                    String endDate = endDateTextView.getText().toString();
 
-                // Save task details to Firestore
-                saveTaskToFirestore(taskName, taskDescription, startGoal, endGoal, startDate, endDate);
+                    // Save task details to Firestore
+                    saveTaskToFirestore(taskName, taskDescription, startGoal, endGoal, startDate, endDate);
 
-                // Pass task details back to Goal_non_empty_page
-                Intent intent = new Intent(create_new_target_task.this, Goal_non_empty_page.class);
-                intent.putExtra("taskName", taskName);
-                intent.putExtra("taskDescription", taskDescription);
-                intent.putExtra("startGoal", startGoal);
-                intent.putExtra("endGoal", endGoal);
-                intent.putExtra("startDate", startDate);
-                intent.putExtra("endDate", endDate);
-                intent.putExtra("taskId", taskId);
-                startActivity(intent);
-                finish();
+                    // Pass task details back to Goal_non_empty_page
+                    Intent intent = new Intent(create_new_target_task.this, Goal_non_empty_page.class);
+                    intent.putExtra("taskName", taskName);
+                    intent.putExtra("taskDescription", taskDescription);
+                    intent.putExtra("startGoal", startGoal);
+                    intent.putExtra("endGoal", endGoal);
+                    intent.putExtra("startDate", startDate);
+                    intent.putExtra("endDate", endDate);
+                    intent.putExtra("taskId", taskId);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(create_new_target_task.this, "Please enter task name and goal", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -241,7 +257,7 @@ public class create_new_target_task extends AppCompatActivity {
 
         // Access the 'averageTasks' subcollection under the user's 'Goal' collection
         CollectionReference averageTasksRef = db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks");
+                .collection("Goal").document("targetTasks").collection("target_tasks");
 
         // Add the task document to the 'averageTasks' subcollection with the generated ID
         averageTasksRef.document(taskId)
@@ -264,6 +280,46 @@ public class create_new_target_task extends AppCompatActivity {
                 });
     }
 
+    private boolean isInputValid() {
+        String taskName = name_card.getText().toString().trim();
+        String taskDescription = description_card.getText().toString().trim();
+        String startGoal = editStartTextGoal.getText().toString().trim();
+        String endGoal = editEndTextGoal.getText().toString().trim();
+        String startDate = startDateTextView.getText().toString().trim();
+        String endDate = endDateTextView.getText().toString().trim();
 
+        // Check for empty fields
+        if (taskName.isEmpty() || taskDescription.isEmpty() || startGoal.isEmpty() || endGoal.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
+            return false;
+        }
+
+        // Check for numeric goals
+        try {
+            float startGoalValue = Float.parseFloat(startGoal);
+            float endGoalValue = Float.parseFloat(endGoal);
+            if (startGoalValue > endGoalValue) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            // Handle invalid numeric input
+            return false;
+        }
+
+        // Check for valid date range
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d.M.yyyy", Locale.getDefault());
+        try {
+            Date startDateParsed = dateFormat.parse(startDate);
+            Date endDateParsed = dateFormat.parse(endDate);
+
+            if (startDateParsed != null && endDateParsed != null && startDateParsed.after(endDateParsed)) {
+                return false;
+            }
+        } catch (ParseException e) {
+            // Handle parsing error, invalid date format
+            return false;
+        }
+
+        return true;
+    }
 
 }

@@ -1,11 +1,9 @@
-package com.example.quokka.goal_progress_tracking.average_task_template;
+package com.example.quokka.goal_progress_tracking.target_task_template;
 
 import static android.content.ContentValues.TAG;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,33 +17,35 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.goal_progress_tracking.average_task_template.AverageLogAdapter;
+import com.example.quokka.goal_progress_tracking.average_task_template.RequestCodes;
+import com.example.quokka.goal_progress_tracking.average_task_template.add_new_average_log;
+import com.example.quokka.goal_progress_tracking.average_task_template.average_log;
+import com.example.quokka.goal_progress_tracking.average_task_template.average_task_page;
+import com.example.quokka.goal_progress_tracking.average_task_template.edit_existing_average_log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-public class average_task_log_history_page extends AppCompatActivity {
+public class target_task_log_history_page extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView previousLogsTextView;
-    private List<average_log> previousLogsList;
-    private AverageLogAdapter adapter;
+    private List<target_log> previousLogsList;
+    private TargetLogAdapter adapter;
     private int LOAD_FLAG = 1;
 
     //Intent variables
     private String taskName;
-    private String goal;
-    private String timePeriod;
+    private String taskDescription;
+    private String startGoal;
+    private String endGoal;
     private String startDate;
+    private String endDate;
     private int taskPosition;
     private String taskId;
 
@@ -53,7 +53,7 @@ public class average_task_log_history_page extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_average_log_history_page);
+        setContentView(R.layout.activity_target_log_history_page);
 
         // Initialize views
         ImageView backButton = findViewById(R.id.img_back);
@@ -69,18 +69,20 @@ public class average_task_log_history_page extends AppCompatActivity {
         previousLogsList = new ArrayList<>();
 
         // Create adapter and set it to RecyclerView
-        adapter = new AverageLogAdapter(previousLogsList);
+        adapter = new TargetLogAdapter(previousLogsList);
         recyclerView.setAdapter(adapter);
 
         // Get task information from intent
         Intent intent = getIntent();
         if (intent != null) {
             taskId = intent.getStringExtra("taskId");
-            taskName = intent.getStringExtra("taskName");
-            goal = intent.getStringExtra("goal");
-            timePeriod = intent.getStringExtra("timePeriod");
-            startDate = intent.getStringExtra("startDate");
             taskPosition = intent.getIntExtra("taskPosition", -1);
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            startGoal = intent.getStringExtra("startGoal");
+            endGoal = intent.getStringExtra("endGoal");
+            startDate = intent.getStringExtra("startDate");
+            endDate = intent.getStringExtra("endDate");
         }
 
 
@@ -89,11 +91,13 @@ public class average_task_log_history_page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate back to the previous activity
-                Intent intent = new Intent(getApplicationContext(), average_task_page.class);
-                intent.putExtra("taskName", taskName);
-                intent.putExtra("goal", goal);
-                intent.putExtra("timePeriod", timePeriod);
-                intent.putExtra("startDate", startDate);
+                Intent intent = new Intent(getApplicationContext(), target_task_page.class);
+                taskName = intent.getStringExtra("taskName");
+                taskDescription = intent.getStringExtra("taskDescription");
+                startGoal = intent.getStringExtra("startGoal");
+                endGoal = intent.getStringExtra("endGoal");
+                startDate = intent.getStringExtra("startDate");
+                endDate = intent.getStringExtra("endDate");
 
                 // Pass the position of the clicked task
                 intent.putExtra("taskPosition", taskPosition);
@@ -107,14 +111,13 @@ public class average_task_log_history_page extends AppCompatActivity {
         cardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Redirect to the add_new_average_log activity
-                Intent intent = new Intent(getApplicationContext(), add_new_average_log.class);
-
-                // Pass necessary data to the add_new_average_log activity
-                intent.putExtra("taskName", taskName);
-                intent.putExtra("goal", goal);
-                intent.putExtra("timePeriod", timePeriod);
-                intent.putExtra("startDate", startDate);
+                Intent intent = new Intent(getApplicationContext(), add_new_target_log.class);
+                taskName = intent.getStringExtra("taskName");
+                taskDescription = intent.getStringExtra("taskDescription");
+                startGoal = intent.getStringExtra("startGoal");
+                endGoal = intent.getStringExtra("endGoal");
+                startDate = intent.getStringExtra("startDate");
+                endDate = intent.getStringExtra("endDate");
 
                 // Pass the position of the clicked task
                 intent.putExtra("taskPosition", taskPosition);
@@ -125,18 +128,19 @@ public class average_task_log_history_page extends AppCompatActivity {
         });
 
         // Set item click listener for RecyclerView items
-        adapter.setOnItemClickListener(new AverageLogAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new TargetLogAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 // Redirect to the edit_existing_average_log activity
-                average_log log = previousLogsList.get(position);
-                Intent intent = new Intent(getApplicationContext(), edit_existing_average_log.class);
+                target_log log = previousLogsList.get(position);
+                Intent intent = new Intent(getApplicationContext(), edit_existing_target_log.class);
                 intent.putExtra("logId", log.getId()); // Pass the log ID
                 intent.putExtra("taskId", taskId); // Pass the task ID
                 intent.putExtra("position", position);
                 startActivityForResult(intent, RequestCodes.EDIT_LOG_REQUEST_CODE);
             }
         });
+
     }
 
     private void loadLogsFromFirestore() {
@@ -152,14 +156,14 @@ public class average_task_log_history_page extends AppCompatActivity {
 
         // Query Firestore to fetch the logs for the current user
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("average_tasks")
+                .collection("Goal").document("targetTasks").collection("target_tasks")
                 .document(taskId).collection("loggedLogs")
                 .orderBy("date", Query.Direction.DESCENDING) // Ensure logs are ordered by date
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         // Convert each document to an average_log object
-                        average_log log = documentSnapshot.toObject(average_log.class);
+                        target_log log = documentSnapshot.toObject(target_log.class);
                         log.setId(documentSnapshot.getId()); // Set the document ID as the log ID
                         // Add the log to the list
                         previousLogsList.add(log);
@@ -189,7 +193,7 @@ public class average_task_log_history_page extends AppCompatActivity {
             switch (requestCode) {
                 case RequestCodes.ADD_LOG_REQUEST_CODE:
                     if (data != null && data.hasExtra("newLog")) {
-                        average_log newLog = (average_log) data.getSerializableExtra("newLog");
+                        target_log newLog = (target_log) data.getSerializableExtra("newLog");
                         previousLogsList.add(0, newLog); // Add to the top of the list
                         adapter.notifyItemInserted(0);
                         recyclerView.scrollToPosition(0); // Scroll to the top
@@ -197,7 +201,7 @@ public class average_task_log_history_page extends AppCompatActivity {
                     break;
                 case RequestCodes.EDIT_LOG_REQUEST_CODE:
                     if (data != null && data.hasExtra("newLog") && data.hasExtra("position")) {
-                        average_log updatedLog = (average_log) data.getSerializableExtra("newLog");
+                        target_log updatedLog = (target_log) data.getSerializableExtra("newLog");
                         int position = data.getIntExtra("position", -1);
 
                         if (position != -1 && position < previousLogsList.size()) {
@@ -225,5 +229,3 @@ public class average_task_log_history_page extends AppCompatActivity {
     }
 
 }
-
-

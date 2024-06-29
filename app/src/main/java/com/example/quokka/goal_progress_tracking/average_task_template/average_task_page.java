@@ -222,7 +222,7 @@ public class average_task_page extends AppCompatActivity {
         String userId = auth.getCurrentUser().getUid();
 
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -305,7 +305,7 @@ public class average_task_page extends AppCompatActivity {
 
         // Query the specific logs for the task using taskId
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId).collection("loggedLogs")
                 .orderBy("date", Query.Direction.ASCENDING) // Ensure logs are ordered by date
                 .get()
@@ -361,7 +361,7 @@ public class average_task_page extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
         CollectionReference logsCollection = db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId).collection("loggedLogs");
 
         List<Date> sortedDates = new ArrayList<>();

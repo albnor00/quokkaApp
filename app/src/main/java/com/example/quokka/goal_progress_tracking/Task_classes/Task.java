@@ -1,32 +1,39 @@
 package com.example.quokka.goal_progress_tracking.Task_classes;
 
-public class Task {
+public class Task implements TaskItem {
     private String name;
-    private String description;
+    private String taskDescription;
     private String goal;
     private String timePeriod;
     private String startDate;
     private String taskId;
 
     // Constructor
-    public Task(String name, String description, String goal, String timePeriod, String startDate, String taskId) {
+    public Task(String name, String taskDescription, String goal, String timePeriod, String startDate, String taskId) {
         this.name = name;
-        this.description = description;
+        this.taskDescription = taskDescription;
         this.goal = goal;
         this.timePeriod = timePeriod;
         this.startDate = startDate;
         this.taskId = taskId;
     }
 
-    // Getters
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getDescription() {
-        return description;
+        return taskDescription;
     }
 
+    @Override
+    public String getTaskId() {
+        return taskId;
+    }
+
+    // Other getters
     public String getGoal() {
         return goal;
     }
@@ -38,6 +45,5 @@ public class Task {
     public String getStartDate() {
         return startDate;
     }
-
-    public String getTaskId(){return taskId;}
 }
+

@@ -1,4 +1,4 @@
-package com.example.quokka.goal_progress_tracking.average_task_template;
+package com.example.quokka.goal_progress_tracking.target_task_template;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,16 +10,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.quokka.R;
+import com.example.quokka.goal_progress_tracking.average_task_template.average_log;
+import com.example.quokka.goal_progress_tracking.average_task_template.average_task_log_history_page;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class add_new_average_log extends AppCompatActivity {
-
+public class add_new_target_log extends AppCompatActivity {
     private EditText numericInput;
     private EditText notesInput;
     private ImageView checkMark;
@@ -27,26 +30,30 @@ public class add_new_average_log extends AppCompatActivity {
 
     //Intent variables
     private String taskName;
-    private String goal;
-    private String timePeriod;
+    private String taskDescription;
+    private String startGoal;
+    private String endGoal;
     private String startDate;
+    private String endDate;
     private int taskPosition;
     private String taskId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_average_log);
+        setContentView(R.layout.activity_add_new_target_log);
 
         // Get task information from intent
         Intent intent = getIntent();
         if (intent != null) {
             taskId = intent.getStringExtra("taskId");
-            taskName = intent.getStringExtra("taskName");
-            goal = intent.getStringExtra("goal");
-            timePeriod = intent.getStringExtra("timePeriod");
-            startDate = intent.getStringExtra("startDate");
             taskPosition = intent.getIntExtra("taskPosition", -1);
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            startGoal = intent.getStringExtra("startGoal");
+            endGoal = intent.getStringExtra("endGoal");
+            startDate = intent.getStringExtra("startDate");
+            endDate = intent.getStringExtra("endDate");
         }
 
         // Initialize views
@@ -70,13 +77,15 @@ public class add_new_average_log extends AppCompatActivity {
         // Handle back button click
         backButton.setOnClickListener(v -> {
             // Navigate back to the previous activity
-            Intent intent2 = new Intent(getApplicationContext(), average_task_log_history_page.class);
+            Intent intent2 = new Intent(getApplicationContext(), target_task_log_history_page.class);
 
-            // Pass necessary data to the add_new_average_log activity
+            // Pass necessary data to the add_new_target_log activity
             intent2.putExtra("taskName", taskName);
-            intent2.putExtra("goal", goal);
-            intent2.putExtra("timePeriod", timePeriod);
+            intent2.putExtra("taskDescription", taskDescription);
+            intent2.putExtra("startGoal", startGoal);
+            intent2.putExtra("endGoal", endGoal);
             intent2.putExtra("startDate", startDate);
+            intent2.putExtra("endDate", endDate);
 
             // Pass the position of the clicked task
             intent2.putExtra("taskPosition", taskPosition);
@@ -137,7 +146,7 @@ public class add_new_average_log extends AppCompatActivity {
         String logId = UUID.randomUUID().toString(); // Using UUID to generate a random ID
 
         // Create a new log object with the generated ID and current date
-        average_log newLog = new average_log(logId, numericValue, notes, new Date()); // Ensure that the date is set correctly
+        target_log newLog = new target_log(logId, numericValue, notes, new Date()); // Ensure that the date is set correctly
 
         // Get the Firestore instance
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -148,7 +157,7 @@ public class add_new_average_log extends AppCompatActivity {
 
         // Add the log to Firestore under the specific task
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("average_tasks").document(taskId)
+                .collection("Goal").document("targetTasks").collection("target_tasks").document(taskId)
                 .collection("loggedLogs") // Assuming this is the collection for logs
                 .document(logId) // Use the generated ID as the document ID
                 .set(newLog)
@@ -162,7 +171,5 @@ public class add_new_average_log extends AppCompatActivity {
                     Toast.makeText(this, "Error saving log: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
-
 
 }

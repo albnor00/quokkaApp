@@ -12,12 +12,15 @@ import com.example.quokka.R;
 
 import java.util.List;
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Task> tasks;
+    private static final int TYPE_TASK = 0;
+    private static final int TYPE_TASK2 = 1;
+
+    private List<TaskItem> tasks;
     private OnTaskClickListener listener;
 
-    public TaskAdapter(List<Task> tasks) {
+    public TaskAdapter(List<TaskItem> tasks) {
         this.tasks = tasks;
     }
 
@@ -29,27 +32,44 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         this.listener = listener;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (tasks.get(position) instanceof Task) {
+            return TYPE_TASK;
+        } else if (tasks.get(position) instanceof Task2) {
+            return TYPE_TASK2;
+        }
+        return -1;
+    }
+
     @NonNull
     @Override
-    public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
-        return new TaskViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_TASK) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
+            return new TaskViewHolder(view);
+        } else if (viewType == TYPE_TASK2) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_target_task, parent, false);
+            return new Task2ViewHolder(view);
+        }
+        throw new IllegalArgumentException("Invalid view type");
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = tasks.get(position);
-        holder.bind(task);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof TaskViewHolder) {
+            Task task = (Task) tasks.get(position);
+            ((TaskViewHolder) holder).bind(task);
+        } else if (holder instanceof Task2ViewHolder) {
+            Task2 task2 = (Task2) tasks.get(position);
+            ((Task2ViewHolder) holder).bind(task2);
+        }
 
-        // Set click listener for item view
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    int clickedPosition = holder.getAdapterPosition();
-                    if (clickedPosition != RecyclerView.NO_POSITION) {
-                        listener.onTaskClick(clickedPosition);
-                    }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                int clickedPosition = holder.getAdapterPosition();
+                if (clickedPosition != RecyclerView.NO_POSITION) {
+                    listener.onTaskClick(clickedPosition);
                 }
             }
         });
@@ -61,7 +81,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
-
         private TextView taskNameTextView;
         private TextView taskTodaysValue;
 
@@ -71,13 +90,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             taskTodaysValue = itemView.findViewById(R.id.todays_value);
         }
 
-
-
         public void bind(Task task) {
-
             taskNameTextView.setText(task.getName());
             taskTodaysValue.setText(task.getGoal());
         }
     }
-}
 
+    static class Task2ViewHolder extends RecyclerView.ViewHolder {
+        private TextView taskNameTextView;
+
+        public Task2ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            taskNameTextView = itemView.findViewById(R.id.task_name);
+        }
+
+        public void bind(Task2 task2) {
+            taskNameTextView.setText(task2.getName());
+        }
+    }
+}

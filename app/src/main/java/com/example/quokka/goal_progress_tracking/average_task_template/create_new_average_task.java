@@ -217,7 +217,7 @@ public class create_new_average_task extends AppCompatActivity {
 
         // Access the 'averageTasks' subcollection under the user's 'Goal' collection
         CollectionReference averageTasksRef = db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks");
+                .collection("Goal").document("averageTasks").collection("average_tasks");
 
         // Add the task document to the 'averageTasks' subcollection with the generated ID
         averageTasksRef.document(taskId)
