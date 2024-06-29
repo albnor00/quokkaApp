@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -115,12 +114,13 @@ public class balance_wheel extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Start tasksMain activity
                 Intent intent = new Intent(getApplicationContext(), tasksMain.class);
                 startActivity(intent);
 
-
                 // Upload button values, checkbox states, and comments to Firestore
                 uploadDataToFirestore();
+
                 // Finish activity after submitting
                 finish();
             }
@@ -134,7 +134,6 @@ public class balance_wheel extends AppCompatActivity {
                 switch (slicePosition) {
                     case 0:
                         showSeekBarDialog(btn_Career.getId(), "Why do you think your career is good or bad?");
-
                         break;
                     case 1:
                         showSeekBarDialog(btn_Wellbeing.getId(), "Why do you think your wellbeing is good or bad?");
@@ -161,7 +160,6 @@ public class balance_wheel extends AppCompatActivity {
             }
         });
 
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -185,7 +183,7 @@ public class balance_wheel extends AppCompatActivity {
         });
     }
 
-    private void showSeekBarDialog(final int buttonId,String hint) {
+    private void showSeekBarDialog(final int buttonId, String hint) {
         // Initialize dialog
         seekBarDialog = new Dialog(balance_wheel.this);
         seekBarDialog.setContentView(R.layout.activity_balance_wheel_seekbar);
@@ -197,17 +195,14 @@ public class balance_wheel extends AppCompatActivity {
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         seekBarDialog.getWindow().setAttributes(layoutParams);
-        EditText addComment = seekBarDialog.findViewById(R.id.addComment);
-
-        addComment.setHint(hint);
-
-
 
         // Find views inside the dialog
         SeekBar seekBar = seekBarDialog.findViewById(R.id.seekBar);
         final TextView valueTextView = seekBarDialog.findViewById(R.id.valueTextView);
+        EditText addComment = seekBarDialog.findViewById(R.id.addComment);
+        CheckBox noAnswerCheckBox = seekBarDialog.findViewById(R.id.noAnswerCheckBox);
 
-
+        addComment.setHint(hint);
 
         // Get the saved value from SharedPreferences
         int savedValue = getSavedValue(buttonId);
@@ -217,7 +212,7 @@ public class balance_wheel extends AppCompatActivity {
 
         // Set saved value if available, otherwise set default value
         seekBar.setProgress(savedValue != -1 ? savedValue : 0);
-        valueTextView.setText(String.valueOf(seekBar.getProgress()));
+        valueTextView.setText(String.valueOf(seekBar.getProgress() + 1)); // Adjusting to match saved value logic
 
         // Set progress change listener
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -230,7 +225,6 @@ public class balance_wheel extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Uncheck checkbox if the seekbar is touched
-                CheckBox noAnswerCheckBox = seekBarDialog.findViewById(R.id.noAnswerCheckBox);
                 if (noAnswerCheckBox != null) {
                     noAnswerCheckBox.setChecked(false);
                 }
@@ -249,7 +243,7 @@ public class balance_wheel extends AppCompatActivity {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 // Upload comment if not empty when the dialog is dismissed
-                String comment = addComment.getText().toString();
+                String comment = addComment.getText().toString().trim();
                 if (!comment.isEmpty()) {
                     // Store the comment in the commentValuesMap
                     commentValuesMap.put(buttonId, comment);
@@ -257,31 +251,28 @@ public class balance_wheel extends AppCompatActivity {
             }
         });
 
+        // Set checkbox listener
+        if (noAnswerCheckBox != null) {
+            noAnswerCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        // If checkbox is checked, store the state in the HashMap
+                        checkBoxValuesMap.put(buttonId, true);
+
+
+                        // Store 0 in the SharedPreferences
+                        saveValueToSharedPreferences(buttonId, seekBar.getProgress());
+                    } else {
+                        // If checkbox is unchecked, remove the state from the HashMap
+                        checkBoxValuesMap.remove(buttonId);
+                    }
+                }
+            });
+        }
+
         // Show the dialog
         seekBarDialog.show();
-
-        // Find the checkbox inside the dialog
-        CheckBox noAnswerCheckBox = seekBarDialog.findViewById(R.id.noAnswerCheckBox);
-
-        // Set checkbox listener
-        noAnswerCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // If checkbox is checked, store the state in the HashMap
-                    checkBoxValuesMap.put(buttonId, true);
-                    // Set SeekBar progress to 0
-                    seekBar.setProgress(0);
-                    // Update TextView
-                    valueTextView.setText("1");
-                    // Store 0 in the SharedPreferences
-                    saveValueToSharedPreferences(buttonId, 0);
-                } else {
-                    // If checkbox is unchecked, remove the state from the HashMap
-                    checkBoxValuesMap.remove(buttonId);
-                }
-            }
-        });
     }
 
     private void uploadDataToFirestore() {
@@ -294,8 +285,12 @@ public class balance_wheel extends AppCompatActivity {
             for (Map.Entry<Integer, Integer> entry : buttonValuesMap.entrySet()) {
                 int buttonId = entry.getKey();
                 int value = entry.getValue();
-                String buttonName = getButtonName(buttonId);
-                buttonValues.put(buttonName, value);
+
+                // Check if checkbox is checked for this button
+                if (checkBoxValuesMap.containsKey(buttonId) && checkBoxValuesMap.get(buttonId)) {
+                    String buttonName = getButtonName(buttonId);
+                    buttonValues.put(buttonName, value + 1); // Adjusting to match saved value logic
+                }
             }
 
             // Create a map to store submission data
@@ -311,7 +306,6 @@ public class balance_wheel extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
-                            // Handle success
                             // Call method to upload comments after uploading main data
                             uploadCommentsToFirestore(userId, documentReference.getId());
                         }
@@ -320,10 +314,12 @@ public class balance_wheel extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             // Handle failure
+                            Log.e("Firestore", "Error uploading submission data", e);
                         }
                     });
         }
     }
+
 
     private void uploadCommentsToFirestore(String userId, String submissionId) {
         // Create a map to store comments
@@ -351,14 +347,14 @@ public class balance_wheel extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Handle failure
+                        Log.e("Firestore", "Error uploading comments", e);
                     }
                 });
     }
 
-
     private void saveValueToSharedPreferences(int buttonId, int value) {
         SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-        editor.putInt(String.valueOf(buttonId), value + 1);
+        editor.putInt(String.valueOf(buttonId), value);
         editor.apply();
     }
 
