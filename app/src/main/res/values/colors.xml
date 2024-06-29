@@ -8,5 +8,6 @@
     <color name="fill_color">#00FF00</color>
     <color name="green">#80d43c</color>
     <color name="blue">#062836</color>
+    <color name="lighterBlue">#204050</color>
 
 </resources>
