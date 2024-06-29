@@ -40,7 +40,7 @@ public class RadioButtons extends View {
     private float innerRadiusRatio = 0.3F;
 
     //color for your slice
-    private int[] colors = new int[]{Color.rgb(100, 0, 183)};
+    private int[] colors = new int[]{Color.rgb(128, 212, 60)};
 
     private int mCenterX;
     private int mCenterY;
@@ -178,7 +178,7 @@ public class RadioButtons extends View {
 
         //draw center circle
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.rgb(156,39,176));
+        mPaint.setColor(Color.rgb(11, 45, 57));
         canvas.drawCircle(mCenterX, mCenterY, mInnerRadius, mPaint);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setColor(Color.WHITE);

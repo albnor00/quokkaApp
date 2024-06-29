@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
@@ -54,7 +55,7 @@ public class balance_wheel extends AppCompatActivity {
     TextView btn_Rest;
     RadioButtons radioButtons;
 
-    Button submit;
+    AppCompatButton submit;
 
     // HashMaps to store button values, checkbox states, and comments
     HashMap<Integer, Integer> buttonValuesMap = new HashMap<>();
@@ -151,7 +152,7 @@ public class balance_wheel extends AppCompatActivity {
                         showSeekBarDialog(btn_Environment.getId(), "Why do you think your environment is good or bad?");
                         break;
                     case 6:
-                        showSeekBarDialog(btn_Rest.getId(), "Why do you think your rest is good or bad?");
+                        showSeekBarDialog(btn_Rest.getId(), "Until next time, think about why you don't sleep well.");
                         break;
                     case 7:
                         showSeekBarDialog(btn_Economy.getId(), "Why do you think your economy is good or bad?");

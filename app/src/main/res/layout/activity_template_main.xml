@@ -24,7 +24,7 @@
         android:layout_margin="16dp"
         android:layout_below="@id/text"
         android:onClick="selectTemplate"
-        android:background="@drawable/btn_background_1"
+        android:background="@drawable/btn_background_2"
         />
 
     <!-- Average Template -->
@@ -36,7 +36,7 @@
         android:layout_below="@id/btn_habit_template"
         android:layout_margin="16dp"
         android:onClick="selectTemplate"
-        android:background="@drawable/btn_background_1"
+        android:background="@drawable/btn_background_2"
         />
 
     <!-- Target Template -->
@@ -49,7 +49,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/btn_background_1"
+        android:background="@drawable/btn_background_2"
         android:onClick="selectTemplate"
         android:text="Target Template" />
 
@@ -62,7 +62,7 @@
         android:layout_marginTop="100dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/btn_background_1"
+        android:background="@drawable/btn_background_2"
         android:onClick="back"
         android:text="back" />
 

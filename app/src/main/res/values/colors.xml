@@ -6,5 +6,7 @@
     <color name="line_color">#FF000000</color>
     <color name="stroke_color">#FF0000</color>
     <color name="fill_color">#00FF00</color>
+    <color name="green">#80d43c</color>
+    <color name="blue">#062836</color>
 
 </resources>

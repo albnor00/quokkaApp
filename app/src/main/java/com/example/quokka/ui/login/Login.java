@@ -2,6 +2,7 @@ package com.example.quokka.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ public class Login extends AppCompatActivity {
     TextInputEditText editTextEmail, editTextPassword;
 
     TextInputLayout inputLayoutpassword, inputLayoutemail;
-    Button buttonLogin;
+    AppCompatButton buttonLogin;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     TextView textView;

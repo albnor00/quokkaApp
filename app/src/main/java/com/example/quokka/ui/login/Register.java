@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class Register extends AppCompatActivity {
     TextInputLayout inputLayoutpassword2, inputLayoutemail2, inputLayoutpasswordRepeat, inputLayoutusername;
     TextInputEditText editTextEmail, editTextPassword, editUsername, editTextRepeatPassword;
-    Button buttonReg;
+    AppCompatButton buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     TextView textView;
