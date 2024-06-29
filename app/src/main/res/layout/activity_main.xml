@@ -7,11 +7,23 @@
     android:background="#4a148c"
     tools:context=".MainActivity">
 
-
+    <TextView
+        android:id="@+id/user_Details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:text="@string/user_detail"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/user_Details"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
@@ -137,13 +149,12 @@
             app:cardCornerRadius="12dp">
 
             <LinearLayout
-                android:id="@+id/tasks"
+                android:id="@+id/widget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clickable="true"
-                android:orientation="vertical"
-                android:focusable="true">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -156,7 +167,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/tasks"
+                    android:text="@string/widgets"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- ImageView for the back button -->
     <ImageView
-        android:id="@+id/img_back"
+        android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_arrow_back_ios_new_24"
@@ -16,38 +14,36 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"/>
 
-    <LinearLayout
+    <!-- Header -->
+    <TextView
+        android:id="@+id/textViewMemberName"
+
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="15dp"
+        android:textSize="40sp"
+        android:text="Member Name"
+        android:gravity="center"
+        />
+
+    <!-- ScrollView to make the content scrollable -->
+    <ScrollView
+        android:contentDescription="Balance wheel submissions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
+        android:layout_below="@id/textViewMemberName"
+        android:layout_marginTop="16dp">
 
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/text_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Enter the name of coaching group"
-            android:layout_marginTop="100dp"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
+        <!-- LinearLayout to hold TextViews and lines -->
+        <LinearLayout
+            android:id="@+id/answerListDateContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:queryHint="Search for items..." />
+            android:orientation="vertical" />
 
-        <ListView
-            android:id="@+id/list_view"
-            android:layout_width="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+    </ScrollView>
 
     <!-- Bottom navigation -->
 

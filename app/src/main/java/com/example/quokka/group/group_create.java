@@ -2,6 +2,7 @@ package com.example.quokka.group;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,8 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.profile.ProfileActivity;
+import com.example.quokka.tasks.balance_wheel;
+import com.example.quokka.tasks.tasksMain;
+import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -29,13 +36,15 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.WriteBatch;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class group_create extends AppCompatActivity {
     EditText editText_groupName, editText_dec;
-    Button button;
+    AppCompatButton button;
     ImageView back;
     String groupName, groupDescription;
 
@@ -45,7 +54,7 @@ public class group_create extends AppCompatActivity {
         setContentView(R.layout.activity_create_group);
 
         editText_groupName = findViewById(R.id.edit_text_group_name);
-        button = findViewById(R.id.btn_create_group);
+        button = findViewById(R.id.create_group);
         back = findViewById(R.id.image_back);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +84,27 @@ public class group_create extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), group_main.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home_bottom) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else if (item.getItemId() == R.id.profile_bottom) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                } else if (item.getItemId() == R.id.tasks_bottom) {
+                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
+                } else if (item.getItemId() == R.id.group_bottom) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    MainActivity.checkUserRole(user, group_create.this);
+                } else if (item.getItemId() == R.id.logout_bottom) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+                return true; // Return true to indicate that the item selection has been handled
             }
         });
     }
@@ -127,14 +157,13 @@ public class group_create extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // Show a success message
-                        Toast.makeText(group_create.this, "Group ID added to user document", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Show a failure message
-                        Toast.makeText(group_create.this, "Failed to add group ID to user document", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(group_create.this, "Failed", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
