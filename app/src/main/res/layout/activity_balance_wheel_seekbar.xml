@@ -14,8 +14,8 @@
         android:layout_marginBottom="16dp"/>
 
     <SeekBar
-        android:progressTint="@color/purple"
-        android:thumbTint="@color/purple"
+        android:progressTint="@color/green"
+        android:thumbTint="@color/green"
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,11 +35,10 @@
         android:hint="Add a comment (optional)" />
 
     <CheckBox
-
         android:id="@+id/noAnswerCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Prefer not to answer" />
+        android:text="I want to discuss this topic" />
 
 
 </LinearLayout>

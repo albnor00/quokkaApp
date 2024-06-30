@@ -151,13 +151,13 @@ public class group_viewMembers extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
-                layoutParams.setMargins(0, convertDpToPx(16), 0, 0); // Set margin programmatically
+                layoutParams.setMargins(0, convertDpToPx(30), 0, 0); // Set margin programmatically
                 button.setLayoutParams(layoutParams);
 
                 button.setGravity(Gravity.CENTER);
 
                 // Set background color for the button
-                button.setBackgroundResource(R.drawable.btn_background_1);
+                button.setBackgroundResource(R.drawable.btn_background_2);
                 // Set text and style for the button
                 button.setText(name);
                 button.setTextSize(15);

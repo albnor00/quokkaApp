@@ -132,11 +132,11 @@ public class group_viewMembers_dateList extends AppCompatActivity {
                                         LinearLayout.LayoutParams.MATCH_PARENT,
                                         LinearLayout.LayoutParams.WRAP_CONTENT
                                 );
-                                layoutParams.setMargins(0, convertDpToPx(16), 0, 0); // Set margin programmatically
+                                layoutParams.setMargins(0, convertDpToPx(30), 0, 0); // Set margin programmatically
                                 button.setLayoutParams(layoutParams);
 
                                 //Background color for the button
-                                button.setBackgroundResource(R.drawable.btn_background_1);
+                                button.setBackgroundResource(R.drawable.btn_background_2);
                                 // Format the timestamp and set it as the button text
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                                 button.setText("Balance wheel submitted on: " + sdf.format(timestamp));
