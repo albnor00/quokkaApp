@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.group.NotificationsActivity;
 import com.example.quokka.tasks.balance_wheel;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
@@ -38,13 +39,14 @@ public class ProfileActivity extends AppCompatActivity {
 
      ImageView imageView2;
      FloatingActionButton selectImageButton;
-     AppCompatButton back;
+     AppCompatButton notificationButton;
     FirebaseStorage storage;
     StorageReference storageReference;
     FirebaseAuth mAuth;
 
     TextView usernameText;
     TextView emailText;
+
 
     AppCompatButton settingsButton;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -76,6 +78,18 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+
+        notificationButton = findViewById(R.id.notificationButton);
+
+        // Set click listener for notifications
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, NotificationsActivity.class);
+                startActivity(intent);
             }
         });
 

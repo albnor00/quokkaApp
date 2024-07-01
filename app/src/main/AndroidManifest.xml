@@ -43,6 +43,8 @@
         <activity android:name=".group.group_viewMembers" />
         <activity android:name=".group.group_viewMembers_answers" />
         <activity android:name=".group.group_viewMembers_dateList" />
+        <activity android:name=".group.SendMessageActivity" />
+        <activity android:name=".group.NotificationsActivity" />
         <activity android:name=".tasks.balance_wheel" />
         <activity android:name=".tasks.tasksMain" />
         <activity android:name=".profile.ProfileActivity" />
