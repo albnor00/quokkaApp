@@ -8,6 +8,8 @@ public class Task implements TaskItem {
     private String startDate;
     private String taskId;
 
+
+
     // Constructor
     public Task(String name, String taskDescription, String goal, String timePeriod, String startDate, String taskId) {
         this.name = name;
@@ -45,5 +47,8 @@ public class Task implements TaskItem {
     public String getStartDate() {
         return startDate;
     }
+
+
+
 }
 

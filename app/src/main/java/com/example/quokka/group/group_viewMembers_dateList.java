@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,8 +16,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
-import com.example.quokka.profile.ProfileActivity;
-import com.example.quokka.tasks.balance_wheel;
+import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,7 +31,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 public class group_viewMembers_dateList extends AppCompatActivity {
 
@@ -95,7 +92,7 @@ public class group_viewMembers_dateList extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user, group_viewMembers_dateList.this);
+                    MainActivity.checkUserRole2(user, group_viewMembers_dateList.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));

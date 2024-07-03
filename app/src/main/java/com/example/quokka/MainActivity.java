@@ -3,6 +3,7 @@ package com.example.quokka;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,8 @@ import com.example.quokka.goal_progress_tracking.goal_setup.Question5;
 import com.example.quokka.group.group_admin_page;
 import com.example.quokka.group.group_main;
 import com.example.quokka.group.group_member_page;
+import com.example.quokka.tasks.profile.ProfileActivity;
+import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,7 +51,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    LinearLayout logout, groupIcon, taskIcon, homeIcon;
+    LinearLayout logout, groupIcon, taskIcon, homeIcon, accountIcon;
     FirebaseUser user;
 
     @Override
@@ -58,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         logout = findViewById(R.id.logout);
         groupIcon = findViewById(R.id.icon_group);
-        taskIcon = findViewById(R.id.tasks);
+        taskIcon = findViewById(R.id.widget);
         homeIcon = findViewById(R.id.layoutHome);
+        accountIcon = findViewById(R.id.profile);
         user = auth.getCurrentUser();
 
 
@@ -88,14 +92,23 @@ public class MainActivity extends AppCompatActivity {
         taskIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            checkUserGoalStatus();
+                Intent intent = new Intent(getApplicationContext(), tasksMain.class);
+                startActivity(intent);
+                finish();
             }
         });
 
         homeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), average_task_page.class);
+
+            }
+        });
+
+        accountIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -146,149 +159,46 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void checkUserGoalStatus() {
+    public static void checkUserRole2(FirebaseUser user, Context context) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String userId = user.getUid(); // Assuming 'user' is your FirebaseUser object
+        String userId = user.getUid();
 
-        // Reference to the user's Goal subcollection
-        CollectionReference goalCollectionRef = db.collection("users").document(userId)
-                .collection("Goal");
-
-        // Check if the 'Goal' subcollection exists
-        goalCollectionRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                // The 'Goal' subcollection exists, check for required documents
-                Set<String> existingDocuments = new HashSet<>();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    existingDocuments.add(document.getId());
-                }
-
-                // Check which documents are missing
-                List<Integer> missingQuestions = new ArrayList<>();
-                for (Map.Entry<String, Integer> entry : getRequiredDocuments().entrySet()) {
-                    if (!existingDocuments.contains(entry.getKey())) {
-                        if (entry.getKey().equals("User_Goal_State")) {
-                            // Handle missing User_Goal_State document
-                            redirectToEmptyGoalPage();
-                            return;
-                        } else {
-                            // Add missing question number to the list
-                            missingQuestions.add(entry.getValue());
-                        }
+        // Check if the user is an admin
+        db.collection("groups")
+                .whereEqualTo("creator_id", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        Intent intent = new Intent(context, group_admin_page.class);
+                        context.startActivity(intent);
+                    } else {
+                        // Check if the user is a member
+                        db.collection("users")
+                                .document(userId)
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    String role = documentSnapshot.getString("role");
+                                    if (role != null && role.equals("Coachee/(Member)")) {
+                                        Intent intent = new Intent(context, group_member_page.class);
+                                        context.startActivity(intent);
+                                    } else {
+                                        // If the user is neither admin nor member
+                                        Intent intent = new Intent(context, group_main.class);
+                                        context.startActivity(intent);
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Handle failure
+                                    Toast.makeText(context, "Failed to check user role.", Toast.LENGTH_SHORT).show();
+                                });
                     }
-                }
-
-                // Determine the next question to redirect based on missing documents
-                if (!missingQuestions.isEmpty()) {
-                    // Get the smallest missing question number (next question in sequence)
-                    int nextQuestionNumber = Collections.min(missingQuestions);
-                    redirectUserToQuestionClass(nextQuestionNumber);
-                } else {
-                    // All required documents exist, handle valid goal state
-                    handleValidGoalState(goalCollectionRef);
-                }
-
-            } else {
-                // The 'Goal' subcollection does not exist, redirect to empty goal page
-                redirectToEmptyGoalPage();
-            }
-        });
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure
+                    Toast.makeText(context, "Failed to check user role.", Toast.LENGTH_SHORT).show();
+                });
     }
 
-    private Map<String, Integer> getRequiredDocuments() {
-        // Define the list of required documents and their corresponding question numbers
-        Map<String, Integer> requiredDocuments = new HashMap<>();
-        requiredDocuments.put("Q1_user_aspect", 1);
-        requiredDocuments.put("Q2_user_current_rating", 2);
-        requiredDocuments.put("Q3_user_explanation", 3);
-        requiredDocuments.put("Q4_user_goal_rating", 4);
-        requiredDocuments.put("Q5_user_explanation", 5);
-        requiredDocuments.put("User_Goal_State", -1); // Special case for User_Goal_State
-        return requiredDocuments;
-    }
 
-    private void handleValidGoalState(CollectionReference goalCollectionRef) {
-        // Fetch the User_Goal_State document to check the goal setup state
-        DocumentReference userGoalStateRef = goalCollectionRef.document("User_Goal_State");
-        userGoalStateRef.get().addOnCompleteListener(stateTask -> {
-            if (stateTask.isSuccessful()) {
-                String userGoalState = stateTask.getResult().getString("user_goal_setup_state");
-                if (userGoalState != null && userGoalState.equals("Completed")) {
-                    // User has all documents and the goal state is valid
-                    // Proceed with your logic here
-                    Log.d("GoalStatus", "User has all required documents and valid goal state");
-                    redirectToNonEmptyGoalPage();
-                } else if (userGoalState != null && userGoalState.equals("Initiated")){
-                    // Redirect user to update goal state
-                    Log.d("GoalStatus", "User goal state is not valid");
-                    redirectUserToQuestionClass(5);
-                    // Redirect to appropriate screen for updating goal state
-                }
-            } else {
-                // Error fetching User_Goal_State document
-                Log.e("GoalStatus", "Error fetching User_Goal_State", stateTask.getException());
-            }
-        });
-    }
-
-    private void redirectUserToQuestionClass(int questionNumber) {
-        // Redirect the user to the corresponding question class based on the missing question
-        Intent intent;
-
-        switch (questionNumber) {
-            case 1:
-                // Redirect to Question1Activity
-                intent = new Intent(getApplicationContext(), Question1.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 2:
-                // Redirect to Question2Activity
-                intent = new Intent(getApplicationContext(), Question2.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 3:
-                // Redirect to Question3Activity
-                intent = new Intent(getApplicationContext(), Question3.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 4:
-                // Redirect to Question4Activity
-                intent = new Intent(getApplicationContext(), Question4.class);
-                startActivity(intent);
-                finish();
-                break;
-            case 5:
-                // Redirect to Question5Activity
-                intent = new Intent(getApplicationContext(), Question5.class);
-                startActivity(intent);
-                finish();
-                break;
-            default:
-                // Handle unexpected case
-                break;
-        }
-    }
-
-    private void handleMultipleMissingDocuments(List<Integer> missingQuestions) {
-        // Handle scenario where multiple documents are missing
-        // For example, provide a consolidated message to the user
-        Log.d("GoalStatus", "User is missing multiple required documents: " + missingQuestions);
-        // You can decide on an appropriate action here
-    }
-
-    private void redirectToNonEmptyGoalPage() {
-        Intent intent = new Intent(getApplicationContext(), Goal_non_empty_page.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void redirectToEmptyGoalPage() {
-        Intent intent = new Intent(getApplicationContext(), Goal_empty_page.class);
-        startActivity(intent);
-        finish();
-    }
 }
 

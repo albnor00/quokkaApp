@@ -14,35 +14,18 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <!-- Image View -->
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="48dp"
-            android:layout_height="42dp"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="Image Description"
-            android:src="@drawable/goal_clip_art" />
-
         <!-- Text View -->
         <TextView
             android:id="@+id/textView"
-            android:layout_width="88dp"
+            android:layout_width="wrap_content"
+            android:textColor="#388E3C"
             android:layout_height="39dp"
             android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="Goal"
-            android:textSize="20sp" />
-
-        <!-- Text View -->
-        <EditText
-            android:id="@+id/editTextGoal"
-            android:layout_width="150dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="65dp"
-            android:gravity="center"
-            android:hint="Enter a goal value"
-            android:inputType="number"
+            android:text="Completed Tasks"
             android:textSize="15sp" />
+
+
 
     </LinearLayout>
 

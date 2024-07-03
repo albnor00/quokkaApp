@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -14,28 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
-import com.example.quokka.profile.ProfileActivity;
-import com.example.quokka.tasks.balance_wheel;
+import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.firestore.WriteBatch;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 
 import java.util.HashMap;
@@ -98,7 +87,7 @@ public class group_create extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user, group_create.this);
+                    MainActivity.checkUserRole2(user, group_create.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));

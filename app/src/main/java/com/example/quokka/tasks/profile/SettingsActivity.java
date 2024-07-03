@@ -1,4 +1,4 @@
-package com.example.quokka.profile;
+package com.example.quokka.tasks.profile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

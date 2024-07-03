@@ -18,9 +18,11 @@ import com.example.quokka.MainActivity;
 import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.Task_classes.Task;
 import com.example.quokka.goal_progress_tracking.Task_classes.Task2;
+import com.example.quokka.goal_progress_tracking.Task_classes.Task3;
 import com.example.quokka.goal_progress_tracking.Task_classes.TaskAdapter;
 import com.example.quokka.goal_progress_tracking.Task_classes.TaskItem;
 import com.example.quokka.goal_progress_tracking.average_task_template.average_task_page;
+import com.example.quokka.goal_progress_tracking.habit_task_template.habit_task_page;
 import com.example.quokka.goal_progress_tracking.target_task_template.target_task_page;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -108,6 +110,15 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
         // Initialize current date
         updateDateText();
 
+        overview_box.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Goal_overview.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         // Set click listeners for date navigation buttons
         previousDayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,6 +192,21 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
             intent.putExtra("endDate", task2.getEndDate());
             // Start the activity
             startActivity(intent);
+        } else if (clickedTask instanceof Task3) {
+            Task3 task3 = (Task3) clickedTask;
+            // Create an intent to start the average_task_page activity
+            Intent intent = new Intent(getApplicationContext(), habit_task_page.class);
+            // Pass necessary data to the average_task_page activity
+            intent.putExtra("taskId", task3.getTaskId()); // Pass taskId
+            intent.putExtra("taskPosition", position);
+            intent.putExtra("taskName", task3.getName());
+            intent.putExtra("taskDescription", task3.getDescription());
+            intent.putExtra("goal", task3.getGoal());
+            intent.putExtra("timePeriod", task3.getTimePeriod());
+            intent.putExtra("startDate", task3.getStartDate());
+            intent.putExtra("dueDate", task3.getDueDate());
+            // Start the activity
+            startActivity(intent);
         }
     }
 
@@ -236,6 +262,29 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Failed to load target tasks: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
+            // Query habit tasks from Firestore
+            db.collection("users").document(userId)
+                    .collection("Goal").document("habitTasks").collection("habit_tasks")
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String taskName = documentSnapshot.getString("name");
+                            String taskDescription = documentSnapshot.getString("taskDescription");
+                            String goal = documentSnapshot.getString("goal");
+                            String timePeriod = documentSnapshot.getString("timePeriod");
+                            String startDate = documentSnapshot.getString("startDate");
+                            String dueDate = documentSnapshot.getString("dueDate");
+                            String taskId = documentSnapshot.getString("taskId");
+
+                            Task3 task3 = new Task3(taskName, taskDescription, goal, timePeriod, startDate, dueDate, taskId);
+                            taskList.add(task3);
+                        }
+                        taskAdapter.notifyDataSetChanged();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Failed to load habit tasks: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
     }

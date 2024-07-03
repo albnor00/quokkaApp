@@ -21,28 +21,19 @@
             android:layout_height="42dp"
             android:layout_gravity="center_vertical"
             android:contentDescription="Image Description"
-            android:src="@drawable/baseline_check_box_24" />
+            android:src="@drawable/baseline_timeline_24" />
 
         <!-- Text View -->
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/task_name"
             android:layout_width="160dp"
             android:layout_height="39dp"
             android:layout_marginStart="60dp"
             android:gravity="center"
-            android:text="Habit template "
+            android:text="Target template "
             android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/todays_value"
-            android:layout_width="45dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="10dp"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:text="0/10"
-            android:textSize="20sp" />
+
 
     </LinearLayout>
 

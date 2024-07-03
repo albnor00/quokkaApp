@@ -23,8 +23,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
-import com.example.quokka.group.group_member_page;
-import com.example.quokka.profile.ProfileActivity;
+import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -151,7 +150,7 @@ public class balance_wheel extends AppCompatActivity {
                         showSeekBarDialog(btn_Environment.getId(), "Why do you think your environment is good or bad?");
                         break;
                     case 6:
-                        showSeekBarDialog(btn_Rest.getId(), "Until next time, think about why you don't sleep well.");
+                        showSeekBarDialog(btn_Rest.getId(), "Add an optional comment/note.");
                         break;
                     case 7:
                         showSeekBarDialog(btn_Economy.getId(), "Why do you think your economy is good or bad?");
@@ -172,7 +171,7 @@ public class balance_wheel extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user, balance_wheel.this);
+                    MainActivity.checkUserRole2(user, balance_wheel.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));

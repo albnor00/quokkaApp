@@ -1,23 +1,22 @@
 package com.example.quokka.goal_progress_tracking.Task_classes;
 
-public class Task2 implements TaskItem {
+public class Task3 implements TaskItem {
     private String name;
     private String taskDescription;
-    private String startGoal;
-    private String endGoal;
+    private String Goal;
+    private String timePeriod;
     private String startDate;
-    private String endDate;
+    private String dueDate;
     private String taskId;
 
-
     // Constructor
-    public Task2(String name, String taskDescription, String startGoal, String endGoal, String startDate, String endDate, String taskId) {
+    public Task3(String name, String taskDescription, String Goal, String timePeriod, String startDate, String dueDate, String taskId) {
         this.name = name;
         this.taskDescription = taskDescription;
-        this.startGoal = startGoal;
-        this.endGoal = endGoal;
+        this.Goal = Goal;
+        this.timePeriod = timePeriod;
         this.startDate = startDate;
-        this.endDate = endDate;
+        this.dueDate = dueDate;
         this.taskId = taskId;
     }
 
@@ -37,20 +36,19 @@ public class Task2 implements TaskItem {
     }
 
     // Other getters
-    public String getStartGoal() {
-        return startGoal;
+    public String getGoal() {
+        return Goal;
     }
 
-    public String getEndGoal() {
-        return endGoal;
+    public String getTimePeriod() {
+        return timePeriod;
     }
 
     public String getStartDate() {
         return startDate;
     }
-
-    public String getEndDate() {
-        return endDate;
+    public String getDueDate() {
+        return dueDate;
     }
 
 }
