@@ -1,4 +1,4 @@
-package com.example.quokka.profile;
+package com.example.quokka.tasks.profile;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -123,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user,ProfileActivity.this);
+                    MainActivity.checkUserRole2(user,ProfileActivity.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));
