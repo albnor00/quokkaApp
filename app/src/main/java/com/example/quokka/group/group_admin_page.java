@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class group_admin_page extends AppCompatActivity {
     ImageView back;
-    AppCompatButton deletebutton, viewMemebers;
+    AppCompatButton deletebutton, viewMemebers, sendMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,18 @@ public class group_admin_page extends AppCompatActivity {
         viewMemebers = findViewById(R.id.btn_view_members);
         back = findViewById(R.id.admin_back);
         deletebutton = findViewById(R.id.btn_delete_group);
+        sendMessage = findViewById(R.id.sendMessage);
+
+
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SendMessageActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
 
 
         viewMemebers.setOnClickListener(new View.OnClickListener() {

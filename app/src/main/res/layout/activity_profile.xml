@@ -106,7 +106,7 @@
                         android:text="Personal information"
                         android:textAlignment="viewStart" />
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/button3"
+                        android:id="@+id/notificationButton"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_marginStart="32dp"

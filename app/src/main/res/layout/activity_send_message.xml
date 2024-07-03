@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/blue">
+
+    <Spinner
+
+        android:layout_marginTop="50dp"
+        android:id="@+id/userSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/lighterBlue" />
+
+    <EditText
+        android:id="@+id/messageEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_your_message_to_user"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:gravity="top"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:background="@drawable/btn_background_1"
+        android:autofillHints="Enter question to client" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sendButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_background_2"
+        android:text="@string/send_message" />
+</LinearLayout>
