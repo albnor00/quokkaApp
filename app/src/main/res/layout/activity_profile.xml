@@ -118,9 +118,11 @@
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/btn_background_2"
                         android:drawableStart="@drawable/baseline_notifications_24"
+                        android:drawableEnd="@drawable/baseline_error"
+                        android:paddingEnd="20dp"
                         android:drawablePadding="20dp"
                         android:paddingStart="20dp"
-                        android:text="Notification"
+                        android:text="Messages"
                         android:textAlignment="viewStart" />
 
 

@@ -32,7 +32,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/btn_background_2"
-        android:text="Send Message to user" />
+        android:text="Send a Message" />
 
     <!-- Button to join an existing group -->
     <androidx.appcompat.widget.AppCompatButton

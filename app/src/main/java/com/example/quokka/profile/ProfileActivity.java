@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -46,6 +47,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView usernameText;
     TextView emailText;
+
+    FirebaseFirestore db;
+    FirebaseUser mUser;
+
 
 
     AppCompatButton settingsButton;
@@ -69,6 +74,9 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference().child("profileImages").child(user.getUid());
+        db = FirebaseFirestore.getInstance();
+
+        mUser = mAuth.getCurrentUser();
 
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +96,8 @@ public class ProfileActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                markNotificationsAsRead();
                 Intent intent = new Intent(ProfileActivity.this, NotificationsActivity.class);
                 startActivity(intent);
             }
@@ -124,6 +134,10 @@ public class ProfileActivity extends AppCompatActivity {
         });
         // Load image if already uploaded
         loadImageFromFirebaseStorage();
+
+
+        //Check if there are unread notification
+        checkUnreadNotifications();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -206,6 +220,37 @@ public class ProfileActivity extends AppCompatActivity {
                 // Handle any errors
             }
         });
+    }
+
+    private void checkUnreadNotifications() {
+        db.collection("users").document(mUser.getUid()).collection("notifications")
+                .whereEqualTo("read", false)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            // There are unread notifications
+                           // notificationButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_access_time, 0);
+                        } else {
+                            // No unread notifications
+                            //notificationButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        }
+                    }
+                });
+    }
+
+
+    private void markNotificationsAsRead() {
+        db.collection("notifications").whereEqualTo("userId", mUser.getUid()).whereEqualTo("read", false)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            db.collection("notifications").document(document.getId()).update("read", true);
+                        }
+                        // Update the notification button drawable
+                        notificationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_notifications_24, 0, 0, 0);
+                    }
+                });
     }
 }
 
