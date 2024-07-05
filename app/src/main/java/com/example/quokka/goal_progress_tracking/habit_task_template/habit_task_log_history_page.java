@@ -41,6 +41,7 @@ public class habit_task_log_history_page extends AppCompatActivity {
 
     //Intent variables
     private String taskName;
+    private String taskDescription;
     private String goal;
     private String startDate;
     private String dueDate;
@@ -71,33 +72,14 @@ public class habit_task_log_history_page extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         // Get task information from intent
-        Intent intent = getIntent();
-        if (intent != null) {
-            taskId = intent.getStringExtra("taskId");
-            taskName = intent.getStringExtra("taskName");
-            goal = intent.getStringExtra("goal");
-            startDate = intent.getStringExtra("startDate");
-            dueDate = intent.getStringExtra("dueDate");
-            taskPosition = intent.getIntExtra("taskPosition", -1);
-        }
+        fetchIntentData();
 
 
         // Handle back button click
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate back to the previous activity
-                Intent intent = new Intent(getApplicationContext(), habit_task_page.class);
-                intent.putExtra("taskName", taskName);
-                intent.putExtra("goal", goal);
-                intent.putExtra("startDate", startDate);
-                intent.putExtra("dueDate", dueDate);
-
-                // Pass the position of the clicked task
-                intent.putExtra("taskPosition", taskPosition);
-                intent.putExtra("taskId", taskId);
-                startActivity(intent);
-                finish();
+                sendIntentData(habit_task_page.class);
             }
         });
 
@@ -128,13 +110,44 @@ public class habit_task_log_history_page extends AppCompatActivity {
             public void onItemClick(int position) {
                 // Redirect to the edit_existing_average_log activity
                 habit_log log = previousLogsList.get(position);
-                Intent intent = new Intent(getApplicationContext(), edit_existing_average_log.class);
+                Intent intent = new Intent(getApplicationContext(), edit_existing_habit_log.class);
                 intent.putExtra("logId", log.getId()); // Pass the log ID
                 intent.putExtra("taskId", taskId); // Pass the task ID
                 intent.putExtra("position", position);
+                intent.putExtra("taskName", taskName);
+                intent.putExtra("taskDescription", taskDescription);
+                intent.putExtra("goal", goal);
+                intent.putExtra("startDate", startDate);
+                intent.putExtra("dueDate", dueDate);
+                intent.putExtra("taskPosition", taskPosition);
                 startActivityForResult(intent, RequestCodes.EDIT_LOG_REQUEST_CODE);
             }
         });
+    }
+
+    private void fetchIntentData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            taskId = intent.getStringExtra("taskId");
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            goal = intent.getStringExtra("goal");
+            startDate = intent.getStringExtra("startDate");
+            dueDate = intent.getStringExtra("dueDate");
+            taskPosition = intent.getIntExtra("taskPosition", -1);
+        }
+    }
+
+    private void sendIntentData(Class<?> destination) {
+        Intent intent = new Intent(getApplicationContext(), destination);
+        intent.putExtra("taskName", taskName);
+        intent.putExtra("taskDescription", taskDescription);
+        intent.putExtra("goal", goal);
+        intent.putExtra("startDate", startDate);
+        intent.putExtra("dueDate", dueDate);
+        intent.putExtra("taskPosition", taskPosition);
+        intent.putExtra("taskId", taskId);
+        startActivity(intent);
     }
 
     private void loadLogsFromFirestore() {
@@ -170,6 +183,7 @@ public class habit_task_log_history_page extends AppCompatActivity {
                     Toast.makeText(this, "Error fetching logs: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     @Override
     protected void onResume() {

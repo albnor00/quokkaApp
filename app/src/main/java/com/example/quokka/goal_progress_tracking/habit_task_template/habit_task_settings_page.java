@@ -81,20 +81,7 @@ public class habit_task_settings_page extends AppCompatActivity {
         dateFormat = new SimpleDateFormat("d.M.yyyy", Locale.getDefault());
 
 
-        // Get task information from intent
-        Intent intent = getIntent();
-        if (intent != null) {
-            taskId = intent.getStringExtra("taskId");
-            taskName = intent.getStringExtra("taskName");
-            taskDescription = intent.getStringExtra("taskDescription");
-            goal = intent.getStringExtra("goal");
-            startDate = intent.getStringExtra("startDate");
-            dueDate = intent.getStringExtra("dueDate");
-            taskPosition = intent.getIntExtra("taskPosition", -1);
-
-        } else {
-            Log.e("Intent Data", "Intent is null");
-        }
+        fetchIntentData();
 
         // Set current values to the views
         name_card.setText(taskName);
@@ -118,22 +105,7 @@ public class habit_task_settings_page extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create an intent to start the add_new_average_log activity
-                Intent intent = new Intent(getApplicationContext(), habit_task_page.class);
-
-                // Pass necessary data to the add_new_average_log activity
-                intent.putExtra("taskName", taskName);
-                intent.putExtra("taskDescription", taskDescription);
-                intent.putExtra("goal", goal);
-                intent.putExtra("startDate", startDate);
-                intent.putExtra("dueDate", startDate);
-
-                // Pass the position of the clicked task
-                intent.putExtra("taskPosition", taskPosition);
-                intent.putExtra("taskId", taskId);
-
-                // Start the activity
-                startActivity(intent);
+                sendIntentData(habit_task_page.class);
             }
         });
 
@@ -182,6 +154,31 @@ public class habit_task_settings_page extends AppCompatActivity {
                 builder.show();
             }
         });
+    }
+
+    private void fetchIntentData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            taskId = intent.getStringExtra("taskId");
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            goal = intent.getStringExtra("goal");
+            startDate = intent.getStringExtra("startDate");
+            dueDate = intent.getStringExtra("dueDate");
+            taskPosition = intent.getIntExtra("taskPosition", -1);
+        }
+    }
+
+    private void sendIntentData(Class<?> destination) {
+        Intent intent = new Intent(getApplicationContext(), destination);
+        intent.putExtra("taskName", taskName);
+        intent.putExtra("taskDescription", taskDescription);
+        intent.putExtra("goal", goal);
+        intent.putExtra("startDate", startDate);
+        intent.putExtra("dueDate", dueDate);
+        intent.putExtra("taskPosition", taskPosition);
+        intent.putExtra("taskId", taskId);
+        startActivity(intent);
     }
 
     // Method to show numerical keyboard for editTextGoal

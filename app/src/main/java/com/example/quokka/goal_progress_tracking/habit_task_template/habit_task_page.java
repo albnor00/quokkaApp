@@ -40,15 +40,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -60,11 +63,9 @@ public class habit_task_page extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
 
-    private TextView progressTextView, progressNumber, goalMet_or_goalNotMet;
+    private TextView progressTextView, progressNumber, goalMet_or_goalNotMet, bestStreakTextView, currentStreakTextView;
     private HashMap<String, Integer> progressMap; // Map to store progress for each date
     private String lastClickedDate;
-    private boolean isDoubleClick;
-    private Handler handler = new Handler();
 
     // Intent variables
     private String taskName;
@@ -75,39 +76,32 @@ public class habit_task_page extends AppCompatActivity {
     private int taskPosition;
     private String taskId;
 
+    private boolean isDoubleClick = false;
+    private static final long DOUBLE_CLICK_THRESHOLD = 300; // 300ms for double click detection
+    private Handler doubleClickHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_task_page);
 
-        auth = FirebaseAuth.getInstance();
-        calendarView = findViewById(R.id.calendar);
-        circularProgressBar = findViewById(R.id.circularProgressbar);
-        progressMap = new HashMap<>();
         ImageView back = findViewById(R.id.img_back);
         ImageView menu = findViewById(R.id.img_menu);
-        progressNumber = findViewById(R.id.habit_tracker);
-        progressTextView = findViewById(R.id.progress_in_percent);
-        goalMet_or_goalNotMet = findViewById(R.id.goal_met_or_not_met_label);
 
-        // Get task details from intent
-        Intent intent = getIntent();
-        if (intent != null) {
-            taskId = intent.getStringExtra("taskId");
-            taskName = intent.getStringExtra("taskName");
-            taskDescription = intent.getStringExtra("taskDescription");
-            goal = intent.getStringExtra("goal");
-            startDate = intent.getStringExtra("startDate");
-            dueDate = intent.getStringExtra("dueDate");
-            taskPosition = intent.getIntExtra("taskPosition", -1);
-        }
+        fetchIntentData();
+        initializeUIComponents();
 
         // Call the method to create logs for missed days
         createLogsForMissedDays();
 
         // Fetch progress logs initially and set up UI
         fetchProgressLogsAndSetUpUI();
+
+        // Do the same fo todays date
+        fetchProgressFromFirestore(getCurrentDate());
+
+        // Calculate streaks
+        fetchAndCalculateStreaks();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,33 +123,9 @@ public class habit_task_page extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                // Generate a unique key for the selected date
-                //String selectedDate = year + "/" + (month + 1) + "/" + dayOfMonth;
-                String selectedDate = dayOfMonth + "/" +(month+1)+ "/" +year;
-
-                if (!isDoubleClick) {
-                    // If it's a single click, show the progress for the selected date
-                    updateProgress(progressMap.getOrDefault(selectedDate, 0));
-                    isDoubleClick = true;
-                    lastClickedDate = selectedDate;
-
-                    // Reset isDoubleClick after a delay
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            isDoubleClick = false;
-                        }
-                    }, 500); // Adjust the delay as needed
-                } else {
-                    // If it's a double click, increment the progress for the selected date
-                    if (selectedDate.equals(lastClickedDate)) {
-                        incrementProgress(selectedDate);
-                        isDoubleClick = false;
-                    }
-                }
+                handleDateChange(year, month, dayOfMonth);
             }
         });
-
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -178,13 +148,37 @@ public class habit_task_page extends AppCompatActivity {
                 return true; // Return true to indicate that the item selection has been handled
             }
         });
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fetchProgressLogsAndSetUpUI();
+    private void initializeUIComponents() {
+        auth = FirebaseAuth.getInstance();
+        calendarView = findViewById(R.id.calendar);
+
+        circularProgressBar = findViewById(R.id.circularProgressbar);
+        progressMap = new HashMap<>();
+        progressTextView = findViewById(R.id.progress_in_percent);
+        progressNumber = findViewById(R.id.habit_tracker);
+        goalMet_or_goalNotMet = findViewById(R.id.goal_met_or_not_met_label);
+        bestStreakTextView = findViewById(R.id.text_best_streak_value);
+        currentStreakTextView = findViewById(R.id.text_streak_value);
+
+        TextView title = findViewById(R.id.text_task_name);
+        TextView description = findViewById(R.id.text_task_description);
+        title.setText(taskName);
+        description.setText(taskDescription);
+    }
+
+    private void fetchIntentData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            taskId = intent.getStringExtra("taskId");
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            goal = intent.getStringExtra("goal");
+            startDate = intent.getStringExtra("startDate");
+            dueDate = intent.getStringExtra("dueDate");
+            taskPosition = intent.getIntExtra("taskPosition", -1);
+        }
     }
 
     private void showPopupMenu(View view) {
@@ -204,89 +198,124 @@ public class habit_task_page extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_history) {
-            // Create an intent to start the add_new_average_log activity
-            Intent intent = new Intent(getApplicationContext(), habit_task_log_history_page.class);
-
-            // Pass necessary data to the add_new_average_log activity
-            intent.putExtra("taskName", taskName);
-            intent.putExtra("taskDescription", taskDescription);
-            intent.putExtra("startGoal", goal);
-            intent.putExtra("startDate", startDate);
-            intent.putExtra("dueDate", dueDate);
-
-            // Pass the position of the clicked task
-            intent.putExtra("taskPosition", taskPosition);
-            intent.putExtra("taskId", taskId);
-
-            // Start the activity
-            startActivity(intent);
+            sendIntentData(habit_task_log_history_page.class);
             return true;
         } else if (id == R.id.action_settings) {
-            // Create an intent to start the add_new_average_log activity
-            Intent intent = new Intent(getApplicationContext(), habit_task_settings_page.class);
-
-            // Pass necessary data to the add_new_average_log activity
-            intent.putExtra("taskName", taskName);
-            intent.putExtra("taskDescription", taskDescription);
-            intent.putExtra("goal", goal);
-            intent.putExtra("startDate", startDate);
-            intent.putExtra("dueDate", dueDate);
-
-            // Pass the position of the clicked task
-            intent.putExtra("taskPosition", taskPosition);
-            intent.putExtra("taskId", taskId);
-
-            // Start the activity
-            startActivity(intent);
+            sendIntentData(habit_task_settings_page.class);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
-    private void incrementProgress(final String selectedDate) {
-        Log.d(TAG, "Selected Date: " + selectedDate);
-        user = auth.getCurrentUser();
+    private void sendIntentData(Class<?> destination) {
+        Intent intent = new Intent(getApplicationContext(), destination);
+        intent.putExtra("taskName", taskName);
+        intent.putExtra("taskDescription", taskDescription);
+        intent.putExtra("goal", goal);
+        intent.putExtra("startDate", startDate);
+        intent.putExtra("dueDate", dueDate);
+        intent.putExtra("taskPosition", taskPosition);
+        intent.putExtra("taskId", taskId);
+        startActivity(intent);
+    }
+
+    private void handleDateChange(int year, int month, int dayOfMonth) {
+        final String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
+
+        // Convert startDate to use slashes (/) instead of dots (.)
+        String habitStartDateConverted = startDate.replace(".", "/");
+
+        // Compare the selected date with the start date
+        if (compareDates(selectedDate, habitStartDateConverted) < 0) {
+            // Show a message to the user that the selected date is before the start date
+            Toast.makeText(this, "Cannot save progress for a date before the start date.", Toast.LENGTH_SHORT).show();
+            return; // Exit the method without updating progress
+        }
+
+        if (selectedDate.equals(lastClickedDate) && isDoubleClick) {
+            doubleClickHandler.removeCallbacksAndMessages(null);
+            isDoubleClick = false;
+            incrementProgressLog(taskId, selectedDate);
+            fetchAndCalculateStreaks();
+        } else {
+            lastClickedDate = selectedDate;
+            isDoubleClick = true;
+            doubleClickHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isDoubleClick = false;
+                    fetchProgressForDate(selectedDate);
+                }
+            }, DOUBLE_CLICK_THRESHOLD);
+
+            fetchProgressForDate(selectedDate);
+        }
+    }
+
+    private void fetchProgressForDate(String selectedDate) {
+        // Retrieve progress for the selected date from progressMap
+        if (progressMap.containsKey(selectedDate)) {
+            updateProgress(progressMap, selectedDate);
+        } else {
+            fetchProgressFromFirestore(selectedDate);
+        }
+    }
+
+    private void fetchProgressFromFirestore(String selectedDate) {
+        FirebaseUser user = auth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = user.getUid();
 
-        // Retrieve the habit start date from the database
-        db.collection("users")
-                .document(userId)
-                .collection("habit")
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date date;
+        try {
+            date = dateFormat.parse(selectedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        db.collection("users").document(userId)
+                .collection("Goal").document("habitTasks")
+                .collection("habit_tasks").document(taskId)
+                .collection("loggedLogs")
+                .whereEqualTo("date", date)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
-                            if (documentSnapshot.contains("startDate")) {
-                                String habitStartDate = documentSnapshot.getString("startDate");
-                                // Compare the selected date with the habit start date
-                                if (compareDates(selectedDate, habitStartDate) >= 0) {
-                                    // If selected date is equal to or greater than habit start date, proceed with incrementing progress
-                                    incrementProgressForDate(selectedDate);
-                                } else {
-                                    // If selected date is before habit start date, show a message or handle it accordingly
-                                    // For example, you can display a toast indicating that the selected date is invalid
-                                    Toast.makeText(getApplicationContext(), "Selected date is invalid", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error retrieving habit start date from database", e);
-                        // Handle failure
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        int progress = document.getLong("log").intValue();
+                        progressMap.put(selectedDate, progress);
+                        updateProgress(progressMap, selectedDate);
+                    } else {
+                        updateProgress(progressMap, selectedDate); // No progress found, update with 0
                     }
                 });
     }
 
-    // Method to increment progress for the selected date
-    private void incrementProgressForDate(final String selectedDate) {
-        user = auth.getCurrentUser();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchProgressLogsAndSetUpUI();
+        fetchProgressFromFirestore(getCurrentDate());
+        fetchAndCalculateStreaks();
+    }
+
+    private int compareDates(String selectedDate, String habitStartDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        try {
+            Date date1 = sdf.parse(selectedDate);
+            Date date2 = sdf.parse(habitStartDate);
+            return date1.compareTo(date2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private void fetchProgressLogsAndSetUpUI() {
+        FirebaseUser user = auth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = user.getUid();
 
@@ -296,71 +325,49 @@ public class habit_task_page extends AppCompatActivity {
                 .document("habitTasks")
                 .collection("habit_tasks")
                 .document(taskId)
+                .collection("loggedLogs")
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            if (documentSnapshot.contains("goal")) {
-
-                                Object goalObject = documentSnapshot.get("goal");
-                                int goal = 0;
-                                if (goalObject instanceof Number) {
-                                    goal = ((Number) goalObject).intValue();
-                                } else if (goalObject instanceof String) {
-                                    try {
-                                        goal = Integer.parseInt((String) goalObject);
-                                    } catch (NumberFormatException e) {
-                                        Log.e(TAG, "Goal string is not a valid integer: " + goalObject, e);
-                                        Toast.makeText(habit_task_page.this, "Goal value is not a valid number", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                } else {
-                                    Log.e(TAG, "Goal is neither a number nor a string: " + goalObject);
-                                    Toast.makeText(habit_task_page.this, "Goal value is not valid", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                circularProgressBar.setMax(goal); // Set the maximum value of the progress bar
-                                int progress = progressMap.getOrDefault(selectedDate, 0);
-                                if (progress < goal) {
-                                    progress += 1; // Increment the progress by 1
-                                    progressMap.put(selectedDate, progress);
-                                    updateProgress(progress);
-
-                                    // Save progress log to Firestore
-                                    saveProgressLog(taskId, selectedDate, progress);
-                                }
-                            }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        progressMap.clear();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            String date = formatDate(document.getDate("date"));
+                            int progress = document.getLong("log").intValue();
+                            progressMap.put(date, progress);
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error retrieving goal from database", e);
-                        // Handle failure
+                        // Update the UI with the progress data for the current or selected date
+                        String selectedDate = lastClickedDate != null ? lastClickedDate : getCurrentDate();
+                        updateProgress(progressMap, selectedDate);
+                    } else {
+                        Log.d(TAG, "Error getting progress logs: ", task.getException());
                     }
                 });
     }
 
-    private void saveProgressLog(final String taskId, final String selectedDate, final int progress) {
+    private void incrementProgressLog(final String taskId, final String selectedDate) {
+        // Convert startDate to use slashes (/) instead of dots (.)
+        String habitStartDateConverted = startDate.replace(".", "/");
+
+        // Compare the selected date with the start date
+        if (compareDates(selectedDate, habitStartDateConverted) < 0) {
+            // Show a message to the user that the selected date is before the start date
+            Toast.makeText(this, "Cannot save progress for a date before the start date.", Toast.LENGTH_SHORT).show();
+            return; // Exit the method without updating progress
+        }
+
         user = auth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = user.getUid();
 
-        // Convert the selectedDate string to a Date object
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         Date date;
         try {
             date = dateFormat.parse(selectedDate);
         } catch (ParseException e) {
             e.printStackTrace();
-            // Handle parse exception if needed
-            return; // Exit the method if date parsing fails
+            return;
         }
 
-        // Check if a log for the selected date already exists
         db.collection("users").document(userId)
                 .collection("Goal").document("habitTasks")
                 .collection("habit_tasks").document(taskId)
@@ -369,35 +376,33 @@ public class habit_task_page extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        // If a log exists, update it
-                        DocumentSnapshot existingLog = queryDocumentSnapshots.getDocuments().get(0);
-                        String logId = existingLog.getId();
-                        updateExistingLog(taskId, logId, progress);
+                        // If the document exists, update the progress
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        String logId = document.getId();
+                        int currentProgress = document.getLong("log").intValue();
+                        updateExistingLog(taskId, logId, currentProgress + 1);
                     } else {
-                        // If no log exists, create a new one
-                        String logId = UUID.randomUUID().toString(); // Generate a unique ID for the log
-                        habit_log newLog = new habit_log(logId, progress, "", date);
-
+                        // If the document doesn't exist, create a new one
+                        String logId = UUID.randomUUID().toString();
+                        habit_log newLog = new habit_log(logId, 1, "", date);
                         db.collection("users").document(userId)
                                 .collection("Goal").document("habitTasks")
                                 .collection("habit_tasks").document(taskId)
-                                .collection("loggedLogs") // Collection for progress logs
-                                .document(logId) // Use the generated ID as the document ID
+                                .collection("loggedLogs")
+                                .document(logId)
                                 .set(newLog)
                                 .addOnSuccessListener(aVoid -> {
-                                    // Log added successfully
                                     Log.d(TAG, "Progress log saved successfully.");
-                                    // Update UI after saving log
-                                    updateUIAfterProgressSave();
+                                    // Update the progress map and UI after creating the log
+                                    progressMap.put(selectedDate, 1);
+                                    updateProgress(progressMap, selectedDate);
                                 })
                                 .addOnFailureListener(e -> {
-                                    // Error occurred while adding log
                                     Toast.makeText(this, "Error saving progress log: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Error occurred while checking existing logs
                     Toast.makeText(this, "Error checking progress log: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
@@ -418,8 +423,9 @@ public class habit_task_page extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     // Log updated successfully
                     Log.d(TAG, "Progress log updated successfully.");
-                    // Update UI after updating log
-                    updateUIAfterProgressSave();
+                    // Update progress map and UI after updating log
+                    progressMap.put(lastClickedDate, progress);
+                    updateProgress(progressMap, lastClickedDate);
                 })
                 .addOnFailureListener(e -> {
                     // Error occurred while updating log
@@ -427,71 +433,11 @@ public class habit_task_page extends AppCompatActivity {
                 });
     }
 
-    private void fetchProgressLogsAndSetUpUI() {
-        FirebaseUser user = auth.getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String userId = user.getUid();
-
-        db.collection("users")
-                .document(userId)
-                .collection("Goal")
-                .document("habitTasks")
-                .collection("habit_tasks")
-                .document(taskId)
-                .collection("loggedLogs") // Fetch progress from the loggedLogs collection
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-                            if (!querySnapshot.isEmpty()) {
-                                progressMap.clear();
-                                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                                    String date = formatDate(document.getDate("date"));
-                                    int progress = document.getLong("log").intValue();
-                                    progressMap.put(date, progress);
-                                }
-                                updateUIWithProgressData(progressMap);
-                            } else {
-                                Log.d(TAG, "No progress data found for this task");
-                            }
-                        } else {
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
-                    }
-                });
-    }
-
-    private void updateUIWithProgressData(Map<String, Integer> progress) {
-        // Example to update UI for the current date
-        String currentDate = getCurrentDate();
-        if (progress.containsKey(currentDate)) {
-            updateProgress(progress.get(currentDate));
-        } else {
-            updateProgress(0);
-        }
-    }
-
-    private void updateUIAfterProgressSave() {
-        // After saving or updating progress log, update UI components
-        updateUI();
-    }
-
-    private void updateUI() {
-        // Get the progress for the last clicked date or today's date as default
-        String selectedDate = lastClickedDate != null ? lastClickedDate : getCurrentDate();
-        int progress = progressMap.getOrDefault(selectedDate, 0);
-        updateProgress(progress);
-    }
-
-    // Method to format Date object to String (dd/MM/yyyy)
     private String formatDate(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         return sdf.format(date);
     }
 
-    // Helper method to get current date as String (dd/MM/yyyy)
     private String getCurrentDate() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -505,29 +451,26 @@ public class habit_task_page extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = user.getUid();
 
-        // Convert startDate string to a Date object
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+        // Convert startDate to use slashes (/) instead of dots (.)
+        String habitStartDateConverted = startDate.replace(".", "/");
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         Date startDateObj;
         try {
-            startDateObj = dateFormat.parse(startDate);
+            startDateObj = dateFormat.parse(habitStartDateConverted);
         } catch (ParseException e) {
             e.printStackTrace();
-            // Handle parse exception if needed
-            return; // Exit the method if date parsing fails
+            return;
         }
 
-        // Get today's date
         Date todayDate = new Date();
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDateObj);
 
-        // Iterate from startDate to today's date
         while (!calendar.getTime().after(todayDate)) {
             final Date currentDate = calendar.getTime();
             final String currentDateString = dateFormat.format(currentDate);
 
-            // Check if a log for the current date already exists
             db.collection("users").document(userId)
                     .collection("Goal").document("habitTasks")
                     .collection("habit_tasks").document(taskId)
@@ -536,7 +479,6 @@ public class habit_task_page extends AppCompatActivity {
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (queryDocumentSnapshots.isEmpty()) {
-                            // If no log exists, create a new one with default progress value 0
                             String logId = UUID.randomUUID().toString();
                             habit_log newLog = new habit_log(logId, 0, "", currentDate);
 
@@ -547,11 +489,9 @@ public class habit_task_page extends AppCompatActivity {
                                     .document(logId)
                                     .set(newLog)
                                     .addOnSuccessListener(aVoid -> {
-                                        // Log added successfully
                                         Log.d(TAG, "Progress log for " + currentDateString + " saved successfully.");
                                     })
                                     .addOnFailureListener(e -> {
-                                        // Error occurred while adding log
                                         Log.e(TAG, "Error saving progress log for " + currentDateString + ": " + e.getMessage(), e);
                                     });
                         } else {
@@ -559,30 +499,15 @@ public class habit_task_page extends AppCompatActivity {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        // Error occurred while checking existing logs
                         Log.e(TAG, "Error checking progress log for " + currentDateString + ": " + e.getMessage(), e);
                     });
 
-            // Move to the next day
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
     }
 
-    // Helper method to compare two dates
-    private int compareDates(String date1, String date2) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
-        try {
-            Date d1 = dateFormat.parse(date1);
-            Date d2 = dateFormat.parse(date2);
-            return d1.compareTo(d2);
-        } catch (ParseException e) {
-            Log.e(TAG, "Date parsing error", e);
-        }
-        return 0;
-    }
-
-    // Method to update progress of the circular progress bar
-    private void updateProgress(int currentProgress) {
+    private void updateProgress(Map<String, Integer> progressMap, String selectedDate) {
+        int currentProgress = progressMap.getOrDefault(selectedDate, 0);
         String goalString = goal;
         int goal = 0;
         try {
@@ -594,6 +519,12 @@ public class habit_task_page extends AppCompatActivity {
         }
 
         int percentage = (int) ((currentProgress / (float) goal) * 100);
+
+        Log.d("ProgressDebug", "Current Progress: " + currentProgress);
+        Log.d("ProgressDebug", "Goal: " + goal);
+        Log.d("ProgressDebug", "Percentage: " + percentage);
+
+
         circularProgressBar.setProgress(percentage);
         progressTextView.setText(percentage + "%");
         progressNumber.setText(currentProgress + "/" + goal);
@@ -603,5 +534,110 @@ public class habit_task_page extends AppCompatActivity {
         } else {
             goalMet_or_goalNotMet.setText("Goal Not Met");
         }
+    }
+
+    private void fetchAndCalculateStreaks() {
+        FirebaseUser user = auth.getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = user.getUid();
+
+        db.collection("users")
+                .document(userId)
+                .collection("Goal")
+                .document("habitTasks")
+                .collection("habit_tasks")
+                .document(taskId)
+                .collection("loggedLogs")
+                .orderBy("date", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<habit_log> logs = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            String id = document.getId();
+                            int log = document.getLong("log").intValue();
+                            String note = document.getString("note");
+                            Date date = document.getDate("date");
+                            logs.add(new habit_log(id, log, note, date));
+                        }
+                        calculateStreaks(logs);
+                    } else {
+                        Log.d(TAG, "Error fetching logs: ", task.getException());
+                    }
+                });
+    }
+
+    private void calculateStreaks(List<habit_log> logs) {
+        if (logs.isEmpty()) {
+            updateStreakUI(0, 0);
+            return;
+        }
+
+        int currentStreak = 0;
+        int bestStreak = 0;
+        Date lastLogDate = null;
+
+        // Iterate through logs starting from the oldest date
+        for (int i = logs.size() - 1; i >= 0; i--) {
+            habit_log log = logs.get(i);
+            Date logDate = log.getDate();
+            int logValue = log.getLog();
+
+            if (logValue > 0) {
+                if (lastLogDate == null) {
+                    // First log, start the current streak
+                    currentStreak = 1;
+                } else {
+                    if (isNextDay(lastLogDate, logDate)) {
+                        // Continue the streak
+                        currentStreak++;
+                    } else {
+                        // Streak is broken, update the best streak if necessary
+                        if (currentStreak > bestStreak) {
+                            bestStreak = currentStreak;
+                        }
+                        currentStreak = 1; // Start a new streak with the current log
+                    }
+                }
+            } else {
+                // Non-contributing log, streak is broken, update the best streak if necessary
+                if (currentStreak > bestStreak) {
+                    bestStreak = currentStreak;
+                }
+                currentStreak = 0;
+            }
+
+            lastLogDate = logDate;
+        }
+
+        // Final check after the loop
+        if (currentStreak > bestStreak) {
+            bestStreak = currentStreak;
+        }
+
+        updateStreakUI(currentStreak, bestStreak);
+    }
+
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    private boolean isNextDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+        cal1.add(Calendar.DAY_OF_YEAR, 1);
+        return isSameDay(cal1.getTime(), cal2.getTime());
+    }
+
+    private void updateStreakUI(int currentStreak, int bestStreak) {
+        currentStreakTextView.setText(String.valueOf(currentStreak));
+        bestStreakTextView.setText(String.valueOf(bestStreak));
     }
 }
