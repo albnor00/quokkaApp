@@ -15,8 +15,7 @@ import androidx.appcompat.widget.SearchView;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
-import com.example.quokka.profile.ProfileActivity;
-import com.example.quokka.tasks.balance_wheel;
+import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,15 +26,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class group_join extends AppCompatActivity {
     ImageView back_btn;
@@ -177,7 +173,7 @@ public class group_join extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user, group_join.this);
+                    MainActivity.checkUserRole2(user, group_join.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));

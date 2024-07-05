@@ -1,0 +1,191 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_arrow_back_ios_new_24" />
+
+    <TextView
+        android:id="@+id/text_task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task name"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/text_task_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_task_name"
+        android:text="Task description"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp" />
+
+    <ImageView
+        android:id="@+id/img_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_menu_24" />
+
+    <!-- CalendarView -->
+    <CalendarView
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/text_task_description"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/calendar">
+
+        <!-- Circular Progress Bar -->
+        <ProgressBar
+            android:id="@+id/circularProgressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/circular"
+            android:secondaryProgress="100" />
+
+
+        <TextView
+            android:id="@+id/progress_in_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="0%"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_marginTop="90dp"
+            android:id="@+id/goal_met_or_not_met_label"
+            android:textSize="10sp"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="105dp"
+            android:text="Goal Not Met"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_marginTop="140dp"
+            android:id="@+id/habit_tracker"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="115dp"
+            android:text="0/10"
+            android:textStyle="bold"/>
+
+        <FrameLayout
+            android:id="@+id/frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+
+        </FrameLayout>
+
+
+    </RelativeLayout>
+
+    <!-- Streak Section -->
+    <TextView
+        android:id="@+id/text_streak_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="470dp"
+        android:text="Current Streak:"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/text_streak_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_streak_label"
+        android:layout_alignStart="@id/text_streak_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="20dp"
+        android:text="Days in a row"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/text_streak_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_streak_description"
+        android:layout_alignStart="@id/text_streak_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="40dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text_best_streak_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="470dp"
+        android:text="Best Streak:"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/text_best_streak_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_best_streak_label"
+        android:layout_alignStart="@id/text_best_streak_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="10dp"
+        android:text="Days in a row"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/text_best_streak_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_streak_description"
+        android:layout_alignStart="@id/text_best_streak_label"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="30dp"
+        android:text="0"
+        android:textSize="24sp" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

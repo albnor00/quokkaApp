@@ -18,8 +18,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
-import com.example.quokka.profile.ProfileActivity;
-import com.example.quokka.tasks.balance_wheel;
+import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,7 +31,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +109,7 @@ public class habitTrackerMonth extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user, habitTrackerMonth.this);
+                    MainActivity.checkUserRole2(user, habitTrackerMonth.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));
