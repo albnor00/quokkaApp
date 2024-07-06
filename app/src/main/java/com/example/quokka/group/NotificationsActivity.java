@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
-import com.example.quokka.profile.ProfileActivity;
+import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -66,7 +66,7 @@ public class NotificationsActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole(user, NotificationsActivity.this);
+                    MainActivity.checkUserRole2(user, NotificationsActivity.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));

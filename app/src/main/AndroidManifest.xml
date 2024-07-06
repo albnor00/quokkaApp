@@ -75,14 +75,6 @@
         <activity android:name=".goal_progress_tracking.habit_task_template.add_new_habit_log" />
         <activity android:name=".goal_progress_tracking.habit_task_template.edit_existing_habit_log" />
 
-
-        <activity android:name=".template.habit" />
-        <activity android:name=".template.habitTrackerDay" />
-        <activity android:name=".template.habitTrackerMonth" />
-        <activity android:name=".template.habitTrackerWeek" />
-        <activity android:name=".template.habitTrackerYear" />
-        <activity android:name=".template.templateMain" />
-
         <activity android:name=".goal_progress_tracking.goal_page_v2.Goal_empty_page"/>
         <activity android:name=".goal_progress_tracking.goal_page_v2.Goal_non_empty_page"/>
         <activity android:name=".goal_progress_tracking.goal_page_v2.choose_task_template"/>

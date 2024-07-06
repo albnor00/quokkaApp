@@ -22,7 +22,6 @@ import com.example.quokka.goal_progress_tracking.goal_setup.Question3;
 import com.example.quokka.goal_progress_tracking.goal_setup.Question4;
 import com.example.quokka.goal_progress_tracking.goal_setup.Question5;
 import com.example.quokka.tasks.profile.ProfileActivity;
-import com.example.quokka.template.templateMain;
 import com.example.quokka.ui.login.Login;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;

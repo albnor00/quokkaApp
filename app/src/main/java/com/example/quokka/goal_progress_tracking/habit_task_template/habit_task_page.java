@@ -25,10 +25,9 @@ import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.target_task_template.target_task_log_history_page;
 import com.example.quokka.goal_progress_tracking.target_task_template.target_task_settings_page;
+
 import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
-import com.example.quokka.template.habit;
-import com.example.quokka.template.habitTrackerDay;
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
