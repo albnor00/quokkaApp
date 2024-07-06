@@ -80,10 +80,10 @@ public class average_task_page extends AppCompatActivity {
     private String taskName;
     private String taskDescription;
     private String goal;
-    private String timePeriod;
     private String startDate;
     private int taskPosition;
     private String taskId;
+    private String dueDate;
     private boolean isMoreOrLess;
 
     @Override
@@ -111,7 +111,7 @@ public class average_task_page extends AppCompatActivity {
             taskDescription = intent.getStringExtra("taskDescription");
             taskName = intent.getStringExtra("taskName");
             goal = intent.getStringExtra("goal");
-            timePeriod = intent.getStringExtra("timePeriod");
+            dueDate = intent.getStringExtra("dueDate");
             startDate = intent.getStringExtra("startDate");
             taskPosition = intent.getIntExtra("taskPosition", -1);
         }
@@ -199,7 +199,7 @@ public class average_task_page extends AppCompatActivity {
         String userId = auth.getCurrentUser().getUid();
 
         db.collection("users").document(userId)
-                .collection("Goal").document("averageTasks").collection("tasks")
+                .collection("Goal").document("averageTasks").collection("average_tasks")
                 .document(taskId)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -214,6 +214,7 @@ public class average_task_page extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load goalMoreOrLess. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 
     private void getDescriptionFromFirestore() {
@@ -265,8 +266,8 @@ public class average_task_page extends AppCompatActivity {
             intent.putExtra("taskName", taskName);
             intent.putExtra("taskDescription", taskDescription);
             intent.putExtra("goal", goal);
-            intent.putExtra("timePeriod", timePeriod);
             intent.putExtra("startDate", startDate);
+            intent.putExtra("dueDate", dueDate);
 
             // Pass the position of the clicked task
             intent.putExtra("taskPosition", taskPosition);
@@ -283,7 +284,7 @@ public class average_task_page extends AppCompatActivity {
             intent.putExtra("taskName", taskName);
             intent.putExtra("taskDescription", taskDescription);
             intent.putExtra("goal", goal);
-            intent.putExtra("timePeriod", timePeriod);
+            intent.putExtra("dueDate", dueDate);
             intent.putExtra("startDate", startDate);
 
             // Pass the position of the clicked task

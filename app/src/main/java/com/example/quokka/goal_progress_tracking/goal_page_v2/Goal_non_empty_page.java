@@ -173,7 +173,7 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
             intent.putExtra("taskName", task.getName());
             intent.putExtra("taskDescription", task.getDescription());
             intent.putExtra("goal", task.getGoal());
-            intent.putExtra("timePeriod", task.getTimePeriod());
+            intent.putExtra("dueDate", task.getDueDate());
             intent.putExtra("startDate", task.getStartDate());
             // Start the activity
             startActivity(intent);
@@ -190,6 +190,7 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
             intent.putExtra("endGoal", task2.getEndGoal());
             intent.putExtra("startDate", task2.getStartDate());
             intent.putExtra("endDate", task2.getEndDate());
+            intent.putExtra("dueDate", task2.getDueDate());
             // Start the activity
             startActivity(intent);
         } else if (clickedTask instanceof Task3) {
@@ -202,9 +203,8 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
             intent.putExtra("taskName", task3.getName());
             intent.putExtra("taskDescription", task3.getDescription());
             intent.putExtra("goal", task3.getGoal());
-            intent.putExtra("timePeriod", task3.getTimePeriod());
-            intent.putExtra("startDate", task3.getStartDate());
             intent.putExtra("dueDate", task3.getDueDate());
+            intent.putExtra("startDate", task3.getStartDate());
             // Start the activity
             startActivity(intent);
         }
@@ -228,11 +228,11 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
                             String taskName = documentSnapshot.getString("name");
                             String taskDescription = documentSnapshot.getString("taskDescription");
                             String goal = documentSnapshot.getString("goal");
-                            String timePeriod = documentSnapshot.getString("timePeriod");
+                            String dueDate = documentSnapshot.getString("dueDate");
                             String startDate = documentSnapshot.getString("startDate");
                             String taskId = documentSnapshot.getString("taskId");
 
-                            Task task = new Task(taskName, taskDescription, goal, timePeriod, startDate, taskId);
+                            Task task = new Task(taskName, taskDescription, goal, dueDate, startDate, taskId);
                             taskList.add(task);
                         }
                         taskAdapter.notifyDataSetChanged();
@@ -253,9 +253,10 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
                             String endGoal = documentSnapshot.getString("endGoal");
                             String startDate = documentSnapshot.getString("startDate");
                             String endDate = documentSnapshot.getString("endDate");
+                            String dueDate = documentSnapshot.getString("dueDate");
                             String taskId = documentSnapshot.getString("taskId");
 
-                            Task2 task2 = new Task2(taskName, taskDescription, startGoal, endGoal, startDate, endDate, taskId);
+                            Task2 task2 = new Task2(taskName, taskDescription, startGoal, endGoal, startDate, endDate, dueDate, taskId);
                             taskList.add(task2);
                         }
                         taskAdapter.notifyDataSetChanged();
@@ -278,7 +279,7 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
                             String dueDate = documentSnapshot.getString("dueDate");
                             String taskId = documentSnapshot.getString("taskId");
 
-                            Task3 task3 = new Task3(taskName, taskDescription, goal, timePeriod, startDate, dueDate, taskId);
+                            Task3 task3 = new Task3(taskName, taskDescription, goal, startDate, dueDate, taskId);
                             taskList.add(task3);
                         }
                         taskAdapter.notifyDataSetChanged();

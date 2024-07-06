@@ -94,6 +94,16 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/edit_start_date" />
 
+    <include layout="@layout/item_due_date_button"
+        android:id="@+id/edit_dueDate"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/edit_end_date" />
+
     <include layout="@layout/item_reminder_button"
         android:id="@+id/edit_reminder"
         android:layout_width="400dp"
@@ -102,6 +112,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_end_date" />
+        android:layout_below="@id/edit_dueDate" />
 
 </RelativeLayout>

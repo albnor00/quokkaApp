@@ -76,23 +76,7 @@ public class add_new_target_log extends AppCompatActivity {
 
         // Handle back button click
         backButton.setOnClickListener(v -> {
-            // Navigate back to the previous activity
-            Intent intent2 = new Intent(getApplicationContext(), target_task_log_history_page.class);
-
-            // Pass necessary data to the add_new_target_log activity
-            intent2.putExtra("taskName", taskName);
-            intent2.putExtra("taskDescription", taskDescription);
-            intent2.putExtra("startGoal", startGoal);
-            intent2.putExtra("endGoal", endGoal);
-            intent2.putExtra("startDate", startDate);
-            intent2.putExtra("endDate", endDate);
-
-            // Pass the position of the clicked task
-            intent2.putExtra("taskPosition", taskPosition);
-            intent2.putExtra("taskId", taskId);
-
-            startActivity(intent2);
-            finish();
+            passDataBack();
         });
 
         notesInput.addTextChangedListener(new TextWatcher() {
@@ -171,5 +155,26 @@ public class add_new_target_log extends AppCompatActivity {
                     Toast.makeText(this, "Error saving log: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
+    private void passDataBack() {
+        Intent intent2 = new Intent(getApplicationContext(), target_task_log_history_page.class);
+
+        // Pass necessary data to the add_new_target_log activity
+        intent2.putExtra("taskName", taskName);
+        intent2.putExtra("taskDescription", taskDescription);
+        intent2.putExtra("startGoal", startGoal);
+        intent2.putExtra("endGoal", endGoal);
+        intent2.putExtra("startDate", startDate);
+        intent2.putExtra("endDate", endDate);
+
+        // Pass the position of the clicked task
+        intent2.putExtra("taskPosition", taskPosition);
+        intent2.putExtra("taskId", taskId);
+
+        startActivity(intent2);
+        finish();
+    }
+
+
 
 }

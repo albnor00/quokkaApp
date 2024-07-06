@@ -23,6 +23,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp" />
 
+    <ImageView
+        android:id="@+id/img_check_mark"
+        android:layout_width="47dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:src="@drawable/baseline_check_24" />
+
 
     <TextView
         android:id="@+id/text_view_habit_question"
@@ -31,36 +41,28 @@
         android:layout_below="@id/text_finish_top"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Did you complete your habit today?"
+        android:text="Please enter your progress for this habit"
         android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/button_yes"
-        android:layout_width="wrap_content"
+    <!-- Numeric Input Field -->
+    <EditText
+        android:id="@+id/edit_text_numeric_input"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_view_habit_question"
-        android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:text="Yes" />
-
-    <Button
-        android:id="@+id/button_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_view_habit_question"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="60dp"
-        android:layout_marginTop="20dp"
-        android:text="No" />
+        android:hint="Log your progress"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
 
     <EditText
         android:id="@+id/edit_text_notes_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button_yes"
+        android:layout_below="@id/edit_text_numeric_input"
         android:hint="Enter Notes"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:inputType="textMultiLine"
         android:maxLines="10"
         android:scrollbars="vertical"

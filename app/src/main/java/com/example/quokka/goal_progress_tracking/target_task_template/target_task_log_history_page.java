@@ -92,16 +92,14 @@ public class target_task_log_history_page extends AppCompatActivity {
             public void onClick(View v) {
                 // Navigate back to the previous activity
                 Intent intent = new Intent(getApplicationContext(), target_task_page.class);
-                taskName = intent.getStringExtra("taskName");
-                taskDescription = intent.getStringExtra("taskDescription");
-                startGoal = intent.getStringExtra("startGoal");
-                endGoal = intent.getStringExtra("endGoal");
-                startDate = intent.getStringExtra("startDate");
-                endDate = intent.getStringExtra("endDate");
-
-                // Pass the position of the clicked task
-                intent.putExtra("taskPosition", taskPosition);
                 intent.putExtra("taskId", taskId);
+                intent.putExtra("taskPosition", taskPosition);
+                intent.putExtra("taskName", taskName);
+                intent.putExtra("taskDescription", taskDescription);
+                intent.putExtra("startGoal", startGoal);
+                intent.putExtra("endGoal", endGoal);
+                intent.putExtra("startDate", startDate);
+                intent.putExtra("endDate", endDate);
                 startActivity(intent);
                 finish();
             }
@@ -112,16 +110,14 @@ public class target_task_log_history_page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), add_new_target_log.class);
-                taskName = intent.getStringExtra("taskName");
-                taskDescription = intent.getStringExtra("taskDescription");
-                startGoal = intent.getStringExtra("startGoal");
-                endGoal = intent.getStringExtra("endGoal");
-                startDate = intent.getStringExtra("startDate");
-                endDate = intent.getStringExtra("endDate");
-
-                // Pass the position of the clicked task
-                intent.putExtra("taskPosition", taskPosition);
                 intent.putExtra("taskId", taskId);
+                intent.putExtra("taskPosition", taskPosition);
+                intent.putExtra("taskName", taskName);
+                intent.putExtra("taskDescription", taskDescription);
+                intent.putExtra("startGoal", startGoal);
+                intent.putExtra("endGoal", endGoal);
+                intent.putExtra("startDate", startDate);
+                intent.putExtra("endDate", endDate);
 
                 startActivityForResult(intent, RequestCodes.ADD_LOG_REQUEST_CODE);
             }

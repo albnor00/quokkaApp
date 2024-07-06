@@ -1,6 +1,8 @@
 package com.example.quokka.goal_progress_tracking.target_task_template;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +14,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -46,6 +50,8 @@ public class create_new_target_task extends AppCompatActivity {
     private TextView startDateTextView;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
+    private TextView reminderTimeTextView;
+    private TextView dueDateTextView;
     private String taskId;
 
     @Override
@@ -58,14 +64,20 @@ public class create_new_target_task extends AppCompatActivity {
         ImageView finish_btn = findViewById(R.id.img_check_mark);
         name_card = findViewById(R.id.edit_task_name);
         description_card = findViewById(R.id.edit_task_description);
+
         CardView start_date = findViewById(R.id.edit_start_date);
         CardView end_date = findViewById(R.id.edit_end_date);
+        CardView due_date = findViewById(R.id.edit_dueDate);
+        CardView reminderTime = findViewById(R.id.edit_reminder);
 
         editStartTextGoal = findViewById(R.id.editStartTextGoal);
         editEndTextGoal = findViewById(R.id.editEndTextGoal);
 
         startDateTextView = findViewById(R.id.startDateTextView);
         endDateTextView = findViewById(R.id.endDateTextView);
+
+        dueDateTextView = findViewById(R.id.dueDateTextView);
+        reminderTimeTextView = findViewById(R.id.reminderTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -104,9 +116,11 @@ public class create_new_target_task extends AppCompatActivity {
                     String endGoal = editEndTextGoal.getText().toString();
                     String startDate = startDateTextView.getText().toString();
                     String endDate = endDateTextView.getText().toString();
+                    String dueDate = dueDateTextView.getText().toString();
+                    String reminderTime = reminderTimeTextView.getText().toString();
 
                     // Save task details to Firestore
-                    saveTaskToFirestore(taskName, taskDescription, startGoal, endGoal, startDate, endDate);
+                    saveTaskToFirestore(taskName, taskDescription, startGoal, endGoal, startDate, endDate, dueDate, reminderTime);
 
                     // Pass task details back to Goal_non_empty_page
                     Intent intent = new Intent(create_new_target_task.this, Goal_non_empty_page.class);
@@ -159,9 +173,19 @@ public class create_new_target_task extends AppCompatActivity {
             }
         });
 
+        due_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDueDateOptionsDialog();
+            }
+        });
 
-
-
+        reminderTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
+            }
+        });
     }
 
     private void showNumericKeyboardStartGoal() {
@@ -178,6 +202,82 @@ public class create_new_target_task extends AppCompatActivity {
         if (imm != null) {
             imm.showSoftInput(editEndTextGoal, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    // Method to show time period options dialog
+    private void showDueDateOptionsDialog() {
+        final CharSequence[] options = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        boolean[] selectedDays = new boolean[options.length]; // Initialize all days as unselected
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Due Dates");
+        builder.setMultiChoiceItems(options, selectedDays, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                selectedDays[which] = isChecked; // Update selected days array
+            }
+        });
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Check if all days are selected
+                boolean allDaysSelected = true;
+                for (boolean selected : selectedDays) {
+                    if (!selected) {
+                        allDaysSelected = false;
+                        break;
+                    }
+                }
+
+                // Build the selected days string
+                StringBuilder selectedDaysString = new StringBuilder();
+                if (allDaysSelected) {
+                    selectedDaysString.append("Every Day");
+                } else {
+                    for (int i = 0; i < options.length; i++) {
+                        if (selectedDays[i]) {
+                            if (selectedDaysString.length() > 0) {
+                                selectedDaysString.append(", ");
+                            }
+                            selectedDaysString.append(options[i]);
+                        }
+                    }
+                }
+
+                if (selectedDaysString.length() == 0) {
+                    dueDateTextView.setText("None"); // If no days selected, show "None"
+                } else {
+                    dueDateTextView.setText(selectedDaysString.toString()); // Update the TextView with selected days
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle cancelation if needed
+            }
+        });
+
+        builder.show();
+    }
+
+    private void showTimePickerDialog() {
+        final Calendar currentTime = Calendar.getInstance();
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+                String reminderTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                reminderTimeTextView.setText(reminderTime); // Update the TextView with the selected time
+            }
+        }, hour, minute, true);
+        timePickerDialog.show();
     }
 
     // Method to show date picker dialog
@@ -236,7 +336,7 @@ public class create_new_target_task extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void saveTaskToFirestore(String taskName, String taskDescription, String startGoal, String endGoal, String startDate, String endDate) {
+    private void saveTaskToFirestore(String taskName, String taskDescription, String startGoal, String endGoal, String startDate, String endDate, String dueDate, String reminderTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
@@ -253,6 +353,8 @@ public class create_new_target_task extends AppCompatActivity {
         task.put("endGoal", endGoal);
         task.put("startDate", startDate);
         task.put("endDate", endDate);
+        task.put("dueDate", dueDate);
+        task.put("reminderTime", reminderTime);
 
 
         // Access the 'averageTasks' subcollection under the user's 'Goal' collection

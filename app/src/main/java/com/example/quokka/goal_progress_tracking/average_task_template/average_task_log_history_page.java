@@ -43,8 +43,9 @@ public class average_task_log_history_page extends AppCompatActivity {
 
     //Intent variables
     private String taskName;
+    private String taskDescription;
     private String goal;
-    private String timePeriod;
+    private String dueDate;
     private String startDate;
     private int taskPosition;
     private String taskId;
@@ -77,8 +78,9 @@ public class average_task_log_history_page extends AppCompatActivity {
         if (intent != null) {
             taskId = intent.getStringExtra("taskId");
             taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
             goal = intent.getStringExtra("goal");
-            timePeriod = intent.getStringExtra("timePeriod");
+            dueDate = intent.getStringExtra("dueDate");
             startDate = intent.getStringExtra("startDate");
             taskPosition = intent.getIntExtra("taskPosition", -1);
         }
@@ -91,8 +93,9 @@ public class average_task_log_history_page extends AppCompatActivity {
                 // Navigate back to the previous activity
                 Intent intent = new Intent(getApplicationContext(), average_task_page.class);
                 intent.putExtra("taskName", taskName);
+                intent.putExtra("taskDescription", taskDescription);
                 intent.putExtra("goal", goal);
-                intent.putExtra("timePeriod", timePeriod);
+                intent.putExtra("dueDate", dueDate);
                 intent.putExtra("startDate", startDate);
 
                 // Pass the position of the clicked task
@@ -110,10 +113,10 @@ public class average_task_log_history_page extends AppCompatActivity {
                 // Redirect to the add_new_average_log activity
                 Intent intent = new Intent(getApplicationContext(), add_new_average_log.class);
 
-                // Pass necessary data to the add_new_average_log activity
                 intent.putExtra("taskName", taskName);
+                intent.putExtra("taskDescription", taskDescription);
                 intent.putExtra("goal", goal);
-                intent.putExtra("timePeriod", timePeriod);
+                intent.putExtra("dueDate", dueDate);
                 intent.putExtra("startDate", startDate);
 
                 // Pass the position of the clicked task

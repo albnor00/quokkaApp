@@ -3,6 +3,7 @@ package com.example.quokka.goal_progress_tracking.average_task_template;
 import static android.content.ContentValues.TAG;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,7 +40,7 @@ import java.util.Map;
 
 public class average_task_settings_page extends AppCompatActivity {
     private EditText editTextGoal;
-    private TextView textViewTimePeriod;
+    private TextView dueDateTextView;
     private Switch switchGoalMoreOrLess;
     private TextView DateTextView;
     private Calendar calendar;
@@ -46,16 +48,18 @@ public class average_task_settings_page extends AppCompatActivity {
     private EditText name_card;
     private EditText description_card;
     private boolean isMoreOrLess = false;
+    private TextView reminderTimeTextView;
 
 
     //Intent variables
     private String taskName;
     private String taskDescription;
     private String goal;
-    private String timePeriod;
+    private String dueDate;
     private String startDate;
     private int taskPosition;
     private String taskId;
+    private String reminderTime;
 
 
 
@@ -69,15 +73,17 @@ public class average_task_settings_page extends AppCompatActivity {
         ImageView finish_btn = findViewById(R.id.img_check_mark);
         name_card = findViewById(R.id.edit_task_name);
         description_card = findViewById(R.id.edit_task_description);
-        CardView time_period = findViewById(R.id.edit_timeperiod);
-        CardView start_date = findViewById(R.id.edit_startdate);
+        CardView due_Date = findViewById(R.id.edit_dueDate);
+        CardView start_Date = findViewById(R.id.edit_startdate);
         CardView goalCard = findViewById(R.id.edit_goal);
         CardView deleteTaskCard = findViewById(R.id.task_delete);
+        CardView reminder_Time = findViewById(R.id.edit_reminder);
 
         editTextGoal = findViewById(R.id.editTextGoal);
         switchGoalMoreOrLess = findViewById(R.id.switchGoalMoreOrLess);
-        textViewTimePeriod = findViewById(R.id.textView2);
-        DateTextView = findViewById(R.id.textView3);
+        dueDateTextView = findViewById(R.id.dueDateTextView);
+        DateTextView = findViewById(R.id.startDateTextView);
+        reminderTimeTextView = findViewById(R.id.reminderTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -91,16 +97,11 @@ public class average_task_settings_page extends AppCompatActivity {
             taskName = intent.getStringExtra("taskName");
             taskDescription = intent.getStringExtra("taskDescription");
             goal = intent.getStringExtra("goal");
-            timePeriod = intent.getStringExtra("timePeriod");
+            dueDate = intent.getStringExtra("dueDate");
             startDate = intent.getStringExtra("startDate");
+            reminderTime = intent.getStringExtra("reminderTime");
             taskPosition = intent.getIntExtra("taskPosition", -1);
 
-            Log.d("Intent Data", "taskId: " + taskId);
-            Log.d("Intent Data", "taskName: " + taskName);
-            Log.d("Intent Data", "goal: " + goal);
-            Log.d("Intent Data", "timePeriod: " + timePeriod);
-            Log.d("Intent Data", "startDate: " + startDate);
-            Log.d("Intent Data", "taskPosition: " + taskPosition);
         } else {
             Log.e("Intent Data", "Intent is null");
         }
@@ -112,12 +113,16 @@ public class average_task_settings_page extends AppCompatActivity {
             Log.e("Firestore", "taskId is null. Cannot fetch goalMoreOrLess.");
         }
 
+        fetchReminderTimeFromFirestore();
+        fetchDueDateFromFirestore();
+
         // Set current values to the views
         name_card.setText(taskName);
         description_card.setText(taskDescription);
         editTextGoal.setText(goal);
-        textViewTimePeriod.setText(timePeriod);
+        dueDateTextView.setText(dueDate);
         DateTextView.setText(startDate);
+
 
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +134,7 @@ public class average_task_settings_page extends AppCompatActivity {
                 intent.putExtra("taskName", taskName);
                 intent.putExtra("taskDescription", taskDescription);
                 intent.putExtra("goal", goal);
-                intent.putExtra("timePeriod", timePeriod);
+                intent.putExtra("duePeriod", dueDate);
                 intent.putExtra("startDate", startDate);
 
                 // Pass the position of the clicked task
@@ -162,15 +167,15 @@ public class average_task_settings_page extends AppCompatActivity {
         });
 
         // Handle time period options dialog
-        time_period.setOnClickListener(new View.OnClickListener() {
+        due_Date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePeriodOptionsDialog();
+                showDueDateOptionsDialog();
             }
         });
 
         // Handle date picker dialog
-        start_date.setOnClickListener(new View.OnClickListener() {
+        start_Date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDatePickerDialog();
@@ -183,6 +188,13 @@ public class average_task_settings_page extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Handle switch state change
 
+            }
+        });
+
+        reminder_Time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
             }
         });
 
@@ -245,19 +257,79 @@ public class average_task_settings_page extends AppCompatActivity {
     }
 
     // Method to show time period options dialog
-    private void showTimePeriodOptionsDialog() {
-        final CharSequence[] options = {"Per Day", "Per Week", "Per Month", "Per Year"};
+    private void showDueDateOptionsDialog() {
+        final CharSequence[] options = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        boolean[] selectedDays = new boolean[options.length]; // Initialize all days as unselected
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Time Period");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        builder.setTitle("Select Due Dates");
+        builder.setMultiChoiceItems(options, selectedDays, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String selectedOption = options[which].toString();
-                textViewTimePeriod.setText(selectedOption); // Update the TextView with the selected option
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                selectedDays[which] = isChecked; // Update selected days array
             }
         });
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Check if all days are selected
+                boolean allDaysSelected = true;
+                for (boolean selected : selectedDays) {
+                    if (!selected) {
+                        allDaysSelected = false;
+                        break;
+                    }
+                }
+
+                // Build the selected days string
+                StringBuilder selectedDaysString = new StringBuilder();
+                if (allDaysSelected) {
+                    selectedDaysString.append("Every Day");
+                } else {
+                    for (int i = 0; i < options.length; i++) {
+                        if (selectedDays[i]) {
+                            if (selectedDaysString.length() > 0) {
+                                selectedDaysString.append(", ");
+                            }
+                            selectedDaysString.append(options[i]);
+                        }
+                    }
+                }
+
+                if (selectedDaysString.length() == 0) {
+                    dueDateTextView.setText("None"); // If no days selected, show "None"
+                } else {
+                    dueDateTextView.setText(selectedDaysString.toString()); // Update the TextView with selected days
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle cancelation if needed
+            }
+        });
+
         builder.show();
+    }
+
+    private void showTimePickerDialog() {
+        final Calendar currentTime = Calendar.getInstance();
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+                reminderTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                reminderTimeTextView.setText(reminderTime); // Update the TextView with the selected time
+            }
+        }, hour, minute, true);
+        timePickerDialog.show();
     }
 
     // Method to show date picker dialog
@@ -294,9 +366,10 @@ public class average_task_settings_page extends AppCompatActivity {
         String updatedTaskName = name_card.getText().toString();
         String updatedDescription = description_card.getText().toString();
         String updatedGoal = editTextGoal.getText().toString();
-        String updatedTimePeriod = textViewTimePeriod.getText().toString();
+        String updatedDueDate = dueDateTextView.getText().toString();
         String updatedStartDate = DateTextView.getText().toString();
         boolean isGoalMoreOrLess = switchGoalMoreOrLess.isChecked();
+        String updatedReminderTime = reminderTimeTextView.getText().toString();
 
         // Update task details in Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -308,9 +381,10 @@ public class average_task_settings_page extends AppCompatActivity {
         updatedTask.put("name", updatedTaskName);
         updatedTask.put("taskDescription", updatedDescription);
         updatedTask.put("goal", updatedGoal);
-        updatedTask.put("timePeriod", updatedTimePeriod);
+        updatedTask.put("dueDate", updatedDueDate);
         updatedTask.put("startDate", updatedStartDate);
         updatedTask.put("goalMoreOrLess", isGoalMoreOrLess);
+        updatedTask.put("reminderTime", updatedReminderTime);
 
         // Update the task document in Firestore
         db.collection("users").document(userId)
@@ -324,7 +398,7 @@ public class average_task_settings_page extends AppCompatActivity {
                         Toast.makeText(average_task_settings_page.this, "Task details updated", Toast.LENGTH_SHORT).show();
 
                         // Navigate back to the previous activity
-                        navigateToPreviousActivity(updatedTaskName, updatedDescription, updatedGoal, updatedTimePeriod, updatedStartDate);
+                        navigateToPreviousActivity(updatedTaskName, updatedDescription, updatedGoal, updatedDueDate, updatedStartDate, updatedReminderTime);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -338,13 +412,14 @@ public class average_task_settings_page extends AppCompatActivity {
     }
 
     // Method to navigate back to the previous activity
-    private void navigateToPreviousActivity(String taskName, String taskDescription, String goal, String timePeriod, String startDate) {
+    private void navigateToPreviousActivity(String taskName, String taskDescription, String goal, String dueDate, String startDate, String reminderTime) {
         Intent intent = new Intent(getApplicationContext(), average_task_page.class);
         intent.putExtra("taskName", taskName);
         intent.putExtra("taskDescription", taskDescription);
         intent.putExtra("goal", goal);
-        intent.putExtra("timePeriod", timePeriod);
+        intent.putExtra("dueDate", dueDate);
         intent.putExtra("startDate", startDate);
+        intent.putExtra("reminderTime", reminderTime);
         intent.putExtra("taskPosition", taskPosition);
         intent.putExtra("taskId", taskId);
         startActivity(intent);
@@ -384,6 +459,70 @@ public class average_task_settings_page extends AppCompatActivity {
                         // Failed to update task details
                         Toast.makeText(average_task_settings_page.this, "Failed to delete task", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Error deleting task: " + e.getMessage());
+                    }
+                });
+    }
+
+    private void fetchReminderTimeFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String userId = auth.getCurrentUser().getUid();
+
+        // Assuming 'habit_tasks' is your collection and 'taskId' is the document ID of the task
+        db.collection("users").document(userId)
+                .collection("Goal").document("averageTasks").collection("average_tasks")
+                .document(taskId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Retrieve reminder time from Firestore document
+                            String reminderTime = documentSnapshot.getString("reminderTime");
+
+                            // Update TextView with reminder time
+                            reminderTimeTextView.setText(reminderTime);
+                        } else {
+                            Log.d("fetchReminderTime", "Document does not exist");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("fetchReminderTime", "Error fetching document", e);
+                    }
+                });
+    }
+
+    private void fetchDueDateFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String userId = auth.getCurrentUser().getUid();
+
+        // Assuming 'habit_tasks' is your collection and 'taskId' is the document ID of the task
+        db.collection("users").document(userId)
+                .collection("Goal").document("averageTasks").collection("average_tasks")
+                .document(taskId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            // Retrieve reminder time from Firestore document
+                            String dueDate = documentSnapshot.getString("dueDate");
+
+                            // Update TextView with reminder time
+                            dueDateTextView.setText(dueDate);
+                        } else {
+                            Log.d("fetchReminderTime", "Document does not exist");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("fetchReminderTime", "Error fetching document", e);
                     }
                 });
     }

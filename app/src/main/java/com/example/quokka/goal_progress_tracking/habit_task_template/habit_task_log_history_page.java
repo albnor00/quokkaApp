@@ -47,6 +47,7 @@ public class habit_task_log_history_page extends AppCompatActivity {
     private String dueDate;
     private int taskPosition;
     private String taskId;
+    private String reminderTime;
 
 
     @Override
@@ -200,7 +201,8 @@ public class habit_task_log_history_page extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case RequestCodes.ADD_LOG_REQUEST_CODE:
-                    if (data != null && data.hasExtra("newLog")) {
+                    if (data.hasExtra("newLog")) {
+                        fetchIntentData();
                         habit_log newLog = (habit_log) data.getSerializableExtra("newLog");
                         previousLogsList.add(0, newLog); // Add to the top of the list
                         adapter.notifyItemInserted(0);

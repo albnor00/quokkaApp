@@ -1,6 +1,10 @@
 package com.example.quokka.goal_progress_tracking.habit_task_template;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.quokka.R;
-import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.choose_task_template;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,9 +47,11 @@ public class create_new_habit_task extends AppCompatActivity {
     private EditText editGoalText;
     private TextView startDateTextView;
     private TextView dueDateTextView;
+    private TextView reminderTimeTextView;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     private String taskId;
+    private String reminderTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +65,14 @@ public class create_new_habit_task extends AppCompatActivity {
         CardView goalCard = findViewById(R.id.edit_goal);
         CardView startDate = findViewById(R.id.edit_startdate);
         CardView dueDate = findViewById(R.id.edit_dueDate);
+        CardView reminderTime = findViewById(R.id.edit_reminder);
 
         name_card = findViewById(R.id.edit_task_name);
         description_card = findViewById(R.id.edit_task_description);
         editGoalText = findViewById(R.id.editTextGoal);
-        startDateTextView = findViewById(R.id.textView3);
+        startDateTextView = findViewById(R.id.startDateTextView);
         dueDateTextView = findViewById(R.id.dueDateTextView);
+        reminderTimeTextView = findViewById(R.id.reminderTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -94,9 +103,10 @@ public class create_new_habit_task extends AppCompatActivity {
                     String goal = editGoalText.getText().toString();
                     String startDate = startDateTextView.getText().toString();
                     String dueDate = dueDateTextView.getText().toString();
+                    String reminderTime = reminderTimeTextView.getText().toString();
 
                     // Save task details to Firestore
-                    saveTaskToFirestore(taskName, taskDescription, goal, startDate, dueDate);
+                    saveTaskToFirestore(taskName, taskDescription, goal, startDate, dueDate, reminderTime);
 
                     // Pass task details back to Goal_non_empty_page
                     Intent intent = new Intent(create_new_habit_task.this, Goal_non_empty_page.class);
@@ -105,6 +115,7 @@ public class create_new_habit_task extends AppCompatActivity {
                     intent.putExtra("goal", goal);
                     intent.putExtra("startDate", startDate);
                     intent.putExtra("dueDate", dueDate);
+                    intent.putExtra("reminderTime", reminderTime);
                     intent.putExtra("taskId", taskId);
                     startActivity(intent);
                     finish();
@@ -134,6 +145,13 @@ public class create_new_habit_task extends AppCompatActivity {
                 showDueDateOptionsDialog();
             }
         });
+
+        reminderTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
+            }
+        });
     }
 
     // Method to show numerical keyboard for editTextGoal
@@ -145,19 +163,61 @@ public class create_new_habit_task extends AppCompatActivity {
         }
     }
 
-    // Method to show time period options dialog
     private void showDueDateOptionsDialog() {
-        final CharSequence[] options = {"Every Day", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        final CharSequence[] options = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+        boolean[] selectedDays = new boolean[options.length]; // Initialize all days as unselected
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Due Date");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        builder.setTitle("Select Due Dates");
+        builder.setMultiChoiceItems(options, selectedDays, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String selectedOption = options[which].toString();
-                dueDateTextView.setText(selectedOption); // Update the TextView with the selected option
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                selectedDays[which] = isChecked; // Update selected days array
             }
         });
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Check if all days are selected
+                boolean allDaysSelected = true;
+                for (boolean selected : selectedDays) {
+                    if (!selected) {
+                        allDaysSelected = false;
+                        break;
+                    }
+                }
+
+                // Build the selected days string
+                StringBuilder selectedDaysString = new StringBuilder();
+                if (allDaysSelected) {
+                    selectedDaysString.append("Every Day");
+                } else {
+                    for (int i = 0; i < options.length; i++) {
+                        if (selectedDays[i]) {
+                            if (selectedDaysString.length() > 0) {
+                                selectedDaysString.append(", ");
+                            }
+                            selectedDaysString.append(options[i]);
+                        }
+                    }
+                }
+
+                if (selectedDaysString.length() == 0) {
+                    dueDateTextView.setText("None"); // If no days selected, show "None"
+                } else {
+                    dueDateTextView.setText(selectedDaysString.toString()); // Update the TextView with selected days
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle cancelation if needed
+            }
+        });
+
         builder.show();
     }
 
@@ -189,7 +249,25 @@ public class create_new_habit_task extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void saveTaskToFirestore(String taskName, String taskDescription, String goal, String startDate, String dueDate) {
+    // Method to show time picker dialog
+    private void showTimePickerDialog() {
+        final Calendar currentTime = Calendar.getInstance();
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+                reminderTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                reminderTimeTextView.setText(reminderTime); // Update the TextView with the selected time
+            }
+        }, hour, minute, true);
+        timePickerDialog.show();
+    }
+
+    private void saveTaskToFirestore(String taskName, String taskDescription, String goal, String startDate, String dueDate, String reminderTime) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
@@ -205,6 +283,7 @@ public class create_new_habit_task extends AppCompatActivity {
         task.put("goal", goal);
         task.put("startDate", startDate);
         task.put("dueDate", dueDate);
+        task.put("reminderTime", reminderTime);
 
 
         // Access the 'averageTasks' subcollection under the user's 'Goal' collection

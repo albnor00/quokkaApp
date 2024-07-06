@@ -4,18 +4,18 @@ public class Task implements TaskItem {
     private String name;
     private String taskDescription;
     private String goal;
-    private String timePeriod;
+    private String dueDate;
     private String startDate;
     private String taskId;
 
 
 
     // Constructor
-    public Task(String name, String taskDescription, String goal, String timePeriod, String startDate, String taskId) {
+    public Task(String name, String taskDescription, String goal, String dueDate, String startDate, String taskId) {
         this.name = name;
         this.taskDescription = taskDescription;
         this.goal = goal;
-        this.timePeriod = timePeriod;
+        this.dueDate = dueDate;
         this.startDate = startDate;
         this.taskId = taskId;
     }
@@ -40,8 +40,8 @@ public class Task implements TaskItem {
         return goal;
     }
 
-    public String getTimePeriod() {
-        return timePeriod;
+    public String getDueDate() {
+        return dueDate;
     }
 
     public String getStartDate() {

@@ -34,6 +34,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -323,11 +326,16 @@ public class target_task_page extends AppCompatActivity {
                 Date end = dateFormat.parse(endDate);
                 calendar.setTime(start);
 
+                List<Task<Void>> tasks = new ArrayList<>();
+
                 while (!calendar.getTime().after(end)) {
                     Date currentDate = calendar.getTime();
-                    checkAndCreateLog(logsCollection, currentDate);
+                    Task<Void> task = checkAndCreateLog(logsCollection, currentDate);
+                    tasks.add(task);
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
                 }
+
+                Tasks.whenAllComplete(tasks).addOnCompleteListener(t -> fetchAndDisplayProgressData(7));
             } else {
                 Log.e("Debug", "startDate or endDate is null");
                 // Handle this situation as per your application's logic
@@ -337,25 +345,37 @@ public class target_task_page extends AppCompatActivity {
         }
     }
 
-    private void checkAndCreateLog(CollectionReference logsCollection, Date logDate) {
+    private Task<Void> checkAndCreateLog(CollectionReference logsCollection, Date logDate) {
+        TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+
         logsCollection.whereEqualTo("date", logDate).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 if (querySnapshot.isEmpty()) {
                     // If log does not exist for the date, create it
-                    createLog(logsCollection, logDate);
+                    createLog(logsCollection, logDate).addOnCompleteListener(logTask -> {
+                        if (logTask.isSuccessful()) {
+                            taskCompletionSource.setResult(null);
+                        } else {
+                            taskCompletionSource.setException(logTask.getException());
+                        }
+                    });
                 } else {
                     Log.d("Debug", "Log already exists for date: " + logDate);
+                    taskCompletionSource.setResult(null);
                 }
             } else {
                 Log.e("Debug", "Error fetching logs: ", task.getException());
+                taskCompletionSource.setException(task.getException());
             }
         });
+
+        return taskCompletionSource.getTask();
     }
 
-    private void createLog(CollectionReference logsCollection, Date logDate) {
+    private Task<Void> createLog(CollectionReference logsCollection, Date logDate) {
         target_log newLog = new target_log(UUID.randomUUID().toString(), 0, "", logDate);
-        logsCollection.document().set(newLog)
+        return logsCollection.document().set(newLog)
                 .addOnSuccessListener(aVoid -> Log.d("Debug", "Log created for date: " + logDate))
                 .addOnFailureListener(e -> Log.e("Debug", "Error creating log: ", e));
     }
@@ -402,7 +422,32 @@ public class target_task_page extends AppCompatActivity {
         // Configure Y axis (left)
         YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setDrawGridLines(false); // Disable grid lines on the left axis
-        leftAxis.setAxisMinimum(0f); // Start at zero
+
+
+        try {
+            float startGoalValue = Float.parseFloat(startGoal);
+            leftAxis.setAxisMinimum(startGoalValue); // Set the minimum value to start goal
+        } catch (NumberFormatException e) {
+            Log.e("updateLineChart", "Invalid startGoal value: " + startGoal);
+        }
+
+        try {
+            float endGoalValue = Float.parseFloat(endGoal);
+            float maxValue = getMaxYValue(entries);
+            leftAxis.setAxisMaximum(Math.max(endGoalValue, maxValue)); // Set the maximum value to the higher of end goal or max entry value
+
+            // Add a limit line for the end goal value
+            LimitLine limitLine = new LimitLine(endGoalValue, "");
+            limitLine.setLineWidth(2f);
+            limitLine.setLineColor(Color.parseColor("#388E3C")); // Set the specific green color
+            limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+            limitLine.setTextSize(10f);
+            limitLine.enableDashedLine(10f, 10f, 0f);
+            leftAxis.addLimitLine(limitLine);
+        } catch (NumberFormatException e) {
+            Log.e("updateLineChart", "Invalid endGoal value: " + endGoal);
+        }
+
         leftAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -410,22 +455,6 @@ public class target_task_page extends AppCompatActivity {
                 return "" + ((int) value); // Display integers
             }
         });
-
-        // Add a limit line for the end goal value
-        if (endGoal != null) {
-            try {
-                float endGoalValue = Float.parseFloat(endGoal);
-                LimitLine limitLine = new LimitLine(endGoalValue, "");
-                limitLine.setLineWidth(2f);
-                limitLine.setLineColor(Color.parseColor("#388E3C")); // Set the specific green color
-                limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-                limitLine.setTextSize(10f);
-                limitLine.enableDashedLine(10f, 10f, 0f);
-                leftAxis.addLimitLine(limitLine);
-            } catch (NumberFormatException e) {
-                Log.e("updateLineChart", "Invalid endGoal value: " + endGoal);
-            }
-        }
 
         // Configure Y axis (right)
         YAxis rightAxis = lineChart.getAxisRight();
@@ -445,6 +474,16 @@ public class target_task_page extends AppCompatActivity {
         lineChart.invalidate(); // Refresh chart
 
         addLegendItems();
+    }
+
+    private float getMaxYValue(List<Entry> entries) {
+        float max = 0f;
+        for (Entry entry : entries) {
+            if (entry.getY() > max) {
+                max = entry.getY();
+            }
+        }
+        return max;
     }
 
     private void addLegendItems() {

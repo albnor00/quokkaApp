@@ -27,8 +27,9 @@ public class add_new_average_log extends AppCompatActivity {
 
     //Intent variables
     private String taskName;
+    private String taskDescription;
     private String goal;
-    private String timePeriod;
+    private String dueDate;
     private String startDate;
     private int taskPosition;
     private String taskId;
@@ -43,8 +44,9 @@ public class add_new_average_log extends AppCompatActivity {
         if (intent != null) {
             taskId = intent.getStringExtra("taskId");
             taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
             goal = intent.getStringExtra("goal");
-            timePeriod = intent.getStringExtra("timePeriod");
+            dueDate = intent.getStringExtra("dueDate");
             startDate = intent.getStringExtra("startDate");
             taskPosition = intent.getIntExtra("taskPosition", -1);
         }
@@ -74,8 +76,9 @@ public class add_new_average_log extends AppCompatActivity {
 
             // Pass necessary data to the add_new_average_log activity
             intent2.putExtra("taskName", taskName);
+            intent2.putExtra("taskDescription", taskDescription);
             intent2.putExtra("goal", goal);
-            intent2.putExtra("timePeriod", timePeriod);
+            intent2.putExtra("dueDate", dueDate);
             intent2.putExtra("startDate", startDate);
 
             // Pass the position of the clicked task

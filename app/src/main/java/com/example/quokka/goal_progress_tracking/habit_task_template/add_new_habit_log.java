@@ -34,13 +34,13 @@ import java.util.UUID;
 
 public class add_new_habit_log extends AppCompatActivity {
 
-    private Button yes_btn;
-    private Button no_btn;
+    private EditText numericInput;
     private EditText notesInput;
     private static final int ADD_LOG_REQUEST_CODE = 1;
 
     //Intent variables
     private String taskName;
+    private String taskDescription;
     private String goal;
     private String startDate;
     private String dueDate;
@@ -53,76 +53,24 @@ public class add_new_habit_log extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_habit_log);
 
         // Get task information from intent
-        Intent intent = getIntent();
-        if (intent != null) {
-            taskId = intent.getStringExtra("taskId");
-            taskName = intent.getStringExtra("taskName");
-            goal = intent.getStringExtra("goal");
-            startDate = intent.getStringExtra("startDate");
-            dueDate = intent.getStringExtra("dueDate");
-            taskPosition = intent.getIntExtra("taskPosition", -1);
-        }
+        fetchIntentData();
 
         // Initialize views
         ImageView backButton = findViewById(R.id.img_back);
+        ImageView finishButton = findViewById(R.id.img_check_mark);
+        numericInput = findViewById(R.id.edit_text_numeric_input);
         notesInput = findViewById(R.id.edit_text_notes_input);
-        yes_btn = findViewById(R.id.button_yes);
-        no_btn = findViewById(R.id.button_no);
 
 
         // Handle back button click
         backButton.setOnClickListener(v -> {
-            // Navigate back to the previous activity
-            Intent intent2 = new Intent(getApplicationContext(), habit_task_log_history_page.class);
-
-            // Pass necessary data to the add_new_average_log activity
-            intent2.putExtra("taskName", taskName);
-            intent2.putExtra("goal", goal);
-            intent2.putExtra("startDate", startDate);
-            intent2.putExtra("dueDate", dueDate);
-
-            // Pass the position of the clicked task
-            intent2.putExtra("taskPosition", taskPosition);
-            intent2.putExtra("taskId", taskId);
-
-            startActivity(intent2);
-            finish();
+            sendResultData();
         });
 
-        yes_btn.setOnClickListener(v -> {
-            updateOrCreateLogForToday();
-            Intent intent2 = new Intent(getApplicationContext(), habit_task_log_history_page.class);
-
-            // Pass necessary data to the add_new_average_log activity
-            intent2.putExtra("taskName", taskName);
-            intent2.putExtra("goal", goal);
-            intent2.putExtra("startDate", startDate);
-            intent2.putExtra("dueDate", dueDate);
-
-            // Pass the position of the clicked task
-            intent2.putExtra("taskPosition", taskPosition);
-            intent2.putExtra("taskId", taskId);
-
-            startActivity(intent2);
-            finish();
-        });
-
-        no_btn.setOnClickListener(v -> {
-            // Navigate back to the previous activity
-            Intent intent2 = new Intent(getApplicationContext(), habit_task_log_history_page.class);
-
-            // Pass necessary data to the add_new_average_log activity
-            intent2.putExtra("taskName", taskName);
-            intent2.putExtra("goal", goal);
-            intent2.putExtra("startDate", startDate);
-            intent2.putExtra("dueDate", dueDate);
-
-            // Pass the position of the clicked task
-            intent2.putExtra("taskPosition", taskPosition);
-            intent2.putExtra("taskId", taskId);
-
-            startActivity(intent2);
-            finish();
+        finishButton.setOnClickListener(v -> {
+            if (validateInput()) {
+                createNewLogForToday();
+            }
         });
 
         notesInput.addTextChangedListener(new TextWatcher() {
@@ -158,95 +106,56 @@ public class add_new_habit_log extends AppCompatActivity {
         });
     }
 
-
-    private void updateOrCreateLogForToday() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String userId = auth.getCurrentUser().getUid();
-
-        // Define the start and end of today
-        Date today = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(today);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        Date startOfDay = calendar.getTime();
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        Date endOfDay = calendar.getTime();
-
-        // Query for logs created between startOfDay and endOfDay
-        Query query = db.collection("users")
-                .document(userId)
-                .collection("Goal")
-                .document("habitTasks")
-                .collection("habit_tasks")
-                .document(taskId)
-                .collection("loggedLogs")
-                .whereGreaterThanOrEqualTo("date", startOfDay)
-                .whereLessThanOrEqualTo("date", endOfDay);
-
-        query.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Log exists for today's date, update it
-                        DocumentSnapshot logSnapshot = queryDocumentSnapshots.getDocuments().get(0);
-                        incrementExistingLog(logSnapshot);
-                    } else {
-                        // No log exists for today's date, create a new log
-                        createNewLogForToday(today);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error checking for existing logs", e);
-                    Toast.makeText(this, "Error checking for existing logs: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void incrementExistingLog(DocumentSnapshot logSnapshot) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String userId = auth.getCurrentUser().getUid();
-        String logId = logSnapshot.getId();
-        habit_log existingLog = logSnapshot.toObject(habit_log.class);
-
-        if (existingLog != null) {
-            existingLog.setLog(existingLog.getLog() + 1);
-            existingLog.setNote(notesInput.getText().toString());
-
-            db.collection("users")
-                    .document(userId)
-                    .collection("Goal")
-                    .document("habitTasks")
-                    .collection("habit_tasks")
-                    .document(taskId)
-                    .collection("loggedLogs")
-                    .document(logId)
-                    .set(existingLog)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Log updated successfully", Toast.LENGTH_SHORT).show();
-                        navigateBack();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("Firestore", "Error updating log", e);
-                        Toast.makeText(this, "Error updating log: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            Log.e("Firestore", "Existing log is null");
+    private void fetchIntentData() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            taskId = intent.getStringExtra("taskId");
+            taskName = intent.getStringExtra("taskName");
+            taskDescription = intent.getStringExtra("taskDescription");
+            goal = intent.getStringExtra("goal");
+            startDate = intent.getStringExtra("startDate");
+            dueDate = intent.getStringExtra("dueDate");
+            taskPosition = intent.getIntExtra("taskPosition", -1);
         }
     }
 
-    private void createNewLogForToday(Date todayDate) {
+    private void sendIntentData(Class<?> destination) {
+        Intent intent = new Intent(getApplicationContext(), destination);
+        intent.putExtra("taskName", taskName);
+        intent.putExtra("taskDescription", taskDescription);
+        intent.putExtra("goal", goal);
+        intent.putExtra("startDate", startDate);
+        intent.putExtra("dueDate", dueDate);
+        intent.putExtra("taskPosition", taskPosition);
+        intent.putExtra("taskId", taskId);
+        startActivity(intent);
+    }
+
+    private void sendResultData() {
+        Intent intent = new Intent();
+        intent.putExtra("taskName", taskName);
+        intent.putExtra("taskDescription", taskDescription);
+        intent.putExtra("goal", goal);
+        intent.putExtra("startDate", startDate);
+        intent.putExtra("dueDate", dueDate);
+        intent.putExtra("taskPosition", taskPosition);
+        intent.putExtra("taskId", taskId);
+        setResult(Activity.RESULT_OK, intent);
+        finish(); // Finish the activity without starting a new one
+    }
+
+    private void createNewLogForToday() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
         String logId = UUID.randomUUID().toString();
+        int numericValue = Integer.parseInt(numericInput.getText().toString().trim());
         String notes = notesInput.getText().toString();
 
-        habit_log newLog = new habit_log(logId, 1, notes, new Date());
-        newLog.setDateString(todayDate); // Set the dateString field
+        // Get the current date
+        Date todayDate = new Date();
+
+        habit_log newLog = new habit_log(logId, numericValue, notes, todayDate);
 
         db.collection("users")
                 .document(userId)
@@ -259,7 +168,7 @@ public class add_new_habit_log extends AppCompatActivity {
                 .set(newLog)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Log created successfully", Toast.LENGTH_SHORT).show();
-                    navigateBack();
+                    sendResultData();
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error creating log", e);
@@ -267,15 +176,14 @@ public class add_new_habit_log extends AppCompatActivity {
                 });
     }
 
-
-    private void navigateBack() {
-        // Navigate back to the previous activity
-        Intent intent = new Intent(getApplicationContext(), habit_task_log_history_page.class);
-        intent.putExtra("taskId", taskId);
-        startActivity(intent);
-        finish();
+    private boolean validateInput() {
+        String numericValue = numericInput.getText().toString().trim();
+        if (numericValue.isEmpty()) {
+            Toast.makeText(this, "Please enter a numeric value", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
-
 
 }
 
