@@ -1,4 +1,4 @@
-package com.example.quokka.tasks.profile;
+package com.example.quokka.profile;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.group.NotificationsActivity;
 import com.example.quokka.tasks.balance_wheel;
 import com.example.quokka.tasks.tasksMain;
 import com.example.quokka.ui.login.Login;
@@ -38,13 +39,14 @@ public class ProfileActivity extends AppCompatActivity {
 
      ImageView imageView2;
      FloatingActionButton selectImageButton;
-     AppCompatButton back;
+     AppCompatButton notificationButton;
     FirebaseStorage storage;
     StorageReference storageReference;
     FirebaseAuth mAuth;
 
     TextView usernameText;
     TextView emailText;
+
 
     AppCompatButton settingsButton;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -76,6 +78,18 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+
+        notificationButton = findViewById(R.id.notificationButton);
+
+        // Set click listener for notifications
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, NotificationsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -123,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), tasksMain.class));
                 } else if (item.getItemId() == R.id.group_bottom) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole2(user,ProfileActivity.this);
+                    MainActivity.checkUserRole(user,ProfileActivity.this);
                 } else if (item.getItemId() == R.id.logout_bottom) {
                     FirebaseAuth.getInstance().signOut();
                     startActivity(new Intent(getApplicationContext(), Login.class));
