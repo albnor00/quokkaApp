@@ -3,6 +3,7 @@ package com.example.quokka.goal_progress_tracking.goal_page_v2;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +24,16 @@ import com.example.quokka.goal_progress_tracking.Task_classes.Task3;
 import com.example.quokka.goal_progress_tracking.Task_classes.TaskAdapter;
 import com.example.quokka.goal_progress_tracking.Task_classes.TaskItem;
 import com.example.quokka.goal_progress_tracking.average_task_template.average_task_page;
+import com.example.quokka.goal_progress_tracking.goal_setup.Question2;
 import com.example.quokka.goal_progress_tracking.habit_task_template.habit_task_page;
 import com.example.quokka.goal_progress_tracking.target_task_template.target_task_page;
+import com.example.quokka.tasks.profile.ProfileActivity;
+import com.example.quokka.tasks.tasksMain;
+import com.example.quokka.ui.login.Login;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -154,6 +163,28 @@ public class Goal_non_empty_page extends AppCompatActivity implements TaskAdapte
                 Intent intent = new Intent(getApplicationContext(), choose_task_template.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home_bottom) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else if (item.getItemId() == R.id.profile_bottom) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                } else if (item.getItemId() == R.id.tasks_bottom) {
+                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
+                } else if (item.getItemId() == R.id.group_bottom) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    MainActivity.checkUserRole2(user, Goal_non_empty_page.this);
+                } else if (item.getItemId() == R.id.logout_bottom) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+                return true; // Return true to indicate that the item selection has been handled
             }
         });
     }

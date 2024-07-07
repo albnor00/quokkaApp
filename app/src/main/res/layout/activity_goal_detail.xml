@@ -3,7 +3,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:background="@color/blue">
 
     <ImageView
         android:id="@+id/img_back"
@@ -32,22 +34,33 @@
         android:layout_marginTop="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:background="@color/lighterBlue"
         android:id="@+id/recycler_view"
         android:layout_width="395dp"
-        android:layout_height="501dp"
+        android:layout_height="400dp"
         android:layout_below="@id/goal_details_description"
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:padding="8dp"
+        android:layout_marginLeft="8dp"
         android:scrollbars="vertical" />
 
     <Button
+        android:backgroundTint="@color/green"
         android:id="@+id/button_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginLeft="8dp"
         android:layout_below="@id/recycler_view"
         android:onClick="onAddTaskClick"
         android:text="Add New Task" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

@@ -31,7 +31,7 @@
                     android:layout_marginStart="20dp" />
 
                 <TextView
-                    android:textColor="@color/green"
+                    android:textColor="@color/white"
                     android:layout_marginRight="30dp"
                     android:id="@+id/view_members_text"
                     android:layout_width="0dp"

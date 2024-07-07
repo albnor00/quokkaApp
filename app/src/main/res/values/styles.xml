@@ -1,0 +1,25 @@
+<resources>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <!-- Custom CalendarView style -->
+    <style name="CalendarViewCustom" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/lighterBlue</item>
+        <item name="colorPrimary">@color/white</item>
+    </style>
+
+    <!-- Custom style for week day names -->
+    <style name="CalendarViewWeekCustomText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <!-- Custom style for dates -->
+    <style name="CalendarViewDateCustomText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

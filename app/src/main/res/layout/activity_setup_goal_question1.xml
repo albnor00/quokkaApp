@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/blue"
+    >
 
     <ImageView
         android:id="@+id/img_back"
@@ -21,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:textColor="@color/white"
         android:text="Question 1"
         android:textSize="24sp" />
 
@@ -32,6 +35,9 @@
         android:layout_below="@id/img_back"
         android:textSize="35sp"
         android:textStyle="bold"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="@color/white"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
 
@@ -41,6 +47,7 @@
         android:layout_height="100dp"
         android:layout_below="@id/questionTextView"
         android:layout_marginTop="40dp"
+        android:background="@color/lighterBlue"
         android:textSize="100dp"
         />
 
@@ -48,10 +55,18 @@
         android:id="@+id/next_question"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="150dp"
         android:layout_below="@id/aspectSpinner"
         android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/green"
         android:text="Next Question"
         android:textSize="24sp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

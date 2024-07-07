@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue">
 
     <ImageView
         android:id="@+id/img_back"
@@ -18,6 +19,7 @@
         android:id="@+id/text_task_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_below="@id/img_back"
         android:layout_alignParentTop="true"
         android:layout_marginTop="69dp"
@@ -28,8 +30,11 @@
     <EditText
         android:id="@+id/edit_text_task_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:inputType="text"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:layout_below="@id/text_task_name"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -40,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Task Description"
+        android:textColor="@color/white"
         android:textAppearance="?android:textAppearanceMedium"
         android:layout_below="@id/edit_text_task_name"
         android:layout_alignParentStart="true"
@@ -53,7 +59,11 @@
         android:inputType="textMultiLine"
         android:minLines="3"
         android:maxLines="5"
+        android:contentDescription="taskDescription"
         android:gravity="top|start"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:layout_below="@id/text_task_description"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -64,6 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Task Template"
+        android:textColor="@color/white"
         android:textAppearance="?android:textAppearanceMedium"
         android:layout_below="@id/edit_text_task_description"
         android:layout_alignParentStart="true"
@@ -73,7 +84,8 @@
     <Spinner
         android:id="@+id/spinner_task_template"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:background="@color/lighterBlue"
         android:layout_below="@id/text_task_template"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -87,8 +99,16 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="17dp"
-        android:layout_marginTop="94dp"
+        android:backgroundTint="@color/green"
+        android:layout_marginTop="105dp"
         android:layout_marginEnd="15dp"
         android:text="Create Task" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

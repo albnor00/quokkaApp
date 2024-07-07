@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue">
 
     <!-- Back Button -->
     <ImageView
@@ -37,6 +39,8 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
+            android:background="@color/blue"
+            android:contentDescription="back"
             android:src="@drawable/baseline_arrow_back_ios_new_24"
             android:layout_alignParentStart="true"
             android:onClick="onPreviousDayClicked" />
@@ -47,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="7th of May"
+            android:textColor="@color/white"
             android:layout_centerHorizontal="true"
             android:textSize="25sp"
             android:textStyle="bold" />
@@ -57,8 +62,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="20dp"
+            android:contentDescription="forward"
             android:src="@drawable/baseline_arrow_forward_ios_24"
             android:layout_alignParentEnd="true"
+            android:background="@color/blue"
             android:onClick="onNextDayClicked" />
 
     </RelativeLayout>
@@ -71,6 +78,7 @@
         android:layout_below="@id/calendar_slider"
         android:layout_marginTop="16dp"
         android:paddingStart="16dp"
+        android:background="@color/lighterBlue"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp" />
 
@@ -81,7 +89,14 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="100dp"
         android:src="@drawable/baseline_add_circle_outline_24" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
@@ -26,9 +27,16 @@ import com.example.quokka.MainActivity;
 import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.choose_task_template;
+import com.example.quokka.goal_progress_tracking.goal_setup.Question2;
+import com.example.quokka.tasks.profile.ProfileActivity;
+import com.example.quokka.tasks.tasksMain;
+import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -67,7 +75,6 @@ public class create_new_average_task extends AppCompatActivity {
         switchGoalMoreOrLess = findViewById(R.id.switchGoalMoreOrLess);
         dueDateTextView = findViewById(R.id.dueDateTextView);
         DateTextView = findViewById(R.id.startDateTextView);
-        reminderTimeTextView = findViewById(R.id.reminderTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -152,6 +159,28 @@ public class create_new_average_task extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showTimePickerDialog();
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home_bottom) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else if (item.getItemId() == R.id.profile_bottom) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                } else if (item.getItemId() == R.id.tasks_bottom) {
+                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
+                } else if (item.getItemId() == R.id.group_bottom) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    MainActivity.checkUserRole2(user, create_new_average_task.this);
+                } else if (item.getItemId() == R.id.logout_bottom) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+                return true; // Return true to indicate that the item selection has been handled
             }
         });
     }

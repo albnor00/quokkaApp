@@ -3,11 +3,8 @@ package com.example.quokka;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -68,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         homeIcon = findViewById(R.id.layoutHome);
         accountIcon = findViewById(R.id.profile);
         user = auth.getCurrentUser();
+
 
         groupIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(context, "Failed to check user role.", Toast.LENGTH_SHORT).show();
                 });
     }
+
 
 }
 

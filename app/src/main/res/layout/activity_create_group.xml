@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
+
+    android:background="@color/blue"
    >
 
     <!-- Back ImageView -->
@@ -27,6 +28,9 @@
         android:textSize="25sp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/image_back"

@@ -29,6 +29,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
+import com.example.quokka.goal_progress_tracking.goal_setup.Question2;
+import com.example.quokka.tasks.profile.ProfileActivity;
+import com.example.quokka.tasks.tasksMain;
+import com.example.quokka.ui.login.Login;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
@@ -39,7 +43,10 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -189,6 +196,28 @@ public class average_task_page extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home_bottom) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else if (item.getItemId() == R.id.profile_bottom) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                } else if (item.getItemId() == R.id.tasks_bottom) {
+                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
+                } else if (item.getItemId() == R.id.group_bottom) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    MainActivity.checkUserRole2(user, average_task_page.this);
+                } else if (item.getItemId() == R.id.logout_bottom) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+                return true; // Return true to indicate that the item selection has been handled
             }
         });
     }
@@ -457,7 +486,7 @@ public class average_task_page extends AppCompatActivity {
         if (selectedTimePeriod == 30) {
             barDataSet.setDrawValues(false); // Hide values for 30 days
         } else {
-            barDataSet.setValueTextColor(Color.BLACK);
+            barDataSet.setValueTextColor(Color.WHITE);
             barDataSet.setValueTextSize(16f); // Show values for other time periods
         }
 
@@ -487,6 +516,8 @@ public class average_task_page extends AppCompatActivity {
         // Format x-axis with date labels
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(dateLabels));
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setAxisLineColor(Color.WHITE);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setLabelRotationAngle(45f);
@@ -494,7 +525,9 @@ public class average_task_page extends AppCompatActivity {
 
         // Get left Y-axis
         leftAxis = barChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false); // Disable grid lines on the left Y-axis
+        leftAxis.setDrawGridLines(false); // Disable grid lines on the left Y-axi//
+        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setAxisLineColor(Color.WHITE);
 
         // Disable the right Y-axis and its labels
         YAxis rightAxis = barChart.getAxisRight();
@@ -564,7 +597,7 @@ public class average_task_page extends AppCompatActivity {
         TextView labelTextView = new TextView(this);
         labelTextView.setText(label);
         labelTextView.setTextSize(16);
-        labelTextView.setTextColor(Color.BLACK);
+        labelTextView.setTextColor(Color.WHITE);
 
         // Add the colored box and label to the legend item layout
         legendItemLayout.addView(colorBox);

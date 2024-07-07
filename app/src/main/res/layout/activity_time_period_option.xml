@@ -14,10 +14,12 @@
 
     <!-- Add your buttons here for the five options -->
     <!-- Example: -->
+
     <Button
         android:id="@+id/option1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
         android:text="Option 1" />
     <!-- Repeat for other options -->
 </LinearLayout>

@@ -6,7 +6,8 @@
     app:cardElevation="4dp"
     app:cardCornerRadius="8dp"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp">
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/green">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,12 +22,13 @@
             android:layout_height="42dp"
             android:layout_gravity="center_vertical"
             android:contentDescription="Image Description"
-            android:src="@drawable/calender_clip_art" />
+            android:src="@drawable/baseline_date_range" />
 
         <!-- Text View -->
         <TextView
             android:id="@+id/textView"
             android:layout_width="118dp"
+            android:textColor="@color/white"
             android:layout_height="39dp"
             android:layout_marginStart="10dp"
             android:gravity="center"
@@ -35,8 +37,9 @@
 
         <!-- Text View -->
         <TextView
-            android:id="@+id/startDateTextView"
+            android:id="@+id/textView3"
             android:layout_width="150dp"
+            android:textColor="@color/white"
             android:layout_height="40dp"
             android:layout_marginStart="40dp"
             android:gravity="center"

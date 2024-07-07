@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue">
 
     <ImageView
         android:id="@+id/img_back"
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:textColor="@color/white"
         android:text="Question 2"
         android:textSize="24sp" />
 
@@ -31,6 +33,7 @@
         android:layout_below="@id/img_back"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="@color/white"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
 
@@ -41,6 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/questionTextView"
         android:layout_marginTop="16dp"
+        android:thumbTint="@color/green"
+        android:progressTint="@color/green"
         android:max="9"
         android:progress="0"
     />
@@ -51,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ratingSeekBar"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
         android:layout_marginTop="16dp"
         android:text="Current Rating: "
         android:textSize="18sp" />
@@ -60,9 +66,17 @@
         android:layout_width="300dp"
         android:layout_height="100dp"
         android:layout_below="@id/ratingSeekBar"
-        android:layout_marginTop="370dp"
+        android:layout_marginTop="300dp"
         android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/green"
         android:text="Next Question"
         android:textSize="24sp" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

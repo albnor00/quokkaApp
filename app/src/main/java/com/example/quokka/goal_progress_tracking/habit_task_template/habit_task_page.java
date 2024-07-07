@@ -25,9 +25,9 @@ import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.target_task_template.target_task_log_history_page;
 import com.example.quokka.goal_progress_tracking.target_task_template.target_task_settings_page;
-
 import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
+
 import com.example.quokka.ui.login.Login;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,7 +35,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,14 +48,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -78,7 +74,6 @@ public class habit_task_page extends AppCompatActivity {
     private String dueDate;
     private int taskPosition;
     private String taskId;
-    private String reminderTime;
 
     private boolean isDoubleClick = false;
     private static final long DOUBLE_CLICK_THRESHOLD = 300; // 300ms for double click detection
@@ -181,7 +176,6 @@ public class habit_task_page extends AppCompatActivity {
             goal = intent.getStringExtra("goal");
             startDate = intent.getStringExtra("startDate");
             dueDate = intent.getStringExtra("dueDate");
-            reminderTime = intent.getStringExtra("reminderTime");
             taskPosition = intent.getIntExtra("taskPosition", -1);
         }
     }
@@ -220,7 +214,6 @@ public class habit_task_page extends AppCompatActivity {
         intent.putExtra("goal", goal);
         intent.putExtra("startDate", startDate);
         intent.putExtra("dueDate", dueDate);
-        intent.putExtra("reminderTime", reminderTime);
         intent.putExtra("taskPosition", taskPosition);
         intent.putExtra("taskId", taskId);
         startActivity(intent);
@@ -282,40 +275,17 @@ public class habit_task_page extends AppCompatActivity {
             return;
         }
 
-        // Start and end of the day for the query
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Timestamp startOfDay = new Timestamp(cal.getTime());
-
-        cal.set(Calendar.HOUR_OF_DAY, 23);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.SECOND, 59);
-        cal.set(Calendar.MILLISECOND, 999);
-        Timestamp endOfDay = new Timestamp(cal.getTime());
-
         db.collection("users").document(userId)
                 .collection("Goal").document("habitTasks")
                 .collection("habit_tasks").document(taskId)
                 .collection("loggedLogs")
-                .whereGreaterThanOrEqualTo("date", startOfDay)
-                .whereLessThanOrEqualTo("date", endOfDay)
+                .whereEqualTo("date", date)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        int totalProgress = 0; // Variable to accumulate progress for the date
-
-                        for (DocumentSnapshot document : task.getResult()) {
-                            int progress = document.getLong("log").intValue();
-                            totalProgress += progress; // Accumulate all logs for the same date
-                            Log.e(TAG, "TotalProgress: " + totalProgress);
-                            Log.e(TAG, "Progress: " + progress);
-                        }
-
-                        progressMap.put(selectedDate, totalProgress);
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        int progress = document.getLong("log").intValue();
+                        progressMap.put(selectedDate, progress);
                         updateProgress(progressMap, selectedDate);
                     } else {
                         updateProgress(progressMap, selectedDate); // No progress found, update with 0
@@ -362,16 +332,7 @@ public class habit_task_page extends AppCompatActivity {
                         for (DocumentSnapshot document : task.getResult()) {
                             String date = formatDate(document.getDate("date"));
                             int progress = document.getLong("log").intValue();
-
-                            // Accumulate progress for the same date
-                            if (progressMap.containsKey(date)) {
-                                int currentProgress = progressMap.get(date);
-                                progressMap.put(date, currentProgress + progress);
-                                Log.e(TAG, "currentProgress: " + currentProgress);
-                                Log.e(TAG, "Progress: " + progress);
-                            } else {
-                                progressMap.put(date, progress);
-                            }
+                            progressMap.put(date, progress);
                         }
                         // Update the UI with the progress data for the current or selected date
                         String selectedDate = lastClickedDate != null ? lastClickedDate : getCurrentDate();
@@ -545,9 +506,7 @@ public class habit_task_page extends AppCompatActivity {
     }
 
     private void updateProgress(Map<String, Integer> progressMap, String selectedDate) {
-
-        int totalProgress = progressMap.containsKey(selectedDate) ? progressMap.get(selectedDate) : 0;
-
+        int currentProgress = progressMap.getOrDefault(selectedDate, 0);
         String goalString = goal;
         int goal = 0;
         try {
@@ -558,15 +517,18 @@ public class habit_task_page extends AppCompatActivity {
             return;
         }
 
-        Log.e(TAG, "TotalProgress: " + totalProgress);
+        int percentage = (int) ((currentProgress / (float) goal) * 100);
 
-        int percentage = (int) ((totalProgress / (float) goal) * 100);
+        Log.d("ProgressDebug", "Current Progress: " + currentProgress);
+        Log.d("ProgressDebug", "Goal: " + goal);
+        Log.d("ProgressDebug", "Percentage: " + percentage);
+
 
         circularProgressBar.setProgress(percentage);
         progressTextView.setText(percentage + "%");
-        progressNumber.setText(totalProgress + "/" + goal);
+        progressNumber.setText(currentProgress + "/" + goal);
 
-        if (totalProgress >= goal) {
+        if (currentProgress >= goal) {
             goalMet_or_goalNotMet.setText("Goal Met");
         } else {
             goalMet_or_goalNotMet.setText("Goal Not Met");
@@ -613,45 +575,35 @@ public class habit_task_page extends AppCompatActivity {
         int currentStreak = 0;
         int bestStreak = 0;
         Date lastLogDate = null;
-        Set<String> uniqueDates = new HashSet<>();
 
-        // Iterate through logs to collect unique dates with logs
-        for (habit_log log : logs) {
-            if (log.getLog() > 0) {
-                Date logDate = log.getDate();
-                String dateStr = getDateAsString(logDate);
+        // Iterate through logs starting from the oldest date
+        for (int i = logs.size() - 1; i >= 0; i--) {
+            habit_log log = logs.get(i);
+            Date logDate = log.getDate();
+            int logValue = log.getLog();
 
-                if (!uniqueDates.contains(dateStr)) {
-                    uniqueDates.add(dateStr);
-                }
-            }
-        }
-
-        // Convert the unique dates to a list and sort them in ascending order
-        List<Date> sortedUniqueDates = new ArrayList<>();
-        for (String dateStr : uniqueDates) {
-            sortedUniqueDates.add(parseDateString(dateStr));
-        }
-        Collections.sort(sortedUniqueDates);
-
-        // Calculate streaks based on unique dates
-        for (int i = 0; i < sortedUniqueDates.size(); i++) {
-            Date logDate = sortedUniqueDates.get(i);
-
-            if (lastLogDate == null) {
-                // First log, start the current streak
-                currentStreak = 1;
-            } else {
-                if (isNextDay(lastLogDate, logDate)) {
-                    // Continue the streak
-                    currentStreak++;
+            if (logValue > 0) {
+                if (lastLogDate == null) {
+                    // First log, start the current streak
+                    currentStreak = 1;
                 } else {
-                    // Streak is broken, update the best streak if necessary
-                    if (currentStreak > bestStreak) {
-                        bestStreak = currentStreak;
+                    if (isNextDay(lastLogDate, logDate)) {
+                        // Continue the streak
+                        currentStreak++;
+                    } else {
+                        // Streak is broken, update the best streak if necessary
+                        if (currentStreak > bestStreak) {
+                            bestStreak = currentStreak;
+                        }
+                        currentStreak = 1; // Start a new streak with the current log
                     }
-                    currentStreak = 1; // Start a new streak with the current log
                 }
+            } else {
+                // Non-contributing log, streak is broken, update the best streak if necessary
+                if (currentStreak > bestStreak) {
+                    bestStreak = currentStreak;
+                }
+                currentStreak = 0;
             }
 
             lastLogDate = logDate;
@@ -686,20 +638,5 @@ public class habit_task_page extends AppCompatActivity {
     private void updateStreakUI(int currentStreak, int bestStreak) {
         currentStreakTextView.setText(String.valueOf(currentStreak));
         bestStreakTextView.setText(String.valueOf(bestStreak));
-    }
-
-    private String getDateAsString(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return sdf.format(date);
-    }
-
-    private Date parseDateString(String dateString) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            return sdf.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

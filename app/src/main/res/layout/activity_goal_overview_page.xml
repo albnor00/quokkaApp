@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue">
 
     <!-- Back Button -->
     <ImageView
@@ -20,6 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Goal Overview"
         android:textSize="24sp"
+        android:textColor="@color/white"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp" />
 
@@ -40,6 +43,7 @@
         android:layout_below="@+id/img_back"
         android:layout_marginStart="20dp"
         android:layout_marginTop="24dp"
+        android:textColor="@color/white"
         android:text="1. What you are working to better:"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -51,6 +55,7 @@
         android:layout_below="@+id/question1_textview"
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
+        android:textColor="@color/white"
         android:text="Answer 1"
         android:textSize="16sp" />
 
@@ -62,6 +67,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:text="2. Your satisfaction with the chosen aspect (1-10):"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -73,6 +79,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:text="Answer 2"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <TextView
@@ -84,6 +91,7 @@
         android:layout_marginTop="16dp"
         android:text="3. Your explanation for the rating of the last question:"
         android:textSize="18sp"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 
     <TextView
@@ -94,6 +102,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:text="Answer 3"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <TextView
@@ -104,6 +113,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:text="4. The rating you want to reach for in the future:"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -115,6 +125,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:text="Answer 4"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <TextView
@@ -125,6 +136,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:text="5. How you think you will feel in the future once you have reached your goal:"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -136,15 +148,24 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:text="Answer 5"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <Button
+        android:backgroundTint="@color/green"
         android:id="@+id/rate_satisfaction_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="150dp"
         android:layout_centerHorizontal="true"
         android:text="Log Your Satisfaction" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 </RelativeLayout>

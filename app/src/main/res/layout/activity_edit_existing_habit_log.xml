@@ -1,7 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:background="@color/blue">
 
     <!-- Back Button -->
     <ImageView
@@ -18,6 +20,7 @@
         android:id="@+id/text_finish_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:text="Edit This Log?"
         android:textSize="24sp"
         android:layout_centerHorizontal="true"
@@ -38,6 +41,7 @@
         android:id="@+id/text_view_habit_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         android:layout_below="@id/text_finish_top"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
@@ -48,6 +52,7 @@
         android:id="@+id/button_yes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
         android:layout_below="@id/text_view_habit_question"
         android:layout_marginStart="60dp"
         android:layout_marginTop="20dp"
@@ -58,6 +63,7 @@
         android:id="@+id/button_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
         android:layout_below="@id/text_view_habit_question"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="60dp"
@@ -69,11 +75,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/button_yes"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/white"
         android:hint="Enter Notes"
         android:layout_marginTop="20dp"
         android:inputType="textMultiLine"
         android:maxLines="10"
         android:scrollbars="vertical"
         android:padding="12dp"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

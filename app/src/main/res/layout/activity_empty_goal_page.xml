@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue">
 
     <ImageView
         android:id="@+id/img_back"
@@ -14,6 +16,7 @@
         android:src="@drawable/baseline_arrow_back_ios_new_24" />
 
     <TextView
+        android:textColor="@color/white"
         android:layout_width="361dp"
         android:layout_height="161dp"
         android:layout_below="@id/img_back"
@@ -26,6 +29,7 @@
         />
 
     <TextView
+        android:textColor="@color/white"
         android:layout_width="361dp"
         android:layout_height="161dp"
         android:id="@+id/question_text"
@@ -38,15 +42,23 @@
         />
 
     <Button
+        android:backgroundTint="@color/green"
         android:layout_width="300dp"
         android:layout_height="100dp"
         android:id="@+id/getting_started_button"
         android:layout_below="@id/question_text"
-        android:layout_marginTop="210dp"
         android:gravity="center"
         android:text="Get started"
         android:textSize="30dp"
         android:layout_centerHorizontal="true"
         />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
+
 
 </RelativeLayout>

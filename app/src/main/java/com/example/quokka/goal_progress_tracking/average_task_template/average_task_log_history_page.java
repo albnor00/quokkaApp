@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -21,7 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.goal_progress_tracking.goal_setup.Question2;
+import com.example.quokka.tasks.profile.ProfileActivity;
+import com.example.quokka.tasks.tasksMain;
+import com.example.quokka.ui.login.Login;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -138,6 +147,28 @@ public class average_task_log_history_page extends AppCompatActivity {
                 intent.putExtra("taskId", taskId); // Pass the task ID
                 intent.putExtra("position", position);
                 startActivityForResult(intent, RequestCodes.EDIT_LOG_REQUEST_CODE);
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.home_bottom) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else if (item.getItemId() == R.id.profile_bottom) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                } else if (item.getItemId() == R.id.tasks_bottom) {
+                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
+                } else if (item.getItemId() == R.id.group_bottom) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    MainActivity.checkUserRole2(user, average_task_log_history_page.this);
+                } else if (item.getItemId() == R.id.logout_bottom) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+                return true; // Return true to indicate that the item selection has been handled
             }
         });
     }
