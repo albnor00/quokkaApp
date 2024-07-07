@@ -37,7 +37,7 @@
 
         <!-- Text View -->
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/reminderTextView"
             android:layout_width="150dp"
             android:textColor="@color/white"
             android:layout_height="38dp"

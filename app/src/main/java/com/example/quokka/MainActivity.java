@@ -2,6 +2,7 @@ package com.example.quokka;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -51,7 +52,8 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    LinearLayout logout, groupIcon, taskIcon, homeIcon, accountIcon;
+    CardView logout, tasks, group, account;
+    LinearLayout Icon_group, Icon_profile, Icon_tasks, Icon_logout;
     FirebaseUser user;
 
     @Override
@@ -59,15 +61,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
-        logout = findViewById(R.id.logout);
-        groupIcon = findViewById(R.id.icon_group);
-        taskIcon = findViewById(R.id.widget);
-        homeIcon = findViewById(R.id.layoutHome);
-        accountIcon = findViewById(R.id.profile);
         user = auth.getCurrentUser();
 
+        logout = findViewById(R.id.logout);
+        tasks = findViewById(R.id.tasks);
+        group = findViewById(R.id.group);
+        account = findViewById(R.id.profile);
 
-        groupIcon.setOnClickListener(new View.OnClickListener() {
+        Icon_group = findViewById(R.id.icon_group);
+        Icon_profile = findViewById(R.id.icon_profile);
+        Icon_tasks = findViewById(R.id.icon_tasks);
+        Icon_logout = findViewById(R.id.icon_logout);
+
+
+        group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Check user role only when group icon is clicked
@@ -75,7 +82,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        Icon_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Check user role only when group icon is clicked
+                checkUserRole();
+            }
+        });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,9 +100,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Icon_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
-
-        taskIcon.setOnClickListener(new View.OnClickListener() {
+        tasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), tasksMain.class);
@@ -98,14 +119,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        homeIcon.setOnClickListener(new View.OnClickListener() {
+        Icon_tasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), tasksMain.class);
+                startActivity(intent);
+                finish();
             }
         });
 
-        accountIcon.setOnClickListener(new View.OnClickListener() {
+        account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -114,6 +137,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Icon_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void checkUserRole() {
