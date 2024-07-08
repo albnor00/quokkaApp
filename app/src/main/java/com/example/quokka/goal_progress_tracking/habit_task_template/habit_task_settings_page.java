@@ -73,7 +73,7 @@ public class habit_task_settings_page extends AppCompatActivity {
         name_card = findViewById(R.id.edit_task_name);
         description_card = findViewById(R.id.edit_task_description);
         editTextGoal = findViewById(R.id.editTextGoal);
-        StartDateTextView = findViewById(R.id.textView3);
+        StartDateTextView = findViewById(R.id.startDateTextView);
         DueDateTextView = findViewById(R.id.dueDateTextView);
 
         // Initialize calendar and date format
@@ -151,6 +151,24 @@ public class habit_task_settings_page extends AppCompatActivity {
                     }
                 });
                 builder.setNegativeButton("No", null);
+                builder.show();
+            }
+        });
+
+        ImageView tooltip = findViewById(R.id.img_help);
+        tooltip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(habit_task_settings_page.this);
+                builder.setTitle("Settings Description");
+                builder.setMessage("This is where you can edit the settings of your tasks. You can modify the task name, description, due date, start date, goal, reminder time, and delete the task if needed. " +
+                        "If you intend to save your configurations, make sure you press the checkmark, otherwise your changes wont be saved.");
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 builder.show();
             }
         });

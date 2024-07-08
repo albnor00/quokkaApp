@@ -132,28 +132,28 @@ public class balance_wheel extends AppCompatActivity {
                 // Handle click events for each slice position
                 switch (slicePosition) {
                     case 0:
-                        showSeekBarDialog(btn_Career.getId(), "Why do you think your career is good or bad?");
+                        showSeekBarDialog(btn_Career.getId(), "Add an optional comment/note.");
                         break;
                     case 1:
-                        showSeekBarDialog(btn_Wellbeing.getId(), "Why do you think your wellbeing is good or bad?");
+                        showSeekBarDialog(btn_Wellbeing.getId(), "Add an optional comment/note.");
                         break;
                     case 2:
-                        showSeekBarDialog(btn_CloseRelations.getId(), "Why do you think your close relationships is good or bad?");
+                        showSeekBarDialog(btn_CloseRelations.getId(), "Add an optional comment/note.");
                         break;
                     case 3:
-                        showSeekBarDialog(btn_Relations.getId(), "Why do you think your relations is good or bad?");
+                        showSeekBarDialog(btn_Relations.getId(), "Add an optional comment/note.");
                         break;
                     case 4:
-                        showSeekBarDialog(btn_Development.getId(), "Why do you think your development is good or bad?");
+                        showSeekBarDialog(btn_Development.getId(), "Add an optional comment/note.");
                         break;
                     case 5:
-                        showSeekBarDialog(btn_Environment.getId(), "Why do you think your environment is good or bad?");
+                        showSeekBarDialog(btn_Environment.getId(), "Add an optional comment/note.");
                         break;
                     case 6:
                         showSeekBarDialog(btn_Rest.getId(), "Add an optional comment/note.");
                         break;
                     case 7:
-                        showSeekBarDialog(btn_Economy.getId(), "Why do you think your economy is good or bad?");
+                        showSeekBarDialog(btn_Economy.getId(), "Add an optional comment/note.");
                         break;
                 }
             }

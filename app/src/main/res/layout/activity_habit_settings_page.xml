@@ -37,76 +37,99 @@
         android:layout_marginEnd="16dp"
         android:src="@drawable/baseline_check_24" />
 
-    <include layout="@layout/item_task_name"
-        android:id="@+id/edit_name"
-        android:layout_width="400dp"
+    <TextView
+        android:id="@+id/text_settings_description"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:text="Edit your tasks settings"
+        android:textSize="20sp"
+        android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/img_back" />
+        android:layout_below="@id/text_settings_top"
+        android:layout_marginTop="45dp" />
 
-    <include layout="@layout/item_task_description"
-        android:id="@+id/edit_description"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/img_help"
+        android:layout_width="47dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/img_check_mark"
+        android:layout_alignEnd="@id/img_check_mark"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_question_mark_24" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_name" />
+        android:layout_above="@id/bottomNavigationView"
+        android:layout_below="@id/img_help"
+        android:fillViewport="true">
 
-    <include layout="@layout/item_goal_button_average_template"
-        android:id="@+id/edit_goal"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_description" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <include layout="@layout/item_task_name"
+                android:id="@+id/edit_name"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+            <include layout="@layout/item_task_description"
+                android:id="@+id/edit_description"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+            <include layout="@layout/item_goal_button_average_template"
+                android:id="@+id/edit_goal"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
 
-    <include layout="@layout/item_startdate_button_average_template"
-        android:id="@+id/edit_startdate"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_goal" />
+            <include layout="@layout/item_startdate_button_average_template"
+                android:id="@+id/edit_startdate"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_due_date_button"
-        android:id="@+id/edit_dueDate"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_startdate" />
+            <include layout="@layout/item_due_date_button"
+                android:id="@+id/edit_dueDate"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_reminder_button"
-        android:id="@+id/edit_reminder"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_dueDate" />
+            <include layout="@layout/item_reminder_button"
+                android:id="@+id/edit_reminder"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_delete_task_button"
-        android:id="@+id/delete_task"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_reminder" />
+            <include layout="@layout/item_delete_task_button"
+                android:id="@+id/delete_task"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

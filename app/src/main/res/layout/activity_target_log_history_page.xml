@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/text_log_history"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp" />
+        android:layout_marginTop="50dp" />
 
     <TextView
         android:id="@+id/previous_logs"
@@ -54,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/previous_logs"
+        android:layout_above="@id/bottomNavigationView"
         android:background="@color/lighterBlue"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"

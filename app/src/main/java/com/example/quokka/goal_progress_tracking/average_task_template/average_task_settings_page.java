@@ -92,6 +92,7 @@ public class average_task_settings_page extends AppCompatActivity {
         switchGoalMoreOrLess = findViewById(R.id.switchGoalMoreOrLess);
         dueDateTextView = findViewById(R.id.dueDateTextView);
         DateTextView = findViewById(R.id.startDateTextView);
+        reminderTimeTextView = findViewById(R.id.reminderTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -247,6 +248,24 @@ public class average_task_settings_page extends AppCompatActivity {
                     finish();
                 }
                 return true; // Return true to indicate that the item selection has been handled
+            }
+        });
+
+        ImageView tooltip = findViewById(R.id.img_help);
+        tooltip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(average_task_settings_page.this);
+                builder.setTitle("Settings Description");
+                builder.setMessage("This is where you can edit the settings of your tasks. You can modify the task name, description, due date, start date, goal, reminder time, and delete the task if needed. " +
+                                   "If you intend to save your configurations, make sure you press the checkmark, otherwise your changes wont be saved.");
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
     }

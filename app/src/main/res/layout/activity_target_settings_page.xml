@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/blue">
 
     <!-- Back Arrow ImageView -->
     <ImageView
@@ -21,8 +23,29 @@
         android:layout_height="wrap_content"
         android:text="Settings"
         android:textSize="24sp"
+        android:textColor="@color/white"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/text_settings_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit your tasks settings"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/text_finish_top"
+        android:layout_marginTop="45dp" />
+
+    <ImageView
+        android:id="@+id/img_help"
+        android:layout_width="47dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/img_check_mark"
+        android:layout_alignEnd="@id/img_check_mark"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_question_mark_24" />
 
     <ImageView
         android:id="@+id/img_check_mark"
@@ -34,84 +57,102 @@
         android:layout_marginEnd="16dp"
         android:src="@drawable/baseline_check_24" />
 
-    <include layout="@layout/item_task_name"
-        android:id="@+id/edit_name"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/img_back" />
+        android:layout_above="@id/bottomNavigationView"
+        android:layout_below="@id/img_help"
+        android:fillViewport="true">
 
-    <include layout="@layout/item_task_description"
-        android:id="@+id/edit_description"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_name" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-    <include layout="@layout/item_start_value"
-        android:id="@+id/edit_start_goal"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_description" />
+            <include layout="@layout/item_task_name"
+                android:id="@+id/edit_name"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_end_value"
-        android:id="@+id/edit_end_goal"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_start_goal" />
+            <include layout="@layout/item_task_description"
+                android:id="@+id/edit_description"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_start_date"
-        android:id="@+id/edit_start_date"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_end_goal" />
+            <include layout="@layout/item_start_value"
+                android:id="@+id/edit_start_goal"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_end_date"
-        android:id="@+id/edit_end_date"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_start_date" />
+            <include layout="@layout/item_end_value"
+                android:id="@+id/edit_end_goal"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_reminder_button"
-        android:id="@+id/edit_reminder"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_end_date" />
+            <include layout="@layout/item_start_date"
+                android:id="@+id/edit_start_date"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
 
-    <include layout="@layout/item_delete_task_button"
-        android:id="@+id/task_delete"
-        android:layout_width="450dp"
+            <include layout="@layout/item_end_date"
+                android:id="@+id/edit_end_date"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+            <include layout="@layout/item_due_date_button"
+                android:id="@+id/edit_due_date"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+            <include layout="@layout/item_reminder_button"
+                android:id="@+id/edit_reminder"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+            <include layout="@layout/item_delete_task_button"
+                android:id="@+id/task_delete"
+                android:layout_width="400dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/edit_reminder" />
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

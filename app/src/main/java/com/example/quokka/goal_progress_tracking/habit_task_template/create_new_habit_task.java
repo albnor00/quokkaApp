@@ -27,6 +27,7 @@ import androidx.cardview.widget.CardView;
 
 import com.example.quokka.MainActivity;
 import com.example.quokka.R;
+import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.choose_task_template;
 import com.example.quokka.tasks.balance_wheel;
@@ -81,6 +82,7 @@ public class create_new_habit_task extends AppCompatActivity {
         editGoalText = findViewById(R.id.editTextGoal);
         startDateTextView = findViewById(R.id.startDateTextView);
         dueDateTextView = findViewById(R.id.dueDateTextView);
+        reminderTimeTextView = findViewById(R.id.reminderTextView);
 
         // Initialize calendar and date format
         calendar = Calendar.getInstance();
@@ -181,6 +183,26 @@ public class create_new_habit_task extends AppCompatActivity {
                     finish();
                 }
                 return true; // Return true to indicate that the item selection has been handled
+            }
+        });
+
+        ImageView tooltip = findViewById(R.id.img_help);
+        tooltip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(create_new_habit_task.this);
+                builder.setTitle("Task Customization");
+                builder.setMessage("This is where you can choose customization options for your task. You can set the task name, description, due date, start date, goal and reminder time. " +
+                        "The due date is which days you want notification reminders, and reminder time is at what time you get the notification. " +
+                        "The task will present you with a calender where you can monitor and log how often you perform a habit. " +
+                        "If you intend to create the task, make sure you press the checkmark, otherwise your task will not be saved.");
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
     }

@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -38,9 +39,9 @@ import com.bumptech.glide.request.RequestOptions;
 
 public class ProfileActivity extends AppCompatActivity {
 
-     ImageView imageView2;
-     FloatingActionButton selectImageButton;
-     AppCompatButton notificationButton;
+    ImageView imageView2;
+    FloatingActionButton selectImageButton;
+    AppCompatButton notificationButton;
     FirebaseStorage storage;
     StorageReference storageReference;
     FirebaseAuth mAuth;
@@ -89,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                markMessagesAsRead();
                 Intent intent = new Intent(ProfileActivity.this, NotificationsActivity.class);
                 startActivity(intent);
             }
@@ -147,6 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
                 return true; // Return true to indicate that the item selection has been handled
             }
         });
+
+        checkUnreadMessages();
     }
 
 
@@ -208,6 +212,45 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-}
 
+    private void checkUnreadMessages() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            db.collection("users").document(user.getUid()).collection("notifications")
+                    .whereEqualTo("read", false)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                notificationButton.setCompoundDrawablesWithIntrinsicBounds(
+                                        R.drawable.baseline_notifications_24, 0, R.drawable.baseline_error, 0);
+                            } else {
+                                notificationButton.setCompoundDrawablesWithIntrinsicBounds(
+                                        R.drawable.baseline_notifications_24, 0, 0, 0);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void markMessagesAsRead() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            db.collection("users").document(user.getUid()).collection("notifications")
+                    .whereEqualTo("read", false)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                documentSnapshot.getReference().update("read", true);
+                            }
+                        }
+                    });
+        }
+    }
+}
 

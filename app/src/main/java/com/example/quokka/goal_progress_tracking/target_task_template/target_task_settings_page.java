@@ -29,6 +29,7 @@ import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.average_task_template.average_task_page;
 import com.example.quokka.goal_progress_tracking.average_task_template.average_task_settings_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
+import com.example.quokka.goal_progress_tracking.habit_task_template.habit_task_settings_page;
 import com.example.quokka.tasks.balance_wheel;
 import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
@@ -90,7 +91,7 @@ public class target_task_settings_page extends AppCompatActivity {
         CardView start_value = findViewById(R.id.edit_start_goal);
         CardView end_value = findViewById(R.id.edit_end_goal);
         CardView start_date = findViewById(R.id.edit_start_date);
-        CardView due_date = findViewById(R.id.edit_dueDate);
+        CardView due_date = findViewById(R.id.edit_due_date);
         CardView reminderTime = findViewById(R.id.edit_reminder);
         CardView end_date = findViewById(R.id.edit_end_date);
         CardView deleteTaskCard = findViewById(R.id.task_delete);
@@ -232,27 +233,24 @@ public class target_task_settings_page extends AppCompatActivity {
             }
         });
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        ImageView tooltip = findViewById(R.id.img_help);
+        tooltip.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.home_bottom) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                } else if (item.getItemId() == R.id.profile_bottom) {
-                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                } else if (item.getItemId() == R.id.tasks_bottom) {
-                    startActivity(new Intent(getApplicationContext(), tasksMain.class));
-                } else if (item.getItemId() == R.id.group_bottom) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    MainActivity.checkUserRole2(user, target_task_settings_page.this);
-                } else if (item.getItemId() == R.id.logout_bottom) {
-                    FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(getApplicationContext(), Login.class));
-                    finish();
-                }
-                return true; // Return true to indicate that the item selection has been handled
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(target_task_settings_page.this);
+                builder.setTitle("Settings Description");
+                builder.setMessage("This is where you can edit the settings of your tasks. You can modify the task name, description, due date, start date, end date, start value, end goal, reminder time, and delete the task if needed. " +
+                        "If you intend to save your configurations, make sure you press the checkmark, otherwise your changes wont be saved.");
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
+
     }
 
     private void showNumericKeyboardStartGoal() {

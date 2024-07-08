@@ -52,6 +52,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
+    TextView welcome;
     CardView logout, tasks, group, account;
     LinearLayout Icon_group, Icon_profile, Icon_tasks, Icon_logout;
     FirebaseUser user;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
+        welcome = findViewById(R.id.welcome_text);
+
         logout = findViewById(R.id.logout);
         tasks = findViewById(R.id.tasks);
         group = findViewById(R.id.group);
@@ -73,6 +76,21 @@ public class MainActivity extends AppCompatActivity {
         Icon_tasks = findViewById(R.id.icon_tasks);
         Icon_logout = findViewById(R.id.icon_logout);
 
+        // Fetch username and set to welcome TextView
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userId = user.getUid();
+            db.collection("users").document(userId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String username = documentSnapshot.getString("username");
+                            if (username != null) {
+                                welcome.setText("Welcome, " + username + "!");
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Failed to fetch username.", Toast.LENGTH_SHORT).show());
+        }
 
         group.setOnClickListener(new View.OnClickListener() {
             @Override

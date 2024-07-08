@@ -28,6 +28,7 @@ import com.example.quokka.R;
 import com.example.quokka.goal_progress_tracking.average_task_template.create_new_average_task;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.Goal_non_empty_page;
 import com.example.quokka.goal_progress_tracking.goal_page_v2.choose_task_template;
+import com.example.quokka.goal_progress_tracking.habit_task_template.create_new_habit_task;
 import com.example.quokka.tasks.balance_wheel;
 import com.example.quokka.tasks.profile.ProfileActivity;
 import com.example.quokka.tasks.tasksMain;
@@ -193,6 +194,27 @@ public class create_new_target_task extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showTimePickerDialog();
+            }
+        });
+
+        ImageView tooltip = findViewById(R.id.img_help);
+        tooltip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(create_new_target_task.this);
+                builder.setTitle("Task Customization");
+                builder.setMessage("This is where you can choose customization options for your task. You can set the task name, description, due date, start date, goal and reminder time. " +
+                        "The due date is which days you want notification reminders, and reminder time is at what time you get the notification. " +
+                        "Your progress will be presented within a line chart where your start value is where you are with this task right now and the end goal is what you want to reach in the future. " +
+                        "You can pick a start- and an end date which represent the period of time you want to reach the goal value. " +
+                        "If you intend to create the task, make sure you press the checkmark, otherwise your task will not be saved.");
+                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
     }

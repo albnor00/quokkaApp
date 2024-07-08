@@ -172,13 +172,14 @@
             android:textStyle="bold" />
 
 
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/balanceWheel_btn6"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="60dp"
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/btn_background_2"

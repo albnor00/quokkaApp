@@ -149,13 +149,11 @@ public class SendMessageActivity extends AppCompatActivity {
     private void sendMessageToUser(String username, String message) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            // Handle the case where user is null (not authenticated properly)
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
             return;
         }
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection("users").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -166,7 +164,7 @@ public class SendMessageActivity extends AppCompatActivity {
                     messageData.put("senderUsername", senderUsername);
                     messageData.put("message", message);
                     messageData.put("timestamp", System.currentTimeMillis());
-                    messageData.put("read",read);
+                    messageData.put("read", read);
 
                     db.collection("users").whereEqualTo("username", username).get().addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
@@ -207,6 +205,7 @@ public class SendMessageActivity extends AppCompatActivity {
             }
         });
     }
+
 
 }
 

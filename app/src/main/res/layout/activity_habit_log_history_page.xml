@@ -54,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/previous_logs"
+        android:layout_above="@id/bottomNavigationView"
         android:background="@color/lighterBlue"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
